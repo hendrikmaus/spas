@@ -1,0 +1,11 @@
+#!/usr/bin/env php
+<?php
+
+use Hmaus\Spas\TestCommand;
+use Symfony\Component\Console\Application;
+
+require __DIR__ . '/../vendor/autoload.php';
+
+$application = new Application('Spas', '0.1.0');
+$application->add(new TestCommand());
+$application->run();
