@@ -6,8 +6,6 @@ if (!ini_get('date.timezone')) {
 }
 
 foreach ([__DIR__ . '/../../../autoload.php', __DIR__ . '/../../vendor/autoload.php', __DIR__ . '/../vendor/autoload.php'] as $file) {
-    print $file;
-    print "\n";
     if (file_exists($file)) {
         define('SPAS_COMPOSER_INSTALL', $file);
 
