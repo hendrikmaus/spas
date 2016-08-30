@@ -8,28 +8,14 @@
       "email": "aidentailor@gmail.com"
     }
   ],
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "../reynaldo"
-    },
-    {
-      "type": "vcs",
-      "url": "../spas-parser"
-    },
-    {
-      "type": "vcs",
-      "url": "../spas-parser-apib"
-    }
-  ],
   "minimum-stability": "stable",
   "require": {
     "php": ">=7.0",
     "fezfez/php-json-schema-generator": "dev-master",
     "guzzlehttp/guzzle": "^6.2",
-    "hmaus/reynaldo": "dev-master",
-    "hmaus/spas-parser": "dev-master",
-    "hmaus/spas-parser-apib": "dev-master",
+    "hmaus/reynaldo": "^0.1.0",
+    "hmaus/spas-parser": "^0.1.0",
+    "hmaus/spas-parser-apib": "^0.1.0",
     "jonnyw/php-phantomjs": "^4.5",
     "justinrainbow/json-schema": "^2.0",
     "monolog/monolog": "^1.21",
