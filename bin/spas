@@ -1,14 +1,13 @@
 #!/usr/bin/env php
 <?php
 
-use Hmaus\Spas\SpasApplication;
-use Symfony\Component\Console\Output\ConsoleOutput;
-
 if (!ini_get('date.timezone')) {
     ini_set('date.timezone', 'UTC');
 }
 
-foreach ([__DIR__ . '/../../autoload.php', __DIR__ . '/../vendor/autoload.php', __DIR__ . '/vendor/autoload.php'] as $file) {
+foreach ([__DIR__ . '/../../../autoload.php', __DIR__ . '/../../vendor/autoload.php', __DIR__ . '/../vendor/autoload.php'] as $file) {
+    print $file;
+    print "\n";
     if (file_exists($file)) {
         define('SPAS_COMPOSER_INSTALL', $file);
 
@@ -34,9 +33,9 @@ define('APP_NAME', 'spas');
 define('APP_VERSION', '0.1.0');
 
 // todo look at events for this purpose: http://symfony.com/doc/current/components/console/events.html
-$output = new ConsoleOutput();
+$output = new Symfony\Component\Console\Output\ConsoleOutput();
 $output->writeln(sprintf('Spas %s by Hendrik Maus and contributors.', APP_VERSION));
 $output->writeln('');
 
-$application = new SpasApplication(APP_NAME, APP_VERSION);
+$application = new Hmaus\Spas\SpasApplication(APP_NAME, APP_VERSION);
 $application->run(null, $output);
