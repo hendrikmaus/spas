@@ -4,7 +4,31 @@
 use Hmaus\Spas\SpasApplication;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
-require __DIR__ . '/../vendor/autoload.php';
+if (!ini_get('date.timezone')) {
+    ini_set('date.timezone', 'UTC');
+}
+
+foreach ([__DIR__ . '/../../autoload.php', __DIR__ . '/../vendor/autoload.php', __DIR__ . '/vendor/autoload.php'] as $file) {
+    if (file_exists($file)) {
+        define('SPAS_COMPOSER_INSTALL', $file);
+
+        break;
+    }
+}
+
+unset($file);
+
+if (!defined('SPAS_COMPOSER_INSTALL')) {
+    fwrite(STDERR,
+        'You need to set up the project dependencies using the following commands:' . PHP_EOL .
+        'wget http://getcomposer.org/composer.phar' . PHP_EOL .
+        'php composer.phar install' . PHP_EOL
+    );
+
+    die(1);
+}
+
+require SPAS_COMPOSER_INSTALL;
 
 define('APP_NAME', 'spas');
 define('APP_VERSION', '0.1.0');
