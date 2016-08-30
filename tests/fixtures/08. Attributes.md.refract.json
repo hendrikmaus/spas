@@ -1,0 +1,217 @@
+{
+  "element": "parseResult",
+  "content": [
+    {
+      "element": "category",
+      "meta": {
+        "classes": [
+          "api"
+        ],
+        "title": "Attributes API"
+      },
+      "attributes": {
+        "meta": [
+          {
+            "element": "member",
+            "meta": {
+              "classes": [
+                "user"
+              ]
+            },
+            "content": {
+              "key": {
+                "element": "string",
+                "content": "FORMAT"
+              },
+              "value": {
+                "element": "string",
+                "content": "1A"
+              }
+            }
+          }
+        ]
+      },
+      "content": [
+        {
+          "element": "copy",
+          "content": "This API example demonstrates how to describe body attributes of a request or\nresponse message.\n\nIn this case, the description is complementary (and duplicate!) to the provided\nJSON example in the body section. The \n[Advanced Attributes](09.%20Advanced%20Attributes.md) API example will\ndemonstrate how to avoid duplicates and how to reuse attribute descriptions.\n\n## API Blueprint\n\n+ [Previous: Parameters](07.%20Parameters.md)\n\n+ [This: Raw API Blueprint](https://raw.github.com/apiaryio/api-blueprint/master/examples/08.%20Attributes.md)\n\n+ [Next: Advanced Attributes](09.%20Advanced%20Attributes.md)\n\n"
+        },
+        {
+          "element": "category",
+          "meta": {
+            "classes": [
+              "resourceGroup"
+            ],
+            "title": "Coupons"
+          },
+          "content": [
+            {
+              "element": "resource",
+              "meta": {
+                "title": "Coupon"
+              },
+              "attributes": {
+                "href": "/coupons/{id}"
+              },
+              "content": [
+                {
+                  "element": "copy",
+                  "content": "A coupon contains information about a percent-off or amount-off discount you\nmight want to apply to a customer.\n\n"
+                },
+                {
+                  "element": "transition",
+                  "meta": {
+                    "title": "Retrieve a Coupon"
+                  },
+                  "content": [
+                    {
+                      "element": "copy",
+                      "content": "Retrieves the coupon with the given ID.\n\n"
+                    },
+                    {
+                      "element": "httpTransaction",
+                      "content": [
+                        {
+                          "element": "httpRequest",
+                          "attributes": {
+                            "method": "GET"
+                          },
+                          "content": []
+                        },
+                        {
+                          "element": "httpResponse",
+                          "attributes": {
+                            "statusCode": "200",
+                            "headers": {
+                              "element": "httpHeaders",
+                              "content": [
+                                {
+                                  "element": "member",
+                                  "content": {
+                                    "key": {
+                                      "element": "string",
+                                      "content": "Content-Type"
+                                    },
+                                    "value": {
+                                      "element": "string",
+                                      "content": "application/json"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "content": [
+                            {
+                              "element": "dataStructure",
+                              "content": [
+                                {
+                                  "element": "object",
+                                  "content": [
+                                    {
+                                      "element": "member",
+                                      "attributes": {
+                                        "typeAttributes": [
+                                          "required"
+                                        ]
+                                      },
+                                      "content": {
+                                        "key": {
+                                          "element": "string",
+                                          "content": "id"
+                                        },
+                                        "value": {
+                                          "element": "string",
+                                          "content": "250FF"
+                                        }
+                                      }
+                                    },
+                                    {
+                                      "element": "member",
+                                      "meta": {
+                                        "description": "Time stamp"
+                                      },
+                                      "content": {
+                                        "key": {
+                                          "element": "string",
+                                          "content": "created"
+                                        },
+                                        "value": {
+                                          "element": "number",
+                                          "content": 1415203908
+                                        }
+                                      }
+                                    },
+                                    {
+                                      "element": "member",
+                                      "meta": {
+                                        "description": "A positive integer between 1 and 100 that represents the discount\nthe coupon will apply.\n"
+                                      },
+                                      "content": {
+                                        "key": {
+                                          "element": "string",
+                                          "content": "percent_off"
+                                        },
+                                        "value": {
+                                          "element": "number",
+                                          "content": 25
+                                        }
+                                      }
+                                    },
+                                    {
+                                      "element": "member",
+                                      "meta": {
+                                        "description": "Date after which the coupon can no longer be redeemed"
+                                      },
+                                      "content": {
+                                        "key": {
+                                          "element": "string",
+                                          "content": "redeem_by"
+                                        },
+                                        "value": {
+                                          "element": "number"
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "element": "asset",
+                              "meta": {
+                                "classes": [
+                                  "messageBody"
+                                ]
+                              },
+                              "attributes": {
+                                "contentType": "application/json"
+                              },
+                              "content": "{\n    \"id\": \"250FF\",\n    \"created\": 1415203908,\n    \"percent_off\": 25,\n    \"redeem_by\": null\n}\n"
+                            },
+                            {
+                              "element": "asset",
+                              "meta": {
+                                "classes": [
+                                  "messageBodySchema"
+                                ]
+                              },
+                              "attributes": {
+                                "contentType": "application/schema+json"
+                              },
+                              "content": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"created\": {\n      \"type\": \"number\",\n      \"description\": \"Time stamp\"\n    },\n    \"percent_off\": {\n      \"type\": \"number\",\n      \"description\": \"A positive integer between 1 and 100 that represents the discount\\nthe coupon will apply.\\n\"\n    },\n    \"redeem_by\": {\n      \"type\": \"number\",\n      \"description\": \"Date after which the coupon can no longer be redeemed\"\n    }\n  },\n  \"required\": [\n    \"id\"\n  ]\n}"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "element": "parseResult",
+  "content": [
+    {
+      "element": "category",
+      "meta": {
+        "classes": [
+          "api"
+        ],
+        "title": "API Blueprint Examples"
+      },
+      "content": [
+        {
+          "element": "copy",
+          "content": "All files in this directory are actual **valid API blueprints**. Since they are saved with the `.md` extension GitHub automatically renders them during viewing.\n\n**To view an API blueprint source make sure to view the file as \"raw\".**\n"
+        }
+      ]
+    }
+  ]
+}

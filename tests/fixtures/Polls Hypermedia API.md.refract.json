@@ -1,0 +1,970 @@
+{
+  "element": "parseResult",
+  "content": [
+    {
+      "element": "category",
+      "meta": {
+        "classes": [
+          "api"
+        ],
+        "title": "Polls"
+      },
+      "attributes": {
+        "meta": [
+          {
+            "element": "member",
+            "meta": {
+              "classes": [
+                "user"
+              ]
+            },
+            "content": {
+              "key": {
+                "element": "string",
+                "content": "FORMAT"
+              },
+              "value": {
+                "element": "string",
+                "content": "1A"
+              }
+            }
+          },
+          {
+            "element": "member",
+            "meta": {
+              "classes": [
+                "user"
+              ]
+            },
+            "content": {
+              "key": {
+                "element": "string",
+                "content": "HOST"
+              },
+              "value": {
+                "element": "string",
+                "content": "http://polls.apiblueprint.org/"
+              }
+            }
+          }
+        ]
+      },
+      "content": [
+        {
+          "element": "copy",
+          "content": "Polls is a simple API allowing consumers to view polls and vote in them. You can view this documentation over at [Apiary](http://docs.pollshypermedia.apiary.io/).\n\n"
+        },
+        {
+          "element": "category",
+          "meta": {
+            "classes": [
+              "resourceGroup"
+            ],
+            "title": ""
+          },
+          "content": [
+            {
+              "element": "resource",
+              "meta": {
+                "title": "Polls API Root"
+              },
+              "attributes": {
+                "href": "/"
+              },
+              "content": [
+                {
+                  "element": "copy",
+                  "content": "This resource does not have any attributes. Instead it offers the initial API affordances.\n\n"
+                },
+                {
+                  "element": "transition",
+                  "meta": {
+                    "title": "Retrieve the Entry Point"
+                  },
+                  "content": [
+                    {
+                      "element": "httpTransaction",
+                      "content": [
+                        {
+                          "element": "httpRequest",
+                          "attributes": {
+                            "method": "GET"
+                          },
+                          "content": []
+                        },
+                        {
+                          "element": "httpResponse",
+                          "attributes": {
+                            "statusCode": "200",
+                            "headers": {
+                              "element": "httpHeaders",
+                              "content": [
+                                {
+                                  "element": "member",
+                                  "content": {
+                                    "key": {
+                                      "element": "string",
+                                      "content": "Content-Type"
+                                    },
+                                    "value": {
+                                      "element": "string",
+                                      "content": "application/vnd.siren+json"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "content": [
+                            {
+                              "element": "asset",
+                              "meta": {
+                                "classes": [
+                                  "messageBody"
+                                ]
+                              },
+                              "attributes": {
+                                "contentType": "application/vnd.siren+json"
+                              },
+                              "content": "{\n    \"links\": [\n        {\n            \"rel\": [ \"questions\" ],\n            \"href\": \"/questions\"\n        }\n    ]\n}\n"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "element": "httpTransaction",
+                      "content": [
+                        {
+                          "element": "httpRequest",
+                          "attributes": {
+                            "method": "GET"
+                          },
+                          "content": []
+                        },
+                        {
+                          "element": "httpResponse",
+                          "attributes": {
+                            "statusCode": "200",
+                            "headers": {
+                              "element": "httpHeaders",
+                              "content": [
+                                {
+                                  "element": "member",
+                                  "content": {
+                                    "key": {
+                                      "element": "string",
+                                      "content": "Content-Type"
+                                    },
+                                    "value": {
+                                      "element": "string",
+                                      "content": "application/hal+json"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "content": [
+                            {
+                              "element": "asset",
+                              "meta": {
+                                "classes": [
+                                  "messageBody"
+                                ]
+                              },
+                              "attributes": {
+                                "contentType": "application/hal+json"
+                              },
+                              "content": "{\n    \"_links\": {\n        \"questions\": { \"href\": \"/questions\" }\n    }\n}\n"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "element": "resource",
+              "meta": {
+                "title": "Questions Collection"
+              },
+              "attributes": {
+                "href": "/questions{?page}",
+                "hrefVariables": {
+                  "element": "hrefVariables",
+                  "content": [
+                    {
+                      "element": "member",
+                      "meta": {
+                        "description": "The page of questions to return"
+                      },
+                      "attributes": {
+                        "typeAttributes": [
+                          "optional"
+                        ]
+                      },
+                      "content": {
+                        "key": {
+                          "element": "string",
+                          "content": "page"
+                        },
+                        "value": {
+                          "element": "number",
+                          "content": 1
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "content": [
+                {
+                  "element": "transition",
+                  "meta": {
+                    "title": "List All Questions"
+                  },
+                  "attributes": {
+                    "relation": "questions"
+                  },
+                  "content": [
+                    {
+                      "element": "httpTransaction",
+                      "content": [
+                        {
+                          "element": "httpRequest",
+                          "attributes": {
+                            "method": "GET"
+                          },
+                          "content": []
+                        },
+                        {
+                          "element": "httpResponse",
+                          "attributes": {
+                            "statusCode": "200",
+                            "headers": {
+                              "element": "httpHeaders",
+                              "content": [
+                                {
+                                  "element": "member",
+                                  "content": {
+                                    "key": {
+                                      "element": "string",
+                                      "content": "Content-Type"
+                                    },
+                                    "value": {
+                                      "element": "string",
+                                      "content": "application/vnd.siren+json"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "content": [
+                            {
+                              "element": "asset",
+                              "meta": {
+                                "classes": [
+                                  "messageBody"
+                                ]
+                              },
+                              "attributes": {
+                                "contentType": "application/vnd.siren+json"
+                              },
+                              "content": "{\n    \"actions\": [\n        {\n            \"name\": \"add\",\n            \"href\": \"/questions\",\n            \"method\": \"POST\",\n            \"type\": \"application/json\",\n            \"fields\": [\n                {\n                    \"name\": \"question\"\n                }, {\n                    \"name\": \"choices\"\n                }\n            ]\n        }\n    ],\n    \"links\": [\n        {\n          \"rel\": [ \"next\" ],\n          \"href\": \"/questions?page=2\"\n        },\n        {\n          \"rel\": [ \"self\" ],\n          \"href\": \"/questions\"\n        }\n    ],\n    \"entities\": [\n        {\n            \"actions\": [\n                {\n                    \"name\": \"delete\",\n                    \"href\": \"/questions/1\",\n                    \"method\": \"DELETE\"\n                }\n            ],\n            \"rel\": [ \"question\" ],\n            \"properties\": {\n                \"published_at\": \"2014-11-11T08:40:51.620Z\",\n                \"question\": \"Favourite programming language?\"\n            },\n            \"links\": [\n                {\n                    \"rel\": [ \"self\" ],\n                    \"href\": \"/questions/1\"\n                }\n            ],\n            \"entities\": [\n                {\n                    \"actions\": [\n                        {\n                            \"name\": \"vote\",\n                            \"href\": \"/questions/1/choices/1\",\n                            \"method\": \"POST\"\n                        }\n                    ],\n                    \"rel\": [ \"choice\" ],\n                    \"properties\": {\n                        \"choice\": \"Swift\",\n                        \"votes\": 2048\n                    },\n                    \"links\": [\n                        {\n                            \"rel\": [ \"self\" ],\n                            \"href\": \"/questions/1/choices/1\"\n                        }\n                    ]\n                }, {\n                    \"actions\": [\n                        {\n                            \"name\": \"vote\",\n                            \"href\": \"/questions/1/choices/2\",\n                            \"method\": \"POST\"\n                        }\n                    ],\n                    \"rel\": [ \"choice\" ],\n                    \"properties\": {\n                        \"choice\": \"Python\",\n                        \"votes\": 1024\n                    },\n                    \"links\": [\n                        {\n                            \"rel\": [ \"self\" ],\n                            \"href\": \"/questions/1/choices/2\"\n                        }\n                    ]\n                }, {\n                    \"actions\": [\n                        {\n                            \"name\": \"vote\",\n                            \"href\": \"/questions/1/choices/3\",\n                            \"method\": \"POST\"\n                        }\n                    ],\n                    \"rel\": [ \"choice\" ],\n                    \"properties\": {\n                        \"choice\": \"Objective-C\",\n                        \"votes\": 512\n                    },\n                    \"links\": [\n                        {\n                            \"rel\": [ \"self\" ],\n                            \"href\": \"/questions/1/choices/3\"\n                        }\n                    ]\n                }, {\n                    \"actions\": [\n                        {\n                            \"name\": \"vote\",\n                            \"href\": \"/questions/1/choices/4\",\n                            \"method\": \"POST\"\n                        }\n                    ],\n                    \"rel\": [ \"choice\" ],\n                    \"properties\": {\n                        \"choice\": \"Ruby\",\n                        \"votes\": 256\n                    },\n                    \"links\": [\n                        {\n                            \"rel\": [ \"self\" ],\n                            \"href\": \"/questions/1/choices/4\"\n                        }\n                    ]\n                }\n            ]\n        }\n    ]\n}\n"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "element": "httpTransaction",
+                      "content": [
+                        {
+                          "element": "httpRequest",
+                          "attributes": {
+                            "method": "GET"
+                          },
+                          "content": []
+                        },
+                        {
+                          "element": "httpResponse",
+                          "attributes": {
+                            "statusCode": "200",
+                            "headers": {
+                              "element": "httpHeaders",
+                              "content": [
+                                {
+                                  "element": "member",
+                                  "content": {
+                                    "key": {
+                                      "element": "string",
+                                      "content": "Content-Type"
+                                    },
+                                    "value": {
+                                      "element": "string",
+                                      "content": "application/hal+json"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "content": [
+                            {
+                              "element": "asset",
+                              "meta": {
+                                "classes": [
+                                  "messageBody"
+                                ]
+                              },
+                              "attributes": {
+                                "contentType": "application/hal+json"
+                              },
+                              "content": "{\n    \"_links\": {\n        \"self\": { \"href\": \"/questions\" },\n        \"next\": { \"href\": \"/questions?page=2\" }\n    },\n    \"_embedded\": {\n        \"question\": [\n            {\n                \"_links\": {\n                    \"self\": { \"self\": \"/questions/1\" }\n                },\n                \"_embedded\": {\n                    \"choice\": [\n                        {\n                            \"_links\": {\n                                \"self\": { \"self\": \"/questions/1/choices/1\" }\n                            },\n                            \"choice\": \"Swift\",\n                            \"votes\": 2048\n                        }, {\n                            \"_links\": {\n                                \"self\": { \"self\": \"/questions/1/choices/2\" }\n                            },\n                            \"choice\": \"Python\",\n                            \"votes\": 1024\n                        }, {\n                            \"_links\": {\n                                \"self\": { \"self\": \"/questions/1/choices/3\" }\n                            },\n                            \"choice\": \"Objective-C\",\n                            \"votes\": 512\n                        }, {\n                            \"_links\": {\n                                \"self\": { \"self\": \"/questions/1/choices/4\" }\n                            },\n                            \"choice\": \"Ruby\",\n                            \"votes\": 256\n                        }\n                    ]\n                },\n                \"question\": \"Favourite programming language?\",\n                \"published_at\": \"2014-11-11T08:40:51.620Z\"\n            }\n        ]\n    }\n}\n"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "element": "transition",
+                  "meta": {
+                    "title": "Create a New Question"
+                  },
+                  "attributes": {
+                    "relation": "create"
+                  },
+                  "content": [
+                    {
+                      "element": "copy",
+                      "content": "You may create your own question using this action. It takes a JSON object containing a question and a collection of answers in the form of choices.\n\n+ question (string) - The question\n\n+ choices (array[string]) - A collection of choices.\n\n"
+                    },
+                    {
+                      "element": "httpTransaction",
+                      "content": [
+                        {
+                          "element": "httpRequest",
+                          "attributes": {
+                            "method": "POST",
+                            "headers": {
+                              "element": "httpHeaders",
+                              "content": [
+                                {
+                                  "element": "member",
+                                  "content": {
+                                    "key": {
+                                      "element": "string",
+                                      "content": "Content-Type"
+                                    },
+                                    "value": {
+                                      "element": "string",
+                                      "content": "application/json"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "content": [
+                            {
+                              "element": "asset",
+                              "meta": {
+                                "classes": [
+                                  "messageBody"
+                                ]
+                              },
+                              "attributes": {
+                                "contentType": "application/json"
+                              },
+                              "content": "{\n    \"question\": \"Favourite programming language?\",\n    \"choices\": [\n        \"Swift\",\n        \"Python\",\n        \"Objective-C\",\n        \"Ruby\"\n    ]\n}\n"
+                            }
+                          ]
+                        },
+                        {
+                          "element": "httpResponse",
+                          "attributes": {
+                            "statusCode": "201",
+                            "headers": {
+                              "element": "httpHeaders",
+                              "content": [
+                                {
+                                  "element": "member",
+                                  "content": {
+                                    "key": {
+                                      "element": "string",
+                                      "content": "Content-Type"
+                                    },
+                                    "value": {
+                                      "element": "string",
+                                      "content": "application/vnd.siren+json"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "content": [
+                            {
+                              "element": "asset",
+                              "meta": {
+                                "classes": [
+                                  "messageBody"
+                                ]
+                              },
+                              "attributes": {
+                                "contentType": "application/vnd.siren+json"
+                              },
+                              "content": "{\n    \"actions\": [\n        {\n            \"name\": \"delete\",\n            \"href\": \"/questions/1\",\n            \"method\": \"DELETE\"\n        }\n    ],\n    \"properties\": {\n        \"published_at\": \"2014-11-11T08:40:51.620Z\",\n        \"question\": \"Favourite programming language?\"\n    },\n    \"links\": [\n        {\n            \"rel\": [ \"self\" ],\n            \"href\": \"/questions/1\"\n        }\n    ],\n    \"entities\": [\n        {\n            \"actions\": [\n                {\n                    \"name\": \"vote\",\n                    \"href\": \"/questions/1/choices/1\",\n                    \"method\": \"POST\"\n                }\n            ],\n            \"rel\": [ \"choices\" ],\n            \"properties\": {\n                \"choice\": \"Swift\",\n                \"votes\": 2048\n            },\n            \"links\": [\n                {\n                    \"rel\": [ \"self\" ],\n                    \"href\": \"/questions/1/choices/1\"\n                }\n            ]\n        }, {\n            \"actions\": [\n                {\n                    \"name\": \"vote\",\n                    \"href\": \"/questions/1/choices/2\",\n                    \"method\": \"POST\"\n                }\n            ],\n            \"rel\": [ \"choices\" ],\n            \"properties\": {\n                \"choice\": \"Python\",\n                \"votes\": 1024\n            },\n            \"links\": [\n                {\n                    \"rel\": [ \"self\" ],\n                    \"href\": \"/questions/1/choices/2\"\n                }\n            ]\n        }, {\n            \"actions\": [\n                {\n                    \"name\": \"vote\",\n                    \"href\": \"/questions/1/choices/3\",\n                    \"method\": \"POST\"\n                }\n            ],\n            \"rel\": [ \"choices\" ],\n            \"properties\": {\n                \"choice\": \"Objective-C\",\n                \"votes\": 512\n            },\n            \"links\": [\n                {\n                    \"rel\": [ \"self\" ],\n                    \"href\": \"/questions/1/choices/3\"\n                }\n            ]\n        }, {\n            \"actions\": [\n                {\n                    \"name\": \"vote\",\n                    \"href\": \"/questions/1/choices/4\",\n                    \"method\": \"POST\"\n                }\n            ],\n            \"rel\": [ \"choices\" ],\n            \"properties\": {\n                \"choice\": \"Ruby\",\n                \"votes\": 256\n            },\n            \"links\": [\n                {\n                    \"rel\": [ \"self\" ],\n                    \"href\": \"/questions/1/choices/4\"\n                }\n            ]\n        }\n    ]\n}\n"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "element": "httpTransaction",
+                      "content": [
+                        {
+                          "element": "httpRequest",
+                          "attributes": {
+                            "method": "POST",
+                            "headers": {
+                              "element": "httpHeaders",
+                              "content": [
+                                {
+                                  "element": "member",
+                                  "content": {
+                                    "key": {
+                                      "element": "string",
+                                      "content": "Content-Type"
+                                    },
+                                    "value": {
+                                      "element": "string",
+                                      "content": "application/json"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "content": [
+                            {
+                              "element": "asset",
+                              "meta": {
+                                "classes": [
+                                  "messageBody"
+                                ]
+                              },
+                              "attributes": {
+                                "contentType": "application/json"
+                              },
+                              "content": "{\n    \"question\": \"Favourite programming language?\",\n    \"choices\": [\n        \"Swift\",\n        \"Python\",\n        \"Objective-C\",\n        \"Ruby\"\n    ]\n}\n"
+                            }
+                          ]
+                        },
+                        {
+                          "element": "httpResponse",
+                          "attributes": {
+                            "statusCode": "201",
+                            "headers": {
+                              "element": "httpHeaders",
+                              "content": [
+                                {
+                                  "element": "member",
+                                  "content": {
+                                    "key": {
+                                      "element": "string",
+                                      "content": "Content-Type"
+                                    },
+                                    "value": {
+                                      "element": "string",
+                                      "content": "application/hal+json"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "content": [
+                            {
+                              "element": "asset",
+                              "meta": {
+                                "classes": [
+                                  "messageBody"
+                                ]
+                              },
+                              "attributes": {
+                                "contentType": "application/hal+json"
+                              },
+                              "content": "{\n    \"_links\": {\n        \"self\": { \"href\": \"/questions/1\" }\n    },\n    \"_embedded\": {\n        \"choices\": [\n            {\n                \"_links\": {\n                    \"self\": { \"self\": \"/questions/1/choices/1\" }\n                },\n                \"choice\": \"Swift\",\n                \"votes\": 2048\n            }, {\n                \"_links\": {\n                    \"self\": { \"self\": \"/questions/1/choices/2\" }\n                },\n                \"choice\": \"Python\",\n                \"votes\": 1024\n            }, {\n                \"_links\": {\n                    \"self\": { \"self\": \"/questions/1/choices/3\" }\n                },\n                \"choice\": \"Objective-C\",\n                \"votes\": 512\n            }, {\n                \"_links\": {\n                    \"self\": { \"self\": \"/questions/1/choices/4\" }\n                },\n                \"choice\": \"Ruby\",\n                \"votes\": 256\n            }\n        ]\n    },\n    \"published_at\": \"2014-11-11T08:40:51.620Z\",\n    \"question\": \"Favourite programming language?\"\n}\n"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "element": "category",
+          "meta": {
+            "classes": [
+              "resourceGroup"
+            ],
+            "title": "Question"
+          },
+          "content": [
+            {
+              "element": "copy",
+              "content": "Resources related to questions in the API.\n\n"
+            },
+            {
+              "element": "resource",
+              "meta": {
+                "title": "Question"
+              },
+              "attributes": {
+                "href": "/questions/{question_id}",
+                "hrefVariables": {
+                  "element": "hrefVariables",
+                  "content": [
+                    {
+                      "element": "member",
+                      "meta": {
+                        "description": "ID of the Question in form of an integer"
+                      },
+                      "attributes": {
+                        "typeAttributes": [
+                          "required"
+                        ]
+                      },
+                      "content": {
+                        "key": {
+                          "element": "string",
+                          "content": "question_id"
+                        },
+                        "value": {
+                          "element": "number",
+                          "content": 1
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "content": [
+                {
+                  "element": "copy",
+                  "content": "A Question object has the following attributes:\n\n+ question\n\n+ published_at - An ISO8601 date when the question was published.\n\n+ url\n\n+ choices - An array of Choice objects.\n\n"
+                },
+                {
+                  "element": "transition",
+                  "meta": {
+                    "title": "View a Questions Detail"
+                  },
+                  "attributes": {
+                    "relation": "question"
+                  },
+                  "content": [
+                    {
+                      "element": "httpTransaction",
+                      "content": [
+                        {
+                          "element": "httpRequest",
+                          "attributes": {
+                            "method": "GET"
+                          },
+                          "content": []
+                        },
+                        {
+                          "element": "httpResponse",
+                          "attributes": {
+                            "statusCode": "200",
+                            "headers": {
+                              "element": "httpHeaders",
+                              "content": [
+                                {
+                                  "element": "member",
+                                  "content": {
+                                    "key": {
+                                      "element": "string",
+                                      "content": "Content-Type"
+                                    },
+                                    "value": {
+                                      "element": "string",
+                                      "content": "application/vnd.siren+json"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "content": [
+                            {
+                              "element": "asset",
+                              "meta": {
+                                "classes": [
+                                  "messageBody"
+                                ]
+                              },
+                              "attributes": {
+                                "contentType": "application/vnd.siren+json"
+                              },
+                              "content": "{\n    \"actions\": [\n        {\n            \"name\": \"delete\",\n            \"href\": \"/questions/1\",\n            \"method\": \"DELETE\"\n        }\n    ],\n    \"properties\": {\n        \"published_at\": \"2014-11-11T08:40:51.620Z\",\n        \"question\": \"Favourite programming language?\"\n    },\n    \"links\": [\n        {\n            \"rel\": [ \"self\" ],\n            \"href\": \"/questions/1\"\n        }\n    ],\n    \"entities\": [\n        {\n            \"actions\": [\n                {\n                    \"name\": \"vote\",\n                    \"href\": \"/questions/1/choices/1\",\n                    \"method\": \"POST\"\n                }\n            ],\n            \"rel\": [ \"choices\" ],\n            \"properties\": {\n                \"choice\": \"Swift\",\n                \"votes\": 2048\n            },\n            \"links\": [\n                {\n                    \"rel\": [ \"self\" ],\n                    \"href\": \"/questions/1/choices/1\"\n                }\n            ]\n        }, {\n            \"actions\": [\n                {\n                    \"name\": \"vote\",\n                    \"href\": \"/questions/1/choices/2\",\n                    \"method\": \"POST\"\n                }\n            ],\n            \"rel\": [ \"choices\" ],\n            \"properties\": {\n                \"choice\": \"Python\",\n                \"votes\": 1024\n            },\n            \"links\": [\n                {\n                    \"rel\": [ \"self\" ],\n                    \"href\": \"/questions/1/choices/2\"\n                }\n            ]\n        }, {\n            \"actions\": [\n                {\n                    \"name\": \"vote\",\n                    \"href\": \"/questions/1/choices/3\",\n                    \"method\": \"POST\"\n                }\n            ],\n            \"rel\": [ \"choices\" ],\n            \"properties\": {\n                \"choice\": \"Objective-C\",\n                \"votes\": 512\n            },\n            \"links\": [\n                {\n                    \"rel\": [ \"self\" ],\n                    \"href\": \"/questions/1/choices/3\"\n                }\n            ]\n        }, {\n            \"actions\": [\n                {\n                    \"name\": \"vote\",\n                    \"href\": \"/questions/1/choices/4\",\n                    \"method\": \"POST\"\n                }\n            ],\n            \"rel\": [ \"choices\" ],\n            \"properties\": {\n                \"choice\": \"Ruby\",\n                \"votes\": 256\n            },\n            \"links\": [\n                {\n                    \"rel\": [ \"self\" ],\n                    \"href\": \"/questions/1/choices/4\"\n                }\n            ]\n        }\n    ]\n}\n"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "element": "httpTransaction",
+                      "content": [
+                        {
+                          "element": "httpRequest",
+                          "attributes": {
+                            "method": "GET"
+                          },
+                          "content": []
+                        },
+                        {
+                          "element": "httpResponse",
+                          "attributes": {
+                            "statusCode": "200",
+                            "headers": {
+                              "element": "httpHeaders",
+                              "content": [
+                                {
+                                  "element": "member",
+                                  "content": {
+                                    "key": {
+                                      "element": "string",
+                                      "content": "Content-Type"
+                                    },
+                                    "value": {
+                                      "element": "string",
+                                      "content": "application/hal+json"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "content": [
+                            {
+                              "element": "asset",
+                              "meta": {
+                                "classes": [
+                                  "messageBody"
+                                ]
+                              },
+                              "attributes": {
+                                "contentType": "application/hal+json"
+                              },
+                              "content": "{\n    \"_links\": {\n        \"self\": { \"href\": \"/questions/1\" }\n    },\n    \"_embedded\": {\n        \"choices\": [\n            {\n                \"_links\": {\n                    \"self\": { \"self\": \"/questions/1/choices/1\" }\n                },\n                \"choice\": \"Swift\",\n                \"votes\": 2048\n            }, {\n                \"_links\": {\n                    \"self\": { \"self\": \"/questions/1/choices/2\" }\n                },\n                \"choice\": \"Python\",\n                \"votes\": 1024\n            }, {\n                \"_links\": {\n                    \"self\": { \"self\": \"/questions/1/choices/3\" }\n                },\n                \"choice\": \"Objective-C\",\n                \"votes\": 512\n            }, {\n                \"_links\": {\n                    \"self\": { \"self\": \"/questions/1/choices/4\" }\n                },\n                \"choice\": \"Ruby\",\n                \"votes\": 256\n            }\n        ]\n    },\n    \"published_at\": \"2014-11-11T08:40:51.620Z\",\n    \"question\": \"Favourite programming language?\"\n}\n"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "element": "resource",
+              "meta": {
+                "title": "Choice"
+              },
+              "attributes": {
+                "href": "/questions/{question_id}/choices/{choice_id}",
+                "hrefVariables": {
+                  "element": "hrefVariables",
+                  "content": [
+                    {
+                      "element": "member",
+                      "meta": {
+                        "description": "ID of the Question in form of an integer"
+                      },
+                      "attributes": {
+                        "typeAttributes": [
+                          "required"
+                        ]
+                      },
+                      "content": {
+                        "key": {
+                          "element": "string",
+                          "content": "question_id"
+                        },
+                        "value": {
+                          "element": "number",
+                          "content": 1
+                        }
+                      }
+                    },
+                    {
+                      "element": "member",
+                      "meta": {
+                        "description": "ID of the Choice in form of an integer"
+                      },
+                      "attributes": {
+                        "typeAttributes": [
+                          "required"
+                        ]
+                      },
+                      "content": {
+                        "key": {
+                          "element": "string",
+                          "content": "choice_id"
+                        },
+                        "value": {
+                          "element": "number",
+                          "content": 1
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "content": [
+                {
+                  "element": "transition",
+                  "meta": {
+                    "title": "View a Choice Detail"
+                  },
+                  "attributes": {
+                    "relation": "choice"
+                  },
+                  "content": [
+                    {
+                      "element": "httpTransaction",
+                      "content": [
+                        {
+                          "element": "httpRequest",
+                          "attributes": {
+                            "method": "GET"
+                          },
+                          "content": []
+                        },
+                        {
+                          "element": "httpResponse",
+                          "attributes": {
+                            "statusCode": "200",
+                            "headers": {
+                              "element": "httpHeaders",
+                              "content": [
+                                {
+                                  "element": "member",
+                                  "content": {
+                                    "key": {
+                                      "element": "string",
+                                      "content": "Content-Type"
+                                    },
+                                    "value": {
+                                      "element": "string",
+                                      "content": "application/vnd.siren+json"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "content": [
+                            {
+                              "element": "asset",
+                              "meta": {
+                                "classes": [
+                                  "messageBody"
+                                ]
+                              },
+                              "attributes": {
+                                "contentType": "application/vnd.siren+json"
+                              },
+                              "content": "{\n    \"actions\": [\n        {\n            \"name\": \"vote\",\n            \"href\": \"/questions/1/choices/1\",\n            \"method\": \"POST\"\n        }\n    ],\n    \"rel\": [ \"choice\" ],\n    \"properties\": {\n        \"choice\": \"Swift\",\n        \"votes\": 2048\n    },\n    \"links\": [\n        {\n            \"rel\": [ \"self\" ],\n            \"href\": \"/questions/1/choices/1\"\n        }\n    ]\n}\n"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "element": "httpTransaction",
+                      "content": [
+                        {
+                          "element": "httpRequest",
+                          "attributes": {
+                            "method": "GET"
+                          },
+                          "content": []
+                        },
+                        {
+                          "element": "httpResponse",
+                          "attributes": {
+                            "statusCode": "200",
+                            "headers": {
+                              "element": "httpHeaders",
+                              "content": [
+                                {
+                                  "element": "member",
+                                  "content": {
+                                    "key": {
+                                      "element": "string",
+                                      "content": "Content-Type"
+                                    },
+                                    "value": {
+                                      "element": "string",
+                                      "content": "application/hal+json"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "content": [
+                            {
+                              "element": "asset",
+                              "meta": {
+                                "classes": [
+                                  "messageBody"
+                                ]
+                              },
+                              "attributes": {
+                                "contentType": "application/hal+json"
+                              },
+                              "content": "{\n    \"_links\": {\n        \"self\": { \"href\": \"/questions/1/choices/1\" }\n    },\n    \"choice\": \"Swift\",\n    \"votes\": 2048\n}\n"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "element": "transition",
+                  "meta": {
+                    "title": "Vote on a Choice"
+                  },
+                  "attributes": {
+                    "relation": "vote"
+                  },
+                  "content": [
+                    {
+                      "element": "copy",
+                      "content": "This action allows you to vote on a question's choice.\n\n"
+                    },
+                    {
+                      "element": "httpTransaction",
+                      "content": [
+                        {
+                          "element": "httpRequest",
+                          "attributes": {
+                            "method": "POST"
+                          },
+                          "content": []
+                        },
+                        {
+                          "element": "httpResponse",
+                          "attributes": {
+                            "statusCode": "201",
+                            "headers": {
+                              "element": "httpHeaders",
+                              "content": [
+                                {
+                                  "element": "member",
+                                  "content": {
+                                    "key": {
+                                      "element": "string",
+                                      "content": "Content-Type"
+                                    },
+                                    "value": {
+                                      "element": "string",
+                                      "content": "application/vnd.siren+json"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "content": [
+                            {
+                              "element": "asset",
+                              "meta": {
+                                "classes": [
+                                  "messageBody"
+                                ]
+                              },
+                              "attributes": {
+                                "contentType": "application/vnd.siren+json"
+                              },
+                              "content": "{\n    \"actions\": [\n        {\n            \"name\": \"vote\",\n            \"href\": \"/questions/1/choices/1\",\n            \"method\": \"POST\"\n        }\n    ],\n    \"rel\": [ \"choice\" ],\n    \"properties\": {\n        \"choice\": \"Swift\",\n        \"votes\": 2049\n    },\n    \"links\": [\n        {\n            \"rel\": [ \"self\" ],\n            \"href\": \"/questions/1/choices/1\"\n        }\n    ]\n}\n"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "element": "httpTransaction",
+                      "content": [
+                        {
+                          "element": "httpRequest",
+                          "attributes": {
+                            "method": "POST"
+                          },
+                          "content": []
+                        },
+                        {
+                          "element": "httpResponse",
+                          "attributes": {
+                            "statusCode": "201",
+                            "headers": {
+                              "element": "httpHeaders",
+                              "content": [
+                                {
+                                  "element": "member",
+                                  "content": {
+                                    "key": {
+                                      "element": "string",
+                                      "content": "Content-Type"
+                                    },
+                                    "value": {
+                                      "element": "string",
+                                      "content": "application/hal+json"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "content": [
+                            {
+                              "element": "asset",
+                              "meta": {
+                                "classes": [
+                                  "messageBody"
+                                ]
+                              },
+                              "attributes": {
+                                "contentType": "application/hal+json"
+                              },
+                              "content": "{\n    \"_links\": {\n        \"self\": \"/questions/1/choices/1\"\n    },\n    \"choice\": \"Swift\",\n    \"votes\": 2049\n}\n"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

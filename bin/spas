@@ -1,11 +1,18 @@
 #!/usr/bin/env php
 <?php
 
-use Hmaus\Spas\TestCommand;
-use Symfony\Component\Console\Application;
+use Hmaus\Spas\SpasApplication;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$application = new Application('Spas', '0.1.0');
-$application->add(new TestCommand());
-$application->run();
+define('APP_NAME', 'spas');
+define('APP_VERSION', '0.1.0');
+
+// todo look at events for this purpose: http://symfony.com/doc/current/components/console/events.html
+$output = new ConsoleOutput();
+$output->writeln(sprintf('Spas %s by Hendrik Maus and contributors.', APP_VERSION));
+$output->writeln('');
+
+$application = new SpasApplication(APP_NAME, APP_VERSION);
+$application->run(null, $output);

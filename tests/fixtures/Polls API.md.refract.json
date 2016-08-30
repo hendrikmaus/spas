@@ -1,0 +1,579 @@
+{
+  "element": "parseResult",
+  "content": [
+    {
+      "element": "category",
+      "meta": {
+        "classes": [
+          "api"
+        ],
+        "title": "Polls"
+      },
+      "attributes": {
+        "meta": [
+          {
+            "element": "member",
+            "meta": {
+              "classes": [
+                "user"
+              ]
+            },
+            "content": {
+              "key": {
+                "element": "string",
+                "content": "FORMAT"
+              },
+              "value": {
+                "element": "string",
+                "content": "1A"
+              }
+            }
+          },
+          {
+            "element": "member",
+            "meta": {
+              "classes": [
+                "user"
+              ]
+            },
+            "content": {
+              "key": {
+                "element": "string",
+                "content": "HOST"
+              },
+              "value": {
+                "element": "string",
+                "content": "http://polls.apiblueprint.org/"
+              }
+            }
+          }
+        ]
+      },
+      "content": [
+        {
+          "element": "copy",
+          "content": "Polls is a simple API allowing consumers to view polls and vote in them. You can view this documentation over at [Apiary](http://docs.pollsapi.apiary.io).\n\n"
+        },
+        {
+          "element": "category",
+          "meta": {
+            "classes": [
+              "resourceGroup"
+            ],
+            "title": ""
+          },
+          "content": [
+            {
+              "element": "resource",
+              "meta": {
+                "title": "Polls API Root"
+              },
+              "attributes": {
+                "href": "/"
+              },
+              "content": [
+                {
+                  "element": "copy",
+                  "content": "This resource does not have any attributes. Instead it offers the initial API affordances in the form of the links in the JSON body.\n\nIt is recommend to follow the “url” link values, [Link](https://tools.ietf.org/html/rfc5988) or Location headers where applicable to retrieve resources. Instead of constructing your own URLs, to keep your client decoupled from implementation details.\n\n"
+                },
+                {
+                  "element": "transition",
+                  "meta": {
+                    "title": "Retrieve the Entry Point"
+                  },
+                  "content": [
+                    {
+                      "element": "httpTransaction",
+                      "content": [
+                        {
+                          "element": "httpRequest",
+                          "attributes": {
+                            "method": "GET"
+                          },
+                          "content": []
+                        },
+                        {
+                          "element": "httpResponse",
+                          "attributes": {
+                            "statusCode": "200",
+                            "headers": {
+                              "element": "httpHeaders",
+                              "content": [
+                                {
+                                  "element": "member",
+                                  "content": {
+                                    "key": {
+                                      "element": "string",
+                                      "content": "Content-Type"
+                                    },
+                                    "value": {
+                                      "element": "string",
+                                      "content": "application/json"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "content": [
+                            {
+                              "element": "asset",
+                              "meta": {
+                                "classes": [
+                                  "messageBody"
+                                ]
+                              },
+                              "attributes": {
+                                "contentType": "application/json"
+                              },
+                              "content": "{\n    \"questions_url\": \"/questions\"\n}\n"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "element": "category",
+          "meta": {
+            "classes": [
+              "resourceGroup"
+            ],
+            "title": "Question"
+          },
+          "content": [
+            {
+              "element": "copy",
+              "content": "Resources related to questions in the API.\n\n"
+            },
+            {
+              "element": "resource",
+              "meta": {
+                "title": "Question"
+              },
+              "attributes": {
+                "href": "/questions/{question_id}",
+                "hrefVariables": {
+                  "element": "hrefVariables",
+                  "content": [
+                    {
+                      "element": "member",
+                      "meta": {
+                        "description": "ID of the Question in form of an integer"
+                      },
+                      "attributes": {
+                        "typeAttributes": [
+                          "required"
+                        ]
+                      },
+                      "content": {
+                        "key": {
+                          "element": "string",
+                          "content": "question_id"
+                        },
+                        "value": {
+                          "element": "number",
+                          "content": 1
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "content": [
+                {
+                  "element": "copy",
+                  "content": "A Question object has the following attributes:\n\n+ question\n\n+ published_at - An ISO8601 date when the question was published.\n\n+ url\n\n+ choices - An array of Choice objects.\n\n"
+                },
+                {
+                  "element": "transition",
+                  "meta": {
+                    "title": "View a Questions Detail"
+                  },
+                  "content": [
+                    {
+                      "element": "httpTransaction",
+                      "content": [
+                        {
+                          "element": "httpRequest",
+                          "attributes": {
+                            "method": "GET"
+                          },
+                          "content": []
+                        },
+                        {
+                          "element": "httpResponse",
+                          "attributes": {
+                            "statusCode": "200",
+                            "headers": {
+                              "element": "httpHeaders",
+                              "content": [
+                                {
+                                  "element": "member",
+                                  "content": {
+                                    "key": {
+                                      "element": "string",
+                                      "content": "Content-Type"
+                                    },
+                                    "value": {
+                                      "element": "string",
+                                      "content": "application/json"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "content": [
+                            {
+                              "element": "asset",
+                              "meta": {
+                                "classes": [
+                                  "messageBody"
+                                ]
+                              },
+                              "attributes": {
+                                "contentType": "application/json"
+                              },
+                              "content": "{\n    \"question\": \"Favourite programming language?\",\n    \"published_at\": \"2014-11-11T08:40:51.620Z\",\n    \"url\": \"/questions/1\",\n    \"choices\": [\n        {\n            \"choice\": \"Swift\",\n            \"url\": \"/questions/1/choices/1\",\n            \"votes\": 2048\n        }, {\n            \"choice\": \"Python\",\n            \"url\": \"/questions/1/choices/2\",\n            \"votes\": 1024\n        }, {\n            \"choice\": \"Objective-C\",\n            \"url\": \"/questions/1/choices/3\",\n            \"votes\": 512\n        }, {\n            \"choice\": \"Ruby\",\n            \"url\": \"/questions/1/choices/4\",\n            \"votes\": 256\n        }\n    ]\n}\n"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "element": "resource",
+              "meta": {
+                "title": "Choice"
+              },
+              "attributes": {
+                "href": "/questions/{question_id}/choices/{choice_id}",
+                "hrefVariables": {
+                  "element": "hrefVariables",
+                  "content": [
+                    {
+                      "element": "member",
+                      "meta": {
+                        "description": "ID of the Question in form of an integer"
+                      },
+                      "attributes": {
+                        "typeAttributes": [
+                          "required"
+                        ]
+                      },
+                      "content": {
+                        "key": {
+                          "element": "string",
+                          "content": "question_id"
+                        },
+                        "value": {
+                          "element": "number",
+                          "content": 1
+                        }
+                      }
+                    },
+                    {
+                      "element": "member",
+                      "meta": {
+                        "description": "ID of the Choice in form of an integer"
+                      },
+                      "attributes": {
+                        "typeAttributes": [
+                          "required"
+                        ]
+                      },
+                      "content": {
+                        "key": {
+                          "element": "string",
+                          "content": "choice_id"
+                        },
+                        "value": {
+                          "element": "number",
+                          "content": 1
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "content": [
+                {
+                  "element": "transition",
+                  "meta": {
+                    "title": "Vote on a Choice"
+                  },
+                  "content": [
+                    {
+                      "element": "copy",
+                      "content": "This action allows you to vote on a question's choice.\n\n"
+                    },
+                    {
+                      "element": "httpTransaction",
+                      "content": [
+                        {
+                          "element": "httpRequest",
+                          "attributes": {
+                            "method": "POST"
+                          },
+                          "content": []
+                        },
+                        {
+                          "element": "httpResponse",
+                          "attributes": {
+                            "statusCode": "201",
+                            "headers": {
+                              "element": "httpHeaders",
+                              "content": [
+                                {
+                                  "element": "member",
+                                  "content": {
+                                    "key": {
+                                      "element": "string",
+                                      "content": "Location"
+                                    },
+                                    "value": {
+                                      "element": "string",
+                                      "content": "/questions/1"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "content": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "element": "resource",
+              "meta": {
+                "title": "Questions Collection"
+              },
+              "attributes": {
+                "href": "/questions{?page}",
+                "hrefVariables": {
+                  "element": "hrefVariables",
+                  "content": [
+                    {
+                      "element": "member",
+                      "meta": {
+                        "description": "The page of questions to return"
+                      },
+                      "attributes": {
+                        "typeAttributes": [
+                          "optional"
+                        ]
+                      },
+                      "content": {
+                        "key": {
+                          "element": "string",
+                          "content": "page"
+                        },
+                        "value": {
+                          "element": "number",
+                          "content": 1
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "content": [
+                {
+                  "element": "transition",
+                  "meta": {
+                    "title": "List All Questions"
+                  },
+                  "content": [
+                    {
+                      "element": "httpTransaction",
+                      "content": [
+                        {
+                          "element": "httpRequest",
+                          "attributes": {
+                            "method": "GET"
+                          },
+                          "content": []
+                        },
+                        {
+                          "element": "httpResponse",
+                          "attributes": {
+                            "statusCode": "200",
+                            "headers": {
+                              "element": "httpHeaders",
+                              "content": [
+                                {
+                                  "element": "member",
+                                  "content": {
+                                    "key": {
+                                      "element": "string",
+                                      "content": "Content-Type"
+                                    },
+                                    "value": {
+                                      "element": "string",
+                                      "content": "application/json"
+                                    }
+                                  }
+                                },
+                                {
+                                  "element": "member",
+                                  "content": {
+                                    "key": {
+                                      "element": "string",
+                                      "content": "Link"
+                                    },
+                                    "value": {
+                                      "element": "string",
+                                      "content": "</questions?page=2>; rel=\"next\""
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "content": [
+                            {
+                              "element": "asset",
+                              "meta": {
+                                "classes": [
+                                  "messageBody"
+                                ]
+                              },
+                              "attributes": {
+                                "contentType": "application/json"
+                              },
+                              "content": "[\n    {\n        \"question\": \"Favourite programming language?\",\n        \"published_at\": \"2014-11-11T08:40:51.620Z\",\n        \"url\": \"/questions/1\",\n        \"choices\": [\n            {\n                \"choice\": \"Swift\",\n                \"url\": \"/questions/1/choices/1\",\n                \"votes\": 2048\n            }, {\n                \"choice\": \"Python\",\n                \"url\": \"/questions/1/choices/2\",\n                \"votes\": 1024\n            }, {\n                \"choice\": \"Objective-C\",\n                \"url\": \"/questions/1/choices/3\",\n                \"votes\": 512\n            }, {\n                \"choice\": \"Ruby\",\n                \"url\": \"/questions/1/choices/4\",\n                \"votes\": 256\n            }\n        ]\n    }\n]\n"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "element": "transition",
+                  "meta": {
+                    "title": "Create a New Question"
+                  },
+                  "content": [
+                    {
+                      "element": "copy",
+                      "content": "You may create your own question using this action. It takes a JSON object containing a question and a collection of answers in the form of choices.\n\n+ question (string) - The question\n\n+ choices (array[string]) - A collection of choices.\n\n"
+                    },
+                    {
+                      "element": "httpTransaction",
+                      "content": [
+                        {
+                          "element": "httpRequest",
+                          "attributes": {
+                            "method": "POST",
+                            "headers": {
+                              "element": "httpHeaders",
+                              "content": [
+                                {
+                                  "element": "member",
+                                  "content": {
+                                    "key": {
+                                      "element": "string",
+                                      "content": "Content-Type"
+                                    },
+                                    "value": {
+                                      "element": "string",
+                                      "content": "application/json"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "content": [
+                            {
+                              "element": "asset",
+                              "meta": {
+                                "classes": [
+                                  "messageBody"
+                                ]
+                              },
+                              "attributes": {
+                                "contentType": "application/json"
+                              },
+                              "content": "{\n    \"question\": \"Favourite programming language?\",\n    \"choices\": [\n        \"Swift\",\n        \"Python\",\n        \"Objective-C\",\n        \"Ruby\"\n    ]\n}\n"
+                            }
+                          ]
+                        },
+                        {
+                          "element": "httpResponse",
+                          "attributes": {
+                            "statusCode": "201",
+                            "headers": {
+                              "element": "httpHeaders",
+                              "content": [
+                                {
+                                  "element": "member",
+                                  "content": {
+                                    "key": {
+                                      "element": "string",
+                                      "content": "Content-Type"
+                                    },
+                                    "value": {
+                                      "element": "string",
+                                      "content": "application/json"
+                                    }
+                                  }
+                                },
+                                {
+                                  "element": "member",
+                                  "content": {
+                                    "key": {
+                                      "element": "string",
+                                      "content": "Location"
+                                    },
+                                    "value": {
+                                      "element": "string",
+                                      "content": "/questions/2"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "content": [
+                            {
+                              "element": "asset",
+                              "meta": {
+                                "classes": [
+                                  "messageBody"
+                                ]
+                              },
+                              "attributes": {
+                                "contentType": "application/json"
+                              },
+                              "content": "{\n    \"question\": \"Favourite programming language?\",\n    \"published_at\": \"2014-11-11T08:40:51.620Z\",\n    \"url\": \"/questions/2\",\n    \"choices\": [\n        {\n            \"choice\": \"Swift\",\n            \"url\": \"/questions/2/choices/1\",\n            \"votes\": 0\n        }, {\n            \"choice\": \"Python\",\n            \"url\": \"/questions/2/choices/2\",\n            \"votes\": 0\n        }, {\n            \"choice\": \"Objective-C\",\n            \"url\": \"/questions/2/choices/3\",\n            \"votes\": 0\n        }, {\n            \"choice\": \"Ruby\",\n            \"url\": \"/questions/2/choices/4\",\n            \"votes\": 0\n        }\n    ]\n}\n"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

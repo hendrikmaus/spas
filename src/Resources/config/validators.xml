@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://symfony.com/schema/dic/services"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <service class="Hmaus\Spas\Validator\ValidatorService" id="hmaus.spas.validator">
+            <argument type="service" id="hmaus.spas.logger"/>
+        </service>
+
+        <service class="Hmaus\Spas\Validator\TextPlain" id="hmaus.spas.validator.text_plain">
+            <tag name="hmaus.spas.tag.validator"/>
+        </service>
+
+        <service class="Hmaus\Spas\Validator\NoContent" id="hmaus.spas.validator.no_content">
+            <tag name="hmaus.spas.tag.validator"/>
+        </service>
+
+        <service class="Hmaus\Spas\Validator\JsonSchema" id="hmaus.spas.validator.json_schema">
+            <tag name="hmaus.spas.tag.validator"/>
+        </service>
+
+    </services>
+</container>

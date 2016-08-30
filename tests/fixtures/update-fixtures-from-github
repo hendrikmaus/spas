@@ -1,0 +1,53 @@
+#!/usr/bin/env php
+<?php
+/**
+ * A script to download all the example apib files from the official
+ * API Blueprint repo and turn them into both refract drafter.
+ */
+
+require_once __DIR__ . '/../../vendor/autoload.php';
+
+if (!class_exists('\Hmaus\DrafterPhp\Drafter')) {
+    print "Please install drafter-php `composer require hmaus/drafter-php` and install drafter itself to `vendor/bin/drafter`\n";
+    exit(1);
+}
+
+$drafter = new \Hmaus\DrafterPhp\Drafter(__DIR__ . '/../../vendor/bin/drafter');
+$drafter->format('json');
+
+echo "Download file list from:\n";
+echo "  https://api.github.com/repos/apiaryio/api-blueprint/contents/examples\n";
+$fileList = json_decode(download('https://api.github.com/repos/apiaryio/api-blueprint/contents/examples'), true);
+
+foreach ($fileList as $file) {
+    echo "Download file: " . $file['download_url'] . "\n";
+    $contents = download($file['download_url']);
+    $path = __DIR__ . '/' . $file['name'];
+    file_put_contents($path, $contents);
+
+    $drafter->input($path);
+
+    echo "Generating refract parse result ...\n";
+    $drafter
+        ->type('refract')
+        ->output($path . '.refract.json')
+        ->run();
+}
+
+echo "Done\n";
+
+function download($url) {
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, ["User-Agent: spas"]);
+    $resp = curl_exec($ch);
+
+    if(!$resp) {
+        die('Error: "' . curl_error($ch) . '" - Code: ' . curl_errno($ch));
+    }
+    curl_close($ch);
+
+    return $resp;
+}
