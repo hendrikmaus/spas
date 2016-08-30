@@ -43,6 +43,9 @@
       "Hmaus\\Spas\\Tests\\": "tests"
     }
   },
+  "bin": [
+    "bin/spas"
+  ],
   "config": {
     "sort-packages": true
   },
