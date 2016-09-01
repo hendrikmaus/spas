@@ -15,7 +15,6 @@
     "guzzlehttp/guzzle": "^6.2",
     "hmaus/reynaldo": "^0.1.0",
     "hmaus/spas-parser": "^0.1.0",
-    "hmaus/spas-parser-apib": "^0.1.0",
     "jonnyw/php-phantomjs": "^4.5",
     "justinrainbow/json-schema": "^2.0",
     "monolog/monolog": "^1.21",
