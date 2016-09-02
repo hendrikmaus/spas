@@ -18,12 +18,12 @@
     "jonnyw/php-phantomjs": "^4.5",
     "justinrainbow/json-schema": "^2.0",
     "monolog/monolog": "^1.21",
-    "symfony/config": "^2.0|^3.1",
-    "symfony/console": "^2.0|^3.1",
-    "symfony/dependency-injection": "^2.0|^3.1",
-    "symfony/event-dispatcher": "^2.0|^3.1",
-    "symfony/filesystem": "^2.0|^3.1",
-    "symfony/http-foundation": "^2.0|^3.1",
+    "symfony/config": "^3.1",
+    "symfony/console": "^3.1",
+    "symfony/dependency-injection": "^3.1",
+    "symfony/event-dispatcher": "^3.1",
+    "symfony/filesystem": "^3.1",
+    "symfony/http-foundation": "^3.1",
     "symfony/monolog-bridge": "^3.1"
   },
   "require-dev": {
