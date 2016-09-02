@@ -4,7 +4,7 @@ namespace Hmaus\Spas\Request;
 
 use GuzzleHttp\Client;
 use Hmaus\SpasParser\ParsedRequest;
-use Symfony\Bridge\Monolog\Logger;
+use Psr\Log\LoggerInterface;
 
 class HttpClient
 {
@@ -18,7 +18,7 @@ class HttpClient
      */
     private $logger;
 
-    public function __construct(Client $httpClient, Logger $logger)
+    public function __construct(Client $httpClient, LoggerInterface $logger)
     {
         $this->httpClient = $httpClient;
         $this->logger = $logger;
@@ -44,6 +44,8 @@ class HttpClient
     private function computeGuzzleOptions(ParsedRequest $request)
     {
         $options = [];
+        $options['connect_timeout'] = 10;
+        $options['timeout'] = 10;
         $options['headers'] = [];
 
         foreach ($request->getHeaders()->all() as $headerName => $headerValue) {

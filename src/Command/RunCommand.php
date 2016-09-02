@@ -59,7 +59,14 @@ class RunCommand extends Command
                 'x',
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
                 'Path to hook file(s)'
-            );
+            )
+            ->addOption(
+                'filter',
+                'f',
+                InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+                'Only run tests listed using filter option'
+            )
+        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

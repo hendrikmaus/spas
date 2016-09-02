@@ -15,7 +15,15 @@ use JsonSchema\Validator as JsonSchemaValidator;
 
 class JsonSchema implements Validator
 {
+    /**
+     * @var bool
+     */
     private $valid;
+
+    /**
+     * @var ValidationError[]
+     */
+    private $errors = [];
 
     public function validate(ParsedRequest $request, Response $response)
     {
@@ -35,6 +43,15 @@ class JsonSchema implements Validator
         );
 
         $this->valid = $schemaValidator->isValid();
+
+        if (!$this->valid) {
+            foreach ($schemaValidator->getErrors() as $schemaError) {
+                $error = new ValidationError();
+                $error->message = $schemaError['message'];
+                $error->property = $schemaError['property'];
+                $this->errors[] = $error;
+            }
+        }
     }
 
     public function isValid()
@@ -42,8 +59,18 @@ class JsonSchema implements Validator
         return $this->valid;
     }
 
-    public function getName()
+    public function getId()
     {
         return 'json_schema';
+    }
+
+    public function getName()
+    {
+        return 'JSON Schema Validator';
+    }
+
+    public function getErrors()
+    {
+        return $this->errors;
     }
 }

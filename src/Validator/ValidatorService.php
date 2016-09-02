@@ -11,6 +11,7 @@ namespace Hmaus\Spas\Validator;
 
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Hmaus\SpasParser\ParsedRequest;
+use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Monolog\Logger;
 
 class ValidatorService
@@ -26,11 +27,11 @@ class ValidatorService
     private $validators = [];
 
     /**
-     * @var array
+     * @var Validator[]
      */
     private $report = [];
 
-    public function __construct(Logger $logger)
+    public function __construct(LoggerInterface $logger)
     {
         $this->logger = $logger;
     }
@@ -47,7 +48,7 @@ class ValidatorService
         foreach ($this->validators as $validator) {
             $validator->validate($request, $response);
             $response->getBody()->rewind(); // to be able to retrieve the body again and again
-            $this->report[$validator->getName()] = $validator->isValid();
+            $this->report[$validator->getId()] = $validator;
         }
 
         // todo add header validator
@@ -62,8 +63,10 @@ class ValidatorService
      */
     public function isValid(): bool
     {
-        foreach ($this->report as $result) {
-            if (!$result) return false;
+        foreach ($this->report as $validator) {
+            if (!$validator->isValid()) {
+                return false;
+            }
         }
 
         return true;
@@ -88,7 +91,7 @@ class ValidatorService
     }
 
     /**
-     * @return array
+     * @return Validator[]
      */
     public function getReport()
     {

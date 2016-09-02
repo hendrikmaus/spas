@@ -11,10 +11,29 @@ namespace Hmaus\Spas\Validator;
 
 use GuzzleHttp\Psr7\Response;
 use Hmaus\SpasParser\ParsedRequest;
+use SebastianBergmann\Diff\Differ;
 
 class TextPlain implements Validator
 {
+    /**
+     * @var bool
+     */
     private $valid;
+
+    /**
+     * @var ValidationError[]
+     */
+    private $errors = [];
+
+    /**
+     * @var Differ
+     */
+    private $differ;
+
+    public function __construct()
+    {
+        $this->differ = new Differ("\n--- Original\n+++ New\n", false);
+    }
 
     public function validate(ParsedRequest $request, Response $response)
     {
@@ -29,6 +48,18 @@ class TextPlain implements Validator
 
         if ($isTextPlain) {
             $this->valid = $response->getBody()->getContents() === $request->getResponse()->getBody();
+
+            if (!$this->valid) {
+                $error = new ValidationError();
+                $error->property = 'messageBody';
+                $error->message = $this->differ->diff(
+                    $response->getBody()->getContents(),
+                    $request->getResponse()->getBody()
+                );
+                $this->errors[] = $error;
+            }
+
+            return;
         }
 
         $this->valid = true;
@@ -39,8 +70,18 @@ class TextPlain implements Validator
         return $this->valid;
     }
 
+    public function getId()
+    {
+        return 'text_plain';
+    }
+
     public function getName()
     {
-        return 'text/plain';
+        return 'Plain Text Validator';
+    }
+
+    public function getErrors()
+    {
+        return $this->errors;
     }
 }

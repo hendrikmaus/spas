@@ -35,8 +35,22 @@ class NoContent implements Validator
         return $this->valid;
     }
 
-    public function getName()
+    public function getId()
     {
         return 'no_content';
+    }
+
+    public function getName()
+    {
+        return 'No Content Validator';
+    }
+
+    public function getErrors()
+    {
+        $error = new ValidationError();
+        $error->message = 'Response is not empty';
+        $error->property = 'messageBody';
+
+        return [$error];
     }
 }
