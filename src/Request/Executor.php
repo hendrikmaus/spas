@@ -6,7 +6,7 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\UriTemplate;
 use Hmaus\Spas\Event\HttpTransaction;
 use Hmaus\Spas\Json\JsonIndenter;
-use Hmaus\Spas\Validator\ValidatorService;
+use Hmaus\Spas\Validation\ValidatorService;
 use Hmaus\SpasParser\ParsedRequest;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Monolog\Logger;

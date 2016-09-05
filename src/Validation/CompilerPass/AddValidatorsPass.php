@@ -1,6 +1,6 @@
 <?php
 
-namespace Hmaus\Spas\Validator\CompilerPass;
+namespace Hmaus\Spas\Validation\CompilerPass;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

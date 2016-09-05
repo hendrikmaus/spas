@@ -2,7 +2,7 @@
 
 namespace Hmaus\Spas;
 
-use Hmaus\Spas\Validator\CompilerPass\AddValidatorsPass;
+use Hmaus\Spas\Validation\CompilerPass\AddValidatorsPass;
 use Psr\Log\LogLevel;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Console\Application;

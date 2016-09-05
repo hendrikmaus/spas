@@ -75,7 +75,7 @@ class RunCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $inputPath = $input->getOption('input');
+        $inputPath = $input->getOption('file');
 
         if (!$this->container->get('hmaus.spas.filesystem')->exists($inputPath)) {
             throw new InvalidOptionException(
