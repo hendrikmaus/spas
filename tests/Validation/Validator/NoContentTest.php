@@ -101,7 +101,7 @@ class NoContentTest extends \PHPUnit_Framework_TestCase
         $this
             ->response
             ->getReasonPhrase()
-            ->willReturn('something')
+            ->willReturn('No Content')
             ->shouldBeCalledTimes(1);
 
         $this

@@ -15,7 +15,7 @@ class NoContent implements Validator
     {
         $isNoContentResponse = $response->getReasonPhrase() === 'No Content';
 
-        if ($isNoContentResponse) {
+        if (!$isNoContentResponse) {
             $this->valid = true;
 
             return;
