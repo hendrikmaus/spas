@@ -1,26 +1,23 @@
 <?php
-/**
- * @author    Hendrik Maus <aidentailor@gmail.com>
- * @since     2016-08-05
- * @copyright 2016 (c) Hendrik Maus
- * @license   All rights reserved.
- * @package   spas
- */
 
 namespace Hmaus\Spas;
 
-use Hmaus\Spas\Validator\AddValidatorsPass;
+use Hmaus\Spas\Validator\CompilerPass\AddValidatorsPass;
 use Psr\Log\LogLevel;
-use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
-use Symfony\Bridge\Monolog\Logger;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Logger\ConsoleLogger;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 
+/**
+ * @codeCoverageIgnore
+ */
 class SpasApplication extends Application
 {
     /**
@@ -54,11 +51,25 @@ class SpasApplication extends Application
 
     public function run(InputInterface $input = null, OutputInterface $output = null)
     {
-        $logger = new ConsoleLogger($output, [
-            LogLevel::NOTICE => OutputInterface::VERBOSITY_NORMAL,
-            LogLevel::INFO => OutputInterface::VERBOSITY_NORMAL,
-        ]);
+        if (null === $input) {
+            $input = new ArgvInput();
+        }
+
+        if (null === $output) {
+            $output = new ConsoleOutput();
+        }
+
+        $logger = new ConsoleLogger(
+            $output,
+            [
+                LogLevel::NOTICE => OutputInterface::VERBOSITY_NORMAL,
+                LogLevel::INFO => OutputInterface::VERBOSITY_NORMAL,
+            ]
+        );
         $this->container->set('hmaus.spas.logger', $logger);
+
+        $io = new SymfonyStyle($input, $output);
+        $this->container->set('hmaus.spas.io', $io);
 
         // make sure to compile the container so compiler passes run
         $this->container->compile();

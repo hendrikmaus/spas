@@ -1,11 +1,4 @@
 <?php
-/**
- * @author    Hendrik Maus <aidentailor@gmail.com>
- * @since     2016-08-19
- * @copyright 2016 (c) Hendrik Maus
- * @license   All rights reserved.
- * @package   spas
- */
 
 namespace Hmaus\Spas\Event;
 

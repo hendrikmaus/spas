@@ -1,15 +1,10 @@
 <?php
-/**
- * @author    Hendrik Maus <aidentailor@gmail.com>
- * @since     2016-08-14
- * @copyright 2016 (c) Hendrik Maus
- * @license   All rights reserved.
- * @package   spas
- */
 
-namespace Hmaus\Spas\Validator;
+namespace Hmaus\Spas\Validation\Validator;
 
 use GuzzleHttp\Psr7\Response;
+use Hmaus\Spas\Validation\ValidationError;
+use Hmaus\Spas\Validation\Validator;
 use Hmaus\SpasParser\ParsedRequest;
 use JsonSchema\Validator as JsonSchemaValidator;
 
@@ -25,6 +20,16 @@ class JsonSchema implements Validator
      */
     private $errors = [];
 
+    /**
+     * @var JsonSchemaValidator
+     */
+    private $jsonSchemaValidator;
+
+    public function __construct(JsonSchemaValidator $jsonSchemaValidator)
+    {
+        $this->jsonSchemaValidator = $jsonSchemaValidator;
+    }
+
     public function validate(ParsedRequest $request, Response $response)
     {
         $hasSchema = $request->getResponse()->getSchema();
@@ -34,18 +39,15 @@ class JsonSchema implements Validator
             return;
         }
 
-        $schemaValidator = new JsonSchemaValidator();
-
-        // todo json checking ftw
-        $schemaValidator->check(
+        $this->jsonSchemaValidator->check(
             json_decode($response->getBody()->getContents()),
             json_decode($request->getResponse()->getSchema())
         );
 
-        $this->valid = $schemaValidator->isValid();
+        $this->valid = $this->jsonSchemaValidator->isValid();
 
         if (!$this->valid) {
-            foreach ($schemaValidator->getErrors() as $schemaError) {
+            foreach ($this->jsonSchemaValidator->getErrors() as $schemaError) {
                 $error = new ValidationError();
                 $error->message = $schemaError['message'];
                 $error->property = $schemaError['property'];

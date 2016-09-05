@@ -1,15 +1,10 @@
 <?php
-/**
- * @author    Hendrik Maus <aidentailor@gmail.com>
- * @since     2016-08-14
- * @copyright 2016 (c) Hendrik Maus
- * @license   All rights reserved.
- * @package   spas
- */
 
-namespace Hmaus\Spas\Validator;
+namespace Hmaus\Spas\Validation\Validator;
 
 use GuzzleHttp\Psr7\Response;
+use Hmaus\Spas\Validation\ValidationError;
+use Hmaus\Spas\Validation\Validator;
 use Hmaus\SpasParser\ParsedRequest;
 
 class NoContent implements Validator
@@ -19,15 +14,16 @@ class NoContent implements Validator
     public function validate(ParsedRequest $request, Response $response)
     {
         $isNoContentResponse = $response->getReasonPhrase() === 'No Content';
-        $expectedResponseBodyEmpty = !$request->getResponse()->getBody();
-        $actualResponseBodyEmpty = !$response->getBody()->getContents();
 
-        if (!$isNoContentResponse) {
+        if ($isNoContentResponse) {
             $this->valid = true;
+
             return;
         }
 
-        $this->valid = $expectedResponseBodyEmpty && $actualResponseBodyEmpty;
+        $this->valid = (
+            !$request->getResponse()->getBody() && !$response->getBody()->getContents()
+        );
     }
 
     public function isValid()
@@ -47,10 +43,15 @@ class NoContent implements Validator
 
     public function getErrors()
     {
-        $error = new ValidationError();
-        $error->message = 'Response is not empty';
-        $error->property = 'messageBody';
+        $errors = [];
 
-        return [$error];
+        if (!$this->isValid()) {
+            $error = new ValidationError();
+            $error->message = 'Response is not empty';
+            $error->property = 'messageBody';
+            $errors[] = $error;
+        }
+
+        return $errors;
     }
 }

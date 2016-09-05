@@ -1,6 +1,9 @@
-build/
-vendor/
-composer.lock
-phpunit.xml
-ext/
-sandbox
+/build/
+/vendor/
+/composer.lock
+/phpunit.xml
+/ext/
+/sandbox
+/hooks
+/test-*.sh
+/*.refract.json

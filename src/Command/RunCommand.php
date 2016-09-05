@@ -10,6 +10,9 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ * @codeCoverageIgnore
+ */
 class RunCommand extends Command
 {
     /**
@@ -30,17 +33,18 @@ class RunCommand extends Command
             ->setName('run')
             ->setDescription('Run test suite')
             ->addOption(
-                'input',
-                // todo spas should not only support file, but also read from stdout so we can pipe the results from drafter right in
-                'i',
+                'file',
+                // todo should also support reading from stdin; one lies to pipe content in
+                'f',
                 InputOption::VALUE_REQUIRED,
                 'Path to the input file to use'
             )
             ->addOption(
-                'input_type',
+                'type',
                 't',
                 InputOption::VALUE_REQUIRED,
-                'Type of input, e.g. `apib-refract`'
+                'Type of input, e.g. `apib`',
+                'apib'
             )
             ->addOption(
                 'base_uri',
@@ -56,13 +60,13 @@ class RunCommand extends Command
             )
             ->addOption(
                 'hook',
-                'x',
+                null,
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
                 'Path to hook file(s)'
             )
             ->addOption(
                 'filter',
-                'f',
+                null,
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
                 'Only run tests listed using filter option'
             )

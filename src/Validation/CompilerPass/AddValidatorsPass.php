@@ -1,30 +1,28 @@
 <?php
-/**
- * @author    Hendrik Maus <aidentailor@gmail.com>
- * @since     2016-08-14
- * @copyright 2016 (c) Hendrik Maus
- * @license   All rights reserved.
- * @package   spas
- */
 
-namespace Hmaus\Spas\Validator;
+namespace Hmaus\Spas\Validator\CompilerPass;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
+/**
+ * @codeCoverageIgnore
+ */
 class AddValidatorsPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        if (!$container->has('hmaus.spas.validator')) {
+        $serviceId = 'hmaus.spas.validator';
+
+        if (!$container->has($serviceId)) {
             return;
         }
 
-        $definition = $container->findDefinition('hmaus.spas.validator');
+        $definition = $container->findDefinition($serviceId);
         $taggedServices = $container->findTaggedServiceIds('hmaus.spas.tag.validator');
 
-        foreach ($taggedServices as $id => $tags) {
+        foreach (array_keys($taggedServices) as $id) {
             $definition->addMethodCall('addValidator', [new Reference($id)]);
         }
     }

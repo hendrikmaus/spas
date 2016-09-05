@@ -1,6 +1,6 @@
 <?php
 
-namespace Hmaus\Spas\Validator;
+namespace Hmaus\Spas\Validation;
 
 use GuzzleHttp\Psr7\Response;
 use Hmaus\SpasParser\ParsedRequest;

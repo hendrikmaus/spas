@@ -1,13 +1,6 @@
 <?php
-/**
- * @author    Hendrik Maus <aidentailor@gmail.com>
- * @since     2016-08-13
- * @copyright 2016 (c) Hendrik Maus
- * @license   All rights reserved.
- * @package   spas
- */
 
-namespace Hmaus\Spas\Validator;
+namespace Hmaus\Spas\Validation;
 
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Hmaus\SpasParser\ParsedRequest;
@@ -53,7 +46,7 @@ class ValidatorService
 
         // todo add header validator
         // todo allow hooks to add in validators
-        // todo think of a strategy to validate responses with content but no schema for 'em
+        // todo think of a strategy to validate responses with content but no schema
 
         return $this;
     }
@@ -80,6 +73,14 @@ class ValidatorService
     public function addValidator(Validator $validator)
     {
         $this->validators[] = $validator;
+    }
+
+    /**
+     * @return Validator[]
+     */
+    public function getValidators()
+    {
+        return $this->validators;
     }
 
     /**

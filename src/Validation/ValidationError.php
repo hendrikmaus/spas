@@ -1,6 +1,6 @@
 <?php
 
-namespace Hmaus\Spas\Validator;
+namespace Hmaus\Spas\Validation;
 
 class ValidationError
 {
