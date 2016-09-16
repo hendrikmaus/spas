@@ -29,6 +29,8 @@
   },
   "require-dev": {
     "codeclimate/php-test-reporter": "^0.3",
+    "codegyre/robo": "1.0.0-RC2",
+    "henrikbjorn/lurker": "dev-master",
     "hmaus/drafter-php": "^4.0",
     "hmaus/spas-parser-apib": "^0.1.1",
     "phpunit/phpunit": "^5.0",
