@@ -23,10 +23,15 @@
             <argument type="service" id="hmaus.spas.request.httpclient"/>
             <argument type="service" id="hmaus.spas.validator"/>
             <argument type="service" id="hmaus.spas.filesystem"/>
+            <argument type="service" id="hmaus.spas.request.result.exception_handler"/>
         </service>
 
         <service class="Symfony\Component\EventDispatcher\EventDispatcher" id="hmaus.spas.event_dispatcher"/>
 
         <service class="JsonSchema\Validator" id="hmaus.spas.json_schema.validator"/>
+
+        <service class="Hmaus\Spas\Request\Result\ExceptionHandler" id="hmaus.spas.request.result.exception_handler">
+            <argument type="service" id="hmaus.spas.logger"/>
+        </service>
     </services>
 </container>

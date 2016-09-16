@@ -2,14 +2,14 @@
 
 namespace Hmaus\Spas\Request;
 
-use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\UriTemplate;
 use Hmaus\Spas\Event\HttpTransaction;
-use Hmaus\Spas\Json\JsonIndenter;
+use Hmaus\Spas\Request\Result\ExceptionHandler;
+use Hmaus\Spas\Request\Result\Printer\ValidationReportPrinter;
 use Hmaus\Spas\Validation\ValidatorService;
 use Hmaus\SpasParser\ParsedRequest;
 use Psr\Log\LoggerInterface;
-use Symfony\Bridge\Monolog\Logger;
+use Psr\Log\LogLevel;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\Event;
@@ -49,22 +49,29 @@ class Executor
     private $filesystem;
 
     /**
-     * @var Logger
+     * @var LoggerInterface
      */
     private $logger;
+
+    /**
+     * @var ExceptionHandler
+     */
+    private $exceptionHandler;
 
     public function __construct(
         LoggerInterface $logger,
         EventDispatcherInterface $dispatcher,
         HttpClient $http,
         ValidatorService $validator,
-        Filesystem $filesystem
+        Filesystem $filesystem,
+        ExceptionHandler $exceptionHandler
     ) {
         $this->logger = $logger;
         $this->dispatcher = $dispatcher;
         $this->http = $http;
         $this->validator = $validator;
         $this->filesystem = $filesystem;
+        $this->exceptionHandler = $exceptionHandler;
     }
 
     /**
@@ -131,139 +138,105 @@ class Executor
     {
         $this->logger->info($request->getName());
 
+        $this->applyFilters($request);
+
+        $request->setBaseUrl($this->input->getOption('base_uri'));
+        $request->setHref(
+            (new UriTemplate())->expand($request->getHref(), $request->getParams()->all())
+        );
+
+        if(!$request->isEnabled()) {
+            $this->printDisabled($request);
+            return;
+        }
+
+        try {
+            $this->dispatcher->dispatch(HttpTransaction::NAME, new HttpTransaction($request));
+            $this->printRequest($request);
+
+            $response = $this->http->request($request);
+            $this->printResponse($response);
+            // todo I guess here would be the right spot to look at repetition for polling
+            // todo event listeners could flag the request as to be repeated
+
+            $this->validator->validate($request, $response);
+            $this->printValidatorReport();
+            $this->validator->reset();
+        } catch (\Exception $exception) {
+            $this->exceptionHandler->handle($exception);
+        }
+    }
+
+    private function printValidatorReport()
+    {
+        if (!$this->validator->isValid()) {
+            $printer = new ValidationReportPrinter($this->logger);
+            $printer->print(
+                $this->validator->getReport(),
+                LogLevel::ERROR
+            );
+        }
+        else {
+            $this->logger->info('Passed');
+        }
+    }
+
+    /**
+     * @param ParsedRequest $request
+     */
+    private function printRequest(ParsedRequest $request)
+    {
+        $maxPrintLength = 70;
+
+        if (strlen($request->getHref()) > $maxPrintLength) {
+            $this->logger->info(
+                sprintf(
+                    '%s %s...',
+                    $request->getMethod(),
+                    substr($request->getHref(), 0, $maxPrintLength) // todo disbale that with an option?
+                )
+            );
+        } else {
+            $this->logger->info(
+                sprintf(
+                    '%s %s',
+                    $request->getMethod(),
+                    $request->getHref()
+                )
+            );
+        }
+    }
+
+    /**
+     * @param $response
+     */
+    private function printResponse($response)
+    {
+        $this->logger->info(
+            sprintf('%d %s', $response->getStatusCode(), $response->getReasonPhrase())
+        );
+    }
+
+    /**
+     * @param ParsedRequest $request
+     */
+    private function printDisabled(ParsedRequest $request)
+    {
+        $this->logger->info(
+            sprintf('Disabled', $request->getName())
+        );
+    }
+
+    /**
+     * @param ParsedRequest $request
+     */
+    private function applyFilters(ParsedRequest $request)
+    {
         $filters = $this->input->getOption('filter');
 
         if ($filters) {
             if (!in_array($request->getName(), $filters)) {
                 $request->setEnabled(false);
-            }
-        }
-
-        $request->setBaseUrl($this->input->getOption('base_uri'));
-
-        $request->setHref(
-            (new UriTemplate())->expand($request->getHref(), $request->getParams()->all())
-        );
-
-        if ($request->isEnabled()) {
-            try {
-                $this->dispatcher->dispatch(HttpTransaction::NAME, new HttpTransaction($request));
-
-                $this->logger->info(
-                    sprintf(
-                        '%s %s...',
-                        $request->getMethod(),
-                        substr($request->getHref(), 0, 80) // todo disbale that with an option?
-                    )
-                );
-
-                $response = $this->http->request($request);
-
-                $this->logger->info(
-                    sprintf('%d %s', $response->getStatusCode(), $response->getReasonPhrase())
-                );
-                // todo I guess here would be the right spot to look at repetition for polling
-                // todo event listeners could flag the request as to be repeated
-
-                $this->validator->validate($request, $response);
-
-                if (!$this->validator->isValid()) {
-                    $this->printValidationErrors();
-                }
-
-                $this->validator->reset();
-            } catch (RequestException $requestException) {
-                $this->handleRequestException($requestException);
-            } catch (\Exception $exception) {
-                // todo think of something better than justing printing the message
-                $this->logger->error($exception->getMessage());
-            }
-        } else {
-            $this->logger->info(
-                sprintf('Disabled', $request->getName())
-            );
-        }
-
-    }
-
-    private function handleRequestException(RequestException $requestException)
-    {
-        $response = $requestException->getResponse();
-
-        if (!$response) {
-            $this->logger->error($requestException->getMessage());
-
-            return;
-        }
-
-        $this->logger->error(
-            sprintf('%d %s', $response->getStatusCode(), $response->getReasonPhrase())
-        );
-
-        $body = $response->getBody()->getContents();
-
-        if (!$body) {
-            return;
-        }
-
-        $contentType = $response->getHeaderLine('content-type');
-
-        if (!$contentType) {
-            return;
-        }
-
-        if (strpos($contentType, 'json') !== false) {
-            $this->prettyPrintJson($body);
-
-            return;
-        }
-
-        // todo add support for other content types as well
-    }
-
-    /**
-     * todo create a common interface for the error printers
-     * todo create concrete implementation for printers
-     * @param $body
-     */
-    private function prettyPrintJson($body)
-    {
-        $prettyBody = JsonIndenter::indent($body);
-
-        $maxLen = 300; // todo configurable?
-        if (strlen($prettyBody) > $maxLen) {
-            $prettyBody = substr($prettyBody, 0, $maxLen);
-            $prettyBody .= "\n\n(truncated)\n";
-        }
-
-        $this->logger->error("\n".$prettyBody);
-    }
-
-    private function printValidationErrors()
-    {
-        $report = $this->validator->getReport();
-        foreach ($report as $validator) {
-            if ($validator->isValid()) {
-                continue;
-            }
-
-            $this->logger->error(
-                sprintf('%s failed with:', $validator->getName())
-            );
-            $this->logger->error('');
-
-            $errors = $validator->getErrors();
-
-            // todo how will this look with the plaintext validator errors?
-
-            foreach ($errors as $error) {
-                $this->logger->error(
-                    sprintf(' Property: %s', $error->property)
-                );
-                $this->logger->error(
-                    sprintf('  Message: %s', $error->message)
-                );
-                $this->logger->error('');
             }
         }
     }

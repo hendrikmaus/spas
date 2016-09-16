@@ -94,11 +94,25 @@ class RunCommand extends Command
             );
         }
 
+        $rawInputData = file_get_contents($inputPath);
+
+        if ($rawInputData === false) {
+            throw new InvalidOptionException(
+                sprintf('Given input file "%s" could not be read as string.', $inputPath)
+            );
+        }
+
+        $jsonDecodedInputData = json_decode($rawInputData, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new InvalidOptionException(
+                sprintf('Given input file "%s" could not be json decoded', $inputPath)
+            );
+        }
+
         /** @var Parser $requestProvider */
         $requestProvider = new $requestProviderClassName();
-        $requests = $requestProvider->parse(
-            json_decode(file_get_contents($inputPath), true)
-        );
+        $requests = $requestProvider->parse($jsonDecodedInputData);
 
         $executor = $this->container->get('hmaus.spas.request.executor');
         $executor->run($requests, $input, $output);

@@ -1,9 +1,44 @@
 <?php
 
-namespace Hmaus\Spas\Json;
+namespace Hmaus\Spas\Request\Result\Printer;
 
-class JsonIndenter
+use Psr\Log\LoggerInterface;
+
+class JsonPrinter implements Printer
 {
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * Max characters to print
+     * @var int
+     */
+    private $maximumPrintLength = 300;
+
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
+     * @param string $data
+     * @param string $logLevel
+     */
+    public function print($data, $logLevel)
+    {
+        $prettyBody = $this->indent($data);
+
+        if (strlen($prettyBody) > $this->maximumPrintLength) {
+            $prettyBody = sprintf(
+                "%s\n\n(truncated)\n", substr($prettyBody, 0, $this->maximumPrintLength)
+            );
+        }
+
+        $this->logger->log($logLevel, $prettyBody);
+    }
+
     /**
      * Indents a flat JSON string to make it more human-readable.
      *
@@ -11,7 +46,7 @@ class JsonIndenter
      *
      * @return string Indented version of the original JSON string.
      */
-    public static function indent($json)
+    private function indent($json)
     {
         $result = '';
         $pos = 0;
@@ -58,5 +93,21 @@ class JsonIndenter
         }
 
         return $result;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaximumPrintLength(): int
+    {
+        return $this->maximumPrintLength;
+    }
+
+    /**
+     * @param int $maximumPrintLength
+     */
+    public function setMaximumPrintLength(int $maximumPrintLength)
+    {
+        $this->maximumPrintLength = $maximumPrintLength;
     }
 }
