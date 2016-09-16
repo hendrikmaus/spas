@@ -82,6 +82,25 @@ class NoContentTest extends \PHPUnit_Framework_TestCase
         $this->assertEmpty($this->validator->getErrors());
     }
 
+    public function testNoNoContentResponsesAreValid()
+    {
+        $this
+            ->response
+            ->getReasonPhrase()
+            ->willReturn('I have content')
+            ->shouldBeCalledTimes(1);
+
+        $this
+            ->validator
+            ->validate(
+                $this->parsedRequest->reveal(),
+                $this->response->reveal()
+            );
+
+        $this->assertTrue($this->validator->isValid());
+        $this->assertEmpty($this->validator->getErrors());
+    }
+
     public function contentDataProvider()
     {
         return [
