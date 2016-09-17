@@ -58,6 +58,12 @@ class Executor
      */
     private $exceptionHandler;
 
+    /**
+     * Externally provided hook data
+     * @var string
+     */
+    private $hookData = '';
+
     public function __construct(
         LoggerInterface $logger,
         EventDispatcherInterface $dispatcher,
@@ -107,6 +113,11 @@ class Executor
         // todo provide some isolation for the hooks; maybe not the best idea to run them inside the executor object
 
         $hookfiles = $this->input->getOption('hook');
+        $hookdata  = $this->input->getOption('hook_data');
+
+        if ($hookdata !== null) {
+            $this->hookData = $hookdata;
+        }
 
         if (count($hookfiles) === 0) {
             $this->logger->info('[INFO] No hooks loaded');
@@ -239,6 +250,32 @@ class Executor
                 $request->setEnabled(false);
             }
         }
+    }
+
+    /**
+     * Access to hook data in hook files
+     *
+     * @return string
+     */
+    public function getHookData()
+    {
+        return $this->hookData;
+    }
+
+    /**
+     * @return LoggerInterface
+     */
+    public function getLogger()
+    {
+        return $this->logger;
+    }
+
+    /**
+     * @return EventDispatcherInterface
+     */
+    public function getDispatcher()
+    {
+        return $this->dispatcher;
     }
 
 }

@@ -65,6 +65,12 @@ class RunCommand extends Command
                 'Path to hook file(s)'
             )
             ->addOption(
+                'hook_data',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Data to inject into hooks; e.g. csv, json string, whatever your hooks understand '
+            )
+            ->addOption(
                 'filter',
                 null,
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
