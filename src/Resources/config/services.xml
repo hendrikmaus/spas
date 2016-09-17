@@ -4,6 +4,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+        <service class="Hmaus\Spas\SpasApplication" id="hmaus.spas.spas_application"/>
 
         <service class="Symfony\Component\Console\Logger\ConsoleLogger" id="hmaus.spas.logger"/>
         <service class="Symfony\Component\Console\Style\SymfonyStyle" id="hmaus.spas.io"/>
@@ -13,6 +14,7 @@
         <service class="Hmaus\Spas\Request\HttpClient" id="hmaus.spas.request.httpclient">
             <argument type="service" id="hmaus.spas.httpclient"/>
             <argument type="service" id="hmaus.spas.logger"/>
+            <argument type="service" id="hmaus.spas.spas_application"/>
         </service>
 
         <service class="Symfony\Component\Filesystem\Filesystem" id="hmaus.spas.filesystem"/>

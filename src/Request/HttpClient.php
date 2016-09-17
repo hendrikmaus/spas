@@ -3,6 +3,7 @@
 namespace Hmaus\Spas\Request;
 
 use GuzzleHttp\Client;
+use Hmaus\Spas\SpasApplication;
 use Hmaus\SpasParser\ParsedRequest;
 use Psr\Log\LoggerInterface;
 
@@ -18,10 +19,16 @@ class HttpClient
      */
     private $logger;
 
-    public function __construct(Client $httpClient, LoggerInterface $logger)
+    /**
+     * @var SpasApplication
+     */
+    private $application;
+
+    public function __construct(Client $httpClient, LoggerInterface $logger, SpasApplication $application)
     {
         $this->httpClient = $httpClient;
         $this->logger = $logger;
+        $this->application = $application;
     }
 
     /**
@@ -51,6 +58,12 @@ class HttpClient
         foreach ($request->getHeaders()->all() as $headerName => $headerValue) {
             $options['headers'][$headerName] = $headerValue;
         }
+
+        $options['headers']['User-Agent'] = sprintf(
+            '%s/%s',
+            $this->application->getName(),
+            $this->application->getVersion()
+        );
 
         if ($request->getContent()) {
             $options['body'] = $request->getContent();

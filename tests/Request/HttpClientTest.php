@@ -4,6 +4,7 @@ namespace Hmaus\Spas\Tests\Request;
 
 use GuzzleHttp\Client;
 use Hmaus\Spas\Request\HttpClient;
+use Hmaus\Spas\SpasApplication;
 use Hmaus\SpasParser\SpasRequest;
 use Prophecy\Argument;
 use Psr\Log\LoggerInterface;
@@ -14,10 +15,22 @@ class HttpClientTest extends \PHPUnit_Framework_TestCase
     {
         $guzzle = $this->prophesize(Client::class);
         $logger = $this->prophesize(LoggerInterface::class);
+        $app = $this->prophesize(SpasApplication::class);
+
+        $app
+            ->getName()
+            ->willReturn('spas')
+            ->shouldBeCalledTimes(1);
+
+        $app
+            ->getVersion()
+            ->willReturn('1')
+            ->shouldBeCalledTimes(1);
 
         $client = new HttpClient(
             $guzzle->reveal(),
-            $logger->reveal()
+            $logger->reveal(),
+            $app->reveal()
         );
 
         $parsedRequest = new SpasRequest();
@@ -40,7 +53,8 @@ class HttpClientTest extends \PHPUnit_Framework_TestCase
                     'timeout' => 10,
                     'headers' => [
                         'x-trv-test0' => ['zero'],
-                        'x-trv-test1' => ['one']
+                        'x-trv-test1' => ['one'],
+                        'User-Agent' => 'spas/1', // user agent is added by the http client
                     ],
                     'body' => $parsedRequest->getContent()
                 ])
