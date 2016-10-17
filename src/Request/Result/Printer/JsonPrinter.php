@@ -110,4 +110,10 @@ class JsonPrinter implements Printer
     {
         $this->maximumPrintLength = $maximumPrintLength;
     }
+
+    public function getContentType()
+    {
+        return 'application/json';
+    }
+
 }

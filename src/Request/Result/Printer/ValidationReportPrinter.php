@@ -52,4 +52,10 @@ class ValidationReportPrinter implements Printer
             }
         }
     }
+
+    public function getContentType()
+    {
+        return 'application/vnd.hmaus.spas.validation_report';
+    }
+
 }
