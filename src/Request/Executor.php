@@ -182,7 +182,7 @@ class Executor
     {
         if (!$this->validator->isValid()) {
             $printer = new ValidationReportPrinter($this->logger);
-            $printer->print(
+            $printer->printIt(
                 $this->validator->getReport(),
                 LogLevel::ERROR
             );

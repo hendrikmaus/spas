@@ -26,7 +26,7 @@ class JsonPrinter implements Printer
      * @param string $data
      * @param string $logLevel
      */
-    public function print($data, $logLevel)
+    public function printIt($data, $logLevel)
     {
         $prettyBody = $this->indent($data);
 

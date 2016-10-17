@@ -21,7 +21,7 @@ class ValidationReportPrinter implements Printer
      * @param Validator[] $data
      * @param string $logLevel
      */
-    public function print($data, $logLevel)
+    public function printIt($data, $logLevel)
     {
         $report = $data;
         foreach ($report as $validator) {

@@ -29,7 +29,7 @@ class JsonPrinterTest extends \PHPUnit_Framework_TestCase
     public function testCanPrintUntruncated()
     {
         $data = '{"hello":"world"}';
-        $this->printer->print($data, LogLevel::ERROR);
+        $this->printer->printIt($data, LogLevel::ERROR);
 
         $expected = '{
     "hello":"world"
@@ -54,7 +54,7 @@ class JsonPrinterTest extends \PHPUnit_Framework_TestCase
         $data .= ']';
         $this->assertTrue(strlen($data) > $this->printer->getMaximumPrintLength());
 
-        $this->printer->print($data, LogLevel::ERROR);
+        $this->printer->printIt($data, LogLevel::ERROR);
 
         $expected = '[
     {
@@ -95,7 +95,7 @@ class JsonPrinterTest extends \PHPUnit_Framework_TestCase
         $this->printer->setMaximumPrintLength(10);
 
         $data = '{"hello":"world"}';
-        $this->printer->print($data, LogLevel::ERROR);
+        $this->printer->printIt($data, LogLevel::ERROR);
 
         $expected = '{
     "hel

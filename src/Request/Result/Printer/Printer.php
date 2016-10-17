@@ -8,7 +8,6 @@ interface Printer
      * Format and print the input
      * @param mixed $data
      * @param string $logLevel Loglevel from \Psr\Log\LogLevel
-     * @return
      */
-    public function print($data, $logLevel);
+    public function printIt($data, $logLevel);
 }

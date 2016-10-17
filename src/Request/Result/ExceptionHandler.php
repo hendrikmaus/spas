@@ -61,7 +61,7 @@ class ExceptionHandler
 
         if (strpos($contentType, 'json') !== false) {
             $printer = new JsonPrinter($this->logger);
-            $printer->print($body, LogLevel::ERROR);
+            $printer->printIt($body, LogLevel::ERROR);
 
             return;
         }
