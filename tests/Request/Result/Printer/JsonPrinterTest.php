@@ -112,4 +112,9 @@ class JsonPrinterTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalledTimes(1);
     }
 
+    public function testDoesKnowItsContentType()
+    {
+        $this->assertSame('application/json', $this->printer->getContentType());
+    }
+
 }

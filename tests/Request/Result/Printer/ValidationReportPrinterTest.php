@@ -110,4 +110,9 @@ class ValidationReportPrinterTest extends \PHPUnit_Framework_TestCase
             ->printIt($report, LogLevel::ERROR);
     }
 
+    public function testDoesKnowItsContentType()
+    {
+        $this->assertSame('application/vnd.hmaus.spas.validation_report', $this->printer->getContentType());
+    }
+
 }
