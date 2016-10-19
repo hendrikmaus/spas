@@ -54,6 +54,7 @@ class JsonPrinterTest extends \PHPUnit_Framework_TestCase
         $data .= ']';
         $this->assertTrue(strlen($data) > $this->printer->getMaximumPrintLength());
 
+        $this->printer->setMaximumPrintLength(300);
         $this->printer->printIt($data, LogLevel::ERROR);
 
         $expected = '[

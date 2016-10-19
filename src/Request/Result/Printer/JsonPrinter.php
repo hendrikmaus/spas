@@ -2,41 +2,20 @@
 
 namespace Hmaus\Spas\Request\Result\Printer;
 
-use Psr\Log\LoggerInterface;
-
-class JsonPrinter implements Printer
+class JsonPrinter extends Printer
 {
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * Max characters to print
-     * @var int
-     */
-    private $maximumPrintLength = 300;
-
-    public function __construct(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
-
     /**
      * @param string $data
      * @param string $logLevel
      */
-    public function printIt($data, $logLevel)
+    public function printIt($data, string $logLevel)
     {
-        $prettyBody = $this->indent($data);
+        $this->log($logLevel, $this->indent($data));
+    }
 
-        if (strlen($prettyBody) > $this->maximumPrintLength) {
-            $prettyBody = sprintf(
-                "%s\n\n(truncated)\n", substr($prettyBody, 0, $this->maximumPrintLength)
-            );
-        }
-
-        $this->logger->log($logLevel, $prettyBody);
+    public function getContentType() : string
+    {
+        return 'application/json';
     }
 
     /**
@@ -93,27 +72,6 @@ class JsonPrinter implements Printer
         }
 
         return $result;
-    }
-
-    /**
-     * @return int
-     */
-    public function getMaximumPrintLength(): int
-    {
-        return $this->maximumPrintLength;
-    }
-
-    /**
-     * @param int $maximumPrintLength
-     */
-    public function setMaximumPrintLength(int $maximumPrintLength)
-    {
-        $this->maximumPrintLength = $maximumPrintLength;
-    }
-
-    public function getContentType()
-    {
-        return 'application/json';
     }
 
 }

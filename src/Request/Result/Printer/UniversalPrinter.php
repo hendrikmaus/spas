@@ -2,23 +2,11 @@
 
 namespace Hmaus\Spas\Request\Result\Printer;
 
-use Psr\Log\LoggerInterface;
-
-class UniversalPrinter implements Printer
+class UniversalPrinter extends Printer
 {
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    public function __construct(LoggerInterface $logger)
+    public function printIt($data, string $logLevel)
     {
-        $this->logger = $logger;
-    }
-
-    public function printIt($data, $logLevel)
-    {
-        $this->logger->log($logLevel, (string) $data);
+        $this->log($logLevel, $data);
     }
 
     /**

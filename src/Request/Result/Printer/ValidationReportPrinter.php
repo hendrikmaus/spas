@@ -18,26 +18,24 @@ class ValidationReportPrinter extends Printer
                 continue;
             }
 
-            $this->logger->log(
+            $this->log(
                 $logLevel,
                 sprintf('%s failed with:', $validator->getName())
             );
-            $this->logger->log($logLevel, '');
+            $this->log($logLevel, '');
 
             $errors = $validator->getErrors();
 
-            // todo how will this look with the plaintext validator errors?
-
             foreach ($errors as $error) {
-                $this->logger->log(
+                $this->log(
                     $logLevel,
                     sprintf(' Property: %s', $error->property)
                 );
-                $this->logger->log(
+                $this->log(
                     $logLevel,
                     sprintf('  Message: %s', $error->message)
                 );
-                $this->logger->log($logLevel, '');
+                $this->log($logLevel, '');
             }
         }
     }

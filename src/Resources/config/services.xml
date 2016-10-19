@@ -37,19 +37,26 @@
             <argument type="service" id="hmaus.spas.request.result.printer.universal_printer"/>
         </service>
 
-        <service class="Hmaus\Spas\Request\Result\Printer\JsonPrinter" id="hmaus.spas.request.result.printer.json_printer">
+        <!-- Printers -->
+        <service class="Hmaus\Spas\Request\Result\Printer\Printer" id="hmaus.spas.request.result.printer" abstract="true">
             <argument type="service" id="hmaus.spas.logger"/>
+        </service>
+        <service class="Hmaus\Spas\Request\Result\Printer\JsonPrinter"
+                 id="hmaus.spas.request.result.printer.json_printer"
+                 parent="hmaus.spas.request.result.printer">
             <tag name="hmaus.spas.tag.result_printer"/>
         </service>
 
-        <service class="Hmaus\Spas\Request\Result\Printer\ValidationReportPrinter" id="hmaus.spas.request.result.printer.validation_report_printer">
-            <argument type="service" id="hmaus.spas.logger"/>
+        <service class="Hmaus\Spas\Request\Result\Printer\ValidationReportPrinter"
+                 id="hmaus.spas.request.result.printer.validation_report_printer"
+                 parent="hmaus.spas.request.result.printer">
             <tag name="hmaus.spas.tag.result_printer"/>
         </service>
 
         <!-- universal printer is a fallback mechanism; not included in the regular printer set; hence no tag -->
-        <service class="Hmaus\Spas\Request\Result\Printer\UniversalPrinter" id="hmaus.spas.request.result.printer.universal_printer">
-            <argument type="service" id="hmaus.spas.logger"/>
+        <service class="Hmaus\Spas\Request\Result\Printer\UniversalPrinter"
+                 id="hmaus.spas.request.result.printer.universal_printer"
+                 parent="hmaus.spas.request.result.printer">
         </service>
     </services>
 </container>
