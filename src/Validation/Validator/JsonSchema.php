@@ -32,47 +32,70 @@ class JsonSchema implements Validator
 
     public function validate(ParsedRequest $request, Response $response)
     {
-        $hasSchema = $request->getResponse()->getSchema();
+        $schema = $request->getResponse()->getSchema();
 
-        if (!$hasSchema) {
+        if (empty($schema)) {
             $this->valid = true;
             return;
         }
 
+        $decodedBody = json_decode($response->getBody()->getContents());
+        $decodedSchema = json_decode($schema);
+
+        if (null === $decodedBody) {
+            $this->failEmptyBody();
+            return;
+        }
+
         $this->jsonSchemaValidator->check(
-            json_decode($response->getBody()->getContents()),
-            json_decode($request->getResponse()->getSchema())
+            $decodedBody,
+            $decodedSchema
         );
 
         $this->valid = $this->jsonSchemaValidator->isValid();
 
-        if (!$this->valid) {
-            foreach ($this->jsonSchemaValidator->getErrors() as $schemaError) {
-                $error = new ValidationError();
-                $error->message = $schemaError['message'];
-                $error->property = $schemaError['property'];
-                $this->errors[] = $error;
-            }
+        if ($this->valid) {
+            return;
+        }
+
+        foreach ($this->jsonSchemaValidator->getErrors() as $schemaError) {
+            $error = new ValidationError();
+            $error->message = $schemaError['message'];
+            $error->property = $schemaError['property'];
+            $this->errors[] = $error;
         }
     }
 
-    public function isValid()
+    public function isValid() : bool
     {
         return $this->valid;
     }
 
-    public function getId()
+    public function getId() : string
     {
         return 'json_schema';
     }
 
-    public function getName()
+    public function getName() : string
     {
         return 'JSON Schema Validator';
     }
 
-    public function getErrors()
+    public function getErrors() : array
     {
         return $this->errors;
+    }
+
+    /**
+     * Set the validator state to invalid and add empty body error
+     */
+    private function failEmptyBody()
+    {
+        $this->valid = false;
+
+        $error = new ValidationError();
+        $error->property = 'root';
+        $error->message = 'Expected a body according to given schema, but no body found';
+        $this->errors[] = $error;
     }
 }

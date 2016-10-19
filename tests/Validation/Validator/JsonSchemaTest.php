@@ -98,8 +98,8 @@ class JsonSchemaTest extends \PHPUnit_Framework_TestCase
         $this
             ->parsedResponse
             ->getSchema()
-            ->willReturn(true)
-            ->shouldBeCalledTimes(2);
+            ->willReturn('{}')
+            ->shouldBeCalledTimes(1);
 
         $this
             ->jsonSchemaValidator
@@ -113,11 +113,17 @@ class JsonSchemaTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalledTimes(1);
 
         $this
+            ->responseBody
+            ->getContents()
+            ->willReturn('{}');
+
+        $this
             ->validator
             ->validate(
                 $this->parsedRequest->reveal(),
                 $this->response->reveal()
             );
+
 
         $this->assertTrue(
             $this->validator->isValid()
@@ -132,7 +138,12 @@ class JsonSchemaTest extends \PHPUnit_Framework_TestCase
             ->parsedResponse
             ->getSchema()
             ->willReturn(true)
-            ->shouldBeCalledTimes(2);
+            ->shouldBeCalledTimes(1);
+
+        $this
+            ->responseBody
+            ->getContents()
+            ->willReturn('{}');
 
         $this
             ->jsonSchemaValidator
@@ -160,6 +171,45 @@ class JsonSchemaTest extends \PHPUnit_Framework_TestCase
                 $this->parsedRequest->reveal(),
                 $this->response->reveal()
             );
+
+        $this->assertFalse(
+            $this->validator->isValid()
+        );
+
+        $this->assertNotEmpty($this->validator->getErrors());
+    }
+
+    public function testValidatesFalseIfSchemaIsPresentButBodyIsNot()
+    {
+        $this
+            ->parsedResponse
+            ->getSchema()
+            ->willReturn('{"some":"schema"}')
+            ->shouldBeCalledTimes(1);
+
+        $this
+            ->jsonSchemaValidator
+            ->check(Argument::cetera())
+            ->shouldNotBeCalled();
+
+        $this
+            ->jsonSchemaValidator
+            ->isValid()
+            ->willReturn(true)
+            ->shouldNotBeCalled();
+
+        $this
+            ->responseBody
+            ->getContents()
+            ->willReturn(null);
+
+        $this
+            ->validator
+            ->validate(
+                $this->parsedRequest->reveal(),
+                $this->response->reveal()
+            );
+
 
         $this->assertFalse(
             $this->validator->isValid()
