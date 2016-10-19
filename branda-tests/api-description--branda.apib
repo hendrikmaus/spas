@@ -1,0 +1,43 @@
+FORMAT: 1A
+
+# Branda Test Case
+This file is ought to be served by branda.  
+A copy of this file will be altered in order to have spas expect different results.
+This allows us to simulate specific error cases.
+
+# Camera Collection [/cameras]
+
+## Get All cameras [GET]
+Test case for the text/plain validator.
+The api output must match exactly when it is used.
+
++ Response 200 (text/plain)
+    
+    ```
+    - Canon 80D
+    - Sony a7R
+    - Panasonic GH4
+    ```
+
+## Add Camera [POST]
+Test case for the no content validator.
+
++ Request Add Camera (application/json)
+    + Attributes (Camera)
+
++ Response 201
+    
+# GET /cameras/{id}
+Test case for json schema validator.
+
++ Parameters
+    + id: `5645s` (string, required)
+
++ Response 200 (application/json)
+    + Attributes (Camera)
+
+# Data Structures
+
+## Camera
++ id: `56` (number, required)
++ vendor: `Canon` (string, required)

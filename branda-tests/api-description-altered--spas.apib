@@ -1,0 +1,83 @@
+FORMAT: 1A
+
+# Branda Test Case
+This file is ought to be used as input to spas.
+
+# Camera Collection [/cameras]
+
+## Get All cameras [GET]
+Test case for the text/plain validator.
+The api output must match exactly when it is used.
+
++ Response 200 (text/plain)
+Simulate a rather long text/plain error
+    
+    + Body
+    
+        ```
+        - Canon 80D
+        - Panasonic GH4
+        - Something
+        - Other
+        - to
+        - repeat
+        - Canon 80D
+        - Panasonic GH4
+        - Something
+        - Other
+        - to
+        - repeat
+        - Canon 80D
+        - Panasonic GH4
+        - Something
+        - Other
+        - to
+        - repeat
+        - Canon 80D
+        - Panasonic GH4
+        - Something
+        - Other
+        - to
+        - repeat
+        - Canon 80D
+        - Panasonic GH4
+        - Something
+        - Other
+        - to
+        - repeat
+        - Canon 80D
+        - Panasonic GH4
+        - Something
+        - Other
+        - to
+        - repeat
+        - Canon 80D
+        - Panasonic GH4
+        - Something
+        - Other
+        ```
+
+## Add Camera [POST]
+Test case for the no content validator.
+
++ Request Add Camera (application/json)
+    + Attributes (Camera)
+
++ Response 201 (application/json)
+    + Attributes (Camera)
+    
+# GET /cameras/{id}
+Test case for json schema validator.
+
++ Parameters
+    + id: `5645s` (string, required)
+
++ Response 200 (application/json)
+    + Attributes (Camera)
+
+# Data Structures
+
+## Camera
++ id: `cf4536` (string, required)
++ model: `80D` (string, required)
++ vendor: `Canon` (string, required)

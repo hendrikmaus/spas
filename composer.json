@@ -31,6 +31,7 @@
     "codeclimate/php-test-reporter": "^0.3",
     "codegyre/robo": "1.0.0-RC2",
     "henrikbjorn/lurker": "dev-master",
+    "hmaus/branda": "dev-master",
     "hmaus/drafter-installer": "^1.0",
     "hmaus/drafter-php": "^4.0",
     "hmaus/spas-parser-apib": "^0.1.2",
