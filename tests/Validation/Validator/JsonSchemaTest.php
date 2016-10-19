@@ -210,7 +210,6 @@ class JsonSchemaTest extends \PHPUnit_Framework_TestCase
                 $this->response->reveal()
             );
 
-
         $this->assertFalse(
             $this->validator->isValid()
         );
@@ -226,5 +225,13 @@ class JsonSchemaTest extends \PHPUnit_Framework_TestCase
     public function testItCanSayItsName()
     {
         $this->assertNotEmpty($this->validator->getName());
+    }
+
+    public function testItCanResetItself()
+    {
+        $this->validator->reset();
+
+        $this->assertEmpty($this->validator->getErrors());
+        $this->assertFalse($this->validator->isValid());
     }
 }

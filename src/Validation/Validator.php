@@ -44,4 +44,11 @@ interface Validator
      * @return ValidationError[]
      */
     public function getErrors() : array;
+
+    /**
+     * Reset state of the validator
+     *
+     * E.g. clear all errors; reset `valid` property
+     */
+    public function reset();
 }

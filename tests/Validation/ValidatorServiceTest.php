@@ -164,4 +164,21 @@ class ValidatorServiceTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testCanResetItselfAndAllValidators()
+    {
+        $validator = $this->prophesize(Validator::class);
+
+        $validator
+            ->reset()
+            ->shouldBeCalledTimes(1);
+
+        $this
+            ->validatorService
+            ->addValidator($validator->reveal());
+
+        $this
+            ->validatorService
+            ->reset();
+    }
+
 }

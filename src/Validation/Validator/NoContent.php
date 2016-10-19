@@ -9,7 +9,7 @@ use Hmaus\SpasParser\ParsedRequest;
 
 class NoContent implements Validator
 {
-    private $valid;
+    private $valid = false;
 
     public function validate(ParsedRequest $request, Response $response)
     {
@@ -53,5 +53,15 @@ class NoContent implements Validator
         }
 
         return $errors;
+    }
+
+    /**
+     * Reset state of the validator
+     *
+     * E.g. clear all errors; reset `valid` property
+     */
+    public function reset()
+    {
+        $this->valid = false;
     }
 }

@@ -84,11 +84,15 @@ class ValidatorService
     }
 
     /**
-     * Resets the validator for next run
+     * Resets the validator report for next run and all validators respectively
      */
     public function reset()
     {
         $this->report = [];
+
+        foreach ($this->validators as $validator) {
+            $validator->reset();
+        }
     }
 
     /**

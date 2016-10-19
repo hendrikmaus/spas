@@ -166,4 +166,11 @@ class NoContentTest extends \PHPUnit_Framework_TestCase
         $this->assertNotEmpty($this->validator->getName());
     }
 
+    public function testItCanResetItself()
+    {
+        $this->validator->reset();
+
+        $this->assertFalse($this->validator->isValid());
+    }
+
 }

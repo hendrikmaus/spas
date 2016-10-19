@@ -13,7 +13,7 @@ class TextPlain implements Validator
     /**
      * @var bool
      */
-    private $valid;
+    private $valid = false;
 
     /**
      * @var ValidationError[]
@@ -78,5 +78,16 @@ class TextPlain implements Validator
     public function getErrors() : array
     {
         return $this->errors;
+    }
+
+    /**
+     * Reset state of the validator
+     *
+     * E.g. clear all errors; reset `valid` property
+     */
+    public function reset()
+    {
+        $this->errors = [];
+        $this->valid = false;
     }
 }

@@ -13,7 +13,7 @@ class JsonSchema implements Validator
     /**
      * @var bool
      */
-    private $valid;
+    private $valid = false;
 
     /**
      * @var ValidationError[]
@@ -97,5 +97,16 @@ class JsonSchema implements Validator
         $error->property = 'root';
         $error->message = 'Expected a body according to given schema, but no body found';
         $this->errors[] = $error;
+    }
+
+    /**
+     * Reset state of the validator
+     *
+     * E.g. clear all errors; reset `valid` property
+     */
+    public function reset()
+    {
+        $this->errors = [];
+        $this->valid  = false;
     }
 }
