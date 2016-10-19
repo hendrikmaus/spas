@@ -21,14 +21,14 @@ interface Validator
      *
      * @return bool
      */
-    public function isValid();
+    public function isValid() : bool;
 
     /**
      * Get ID of the parser, e.g. `json_schema`
      *
      * @return string
      */
-    public function getId();
+    public function getId() : string;
 
     /**
      * Human readbale validator name, to end on "Validator"
@@ -36,12 +36,12 @@ interface Validator
      * E.g. `JSON Schema Validator`; is used to build a sentence for console output
      * @return string
      */
-    public function getName();
+    public function getName() : string;
 
     /**
      * Rurn an array of errors
      *
      * @return ValidationError[]
      */
-    public function getErrors();
+    public function getErrors() : array;
 }

@@ -78,7 +78,7 @@ class ValidatorService
     /**
      * @return Validator[]
      */
-    public function getValidators()
+    public function getValidators() : array
     {
         return $this->validators;
     }
@@ -94,7 +94,7 @@ class ValidatorService
     /**
      * @return Validator[]
      */
-    public function getReport()
+    public function getReport() : array
     {
         return $this->report;
     }

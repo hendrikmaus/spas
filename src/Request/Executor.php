@@ -257,7 +257,7 @@ class Executor
      *
      * @return string
      */
-    public function getHookData()
+    public function getHookData() : string
     {
         return $this->hookData;
     }
@@ -265,7 +265,7 @@ class Executor
     /**
      * @return LoggerInterface
      */
-    public function getLogger()
+    public function getLogger() : LoggerInterface
     {
         return $this->logger;
     }
@@ -273,7 +273,7 @@ class Executor
     /**
      * @return EventDispatcherInterface
      */
-    public function getDispatcher()
+    public function getDispatcher() : EventDispatcherInterface
     {
         return $this->dispatcher;
     }

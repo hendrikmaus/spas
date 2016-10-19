@@ -26,22 +26,22 @@ class NoContent implements Validator
         );
     }
 
-    public function isValid()
+    public function isValid() : bool
     {
         return $this->valid;
     }
 
-    public function getId()
+    public function getId() : string
     {
         return 'no_content';
     }
 
-    public function getName()
+    public function getName() : string
     {
         return 'No Content Validator';
     }
 
-    public function getErrors()
+    public function getErrors() : array
     {
         $errors = [];
 

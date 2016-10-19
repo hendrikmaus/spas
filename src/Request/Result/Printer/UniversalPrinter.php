@@ -30,7 +30,7 @@ class UniversalPrinter implements Printer
      * @inheritdoc
      * @return string
      */
-    public function getContentType()
+    public function getContentType() : string
     {
         return 'null';
     }

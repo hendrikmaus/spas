@@ -89,7 +89,7 @@ class ExceptionHandler
      * @param string $contentType
      * @return Printer
      */
-    private function getPrinterByContentType(string $contentType)
+    private function getPrinterByContentType(string $contentType) : Printer
     {
         if (!isset($this->printers[$contentType])) {
             return $this->universalPrinter;

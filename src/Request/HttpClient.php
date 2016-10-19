@@ -5,6 +5,7 @@ namespace Hmaus\Spas\Request;
 use GuzzleHttp\Client;
 use Hmaus\Spas\SpasApplication;
 use Hmaus\SpasParser\ParsedRequest;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
 class HttpClient
@@ -33,7 +34,7 @@ class HttpClient
 
     /**
      * @param ParsedRequest $request
-     * @return mixed|\Psr\Http\Message\ResponseInterface
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function request(ParsedRequest $request)
     {
@@ -48,7 +49,7 @@ class HttpClient
      * @param ParsedRequest $request
      * @return array
      */
-    private function computeGuzzleOptions(ParsedRequest $request)
+    private function computeGuzzleOptions(ParsedRequest $request) : array
     {
         $options = [];
         $options['connect_timeout'] = 10;

@@ -3,25 +3,14 @@
 namespace Hmaus\Spas\Request\Result\Printer;
 
 use Hmaus\Spas\Validation\Validator;
-use Psr\Log\LoggerInterface;
 
-class ValidationReportPrinter implements Printer
+class ValidationReportPrinter extends Printer
 {
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    public function __construct(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
-
     /**
      * @param Validator[] $data
      * @param string $logLevel
      */
-    public function printIt($data, $logLevel)
+    public function printIt($data, string $logLevel)
     {
         $report = $data;
         foreach ($report as $validator) {
@@ -53,7 +42,7 @@ class ValidationReportPrinter implements Printer
         }
     }
 
-    public function getContentType()
+    public function getContentType():string
     {
         return 'application/vnd.hmaus.spas.validation_report';
     }

@@ -46,7 +46,7 @@ class JsonPrinter implements Printer
      *
      * @return string Indented version of the original JSON string.
      */
-    private function indent($json)
+    private function indent($json) : string
     {
         $result = '';
         $pos = 0;

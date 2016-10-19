@@ -60,22 +60,22 @@ class TextPlain implements Validator
         $this->valid = true;
     }
 
-    public function isValid()
+    public function isValid() : bool
     {
         return $this->valid;
     }
 
-    public function getId()
+    public function getId() : string
     {
         return 'text_plain';
     }
 
-    public function getName()
+    public function getName() : string
     {
         return 'Plain Text Validator';
     }
 
-    public function getErrors()
+    public function getErrors() : array
     {
         return $this->errors;
     }
