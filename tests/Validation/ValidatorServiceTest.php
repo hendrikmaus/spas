@@ -181,4 +181,9 @@ class ValidatorServiceTest extends \PHPUnit_Framework_TestCase
             ->reset();
     }
 
+    public function testKnowsItsContentType()
+    {
+        $this->assertNotEmpty($this->validatorService->getContentType());
+    }
+
 }
