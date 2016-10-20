@@ -1,71 +1,53 @@
 <?php
 
-namespace Hmaus\Spas\Tests\Request\Result\Printer;
+namespace Hmaus\Spas\Tests\Formatter;
 
-use Hmaus\Spas\Request\Result\Printer\ValidationReportPrinter;
+use Hmaus\Spas\Formatter\ValidationErrorFormatter;
 use Hmaus\Spas\Validation\ValidationError;
 use Hmaus\Spas\Validation\Validator\JsonSchema;
 use Hmaus\Spas\Validation\Validator\TextPlain;
 use JsonSchema\Validator;
-use Prophecy\Argument;
-use Prophecy\Prophecy\ObjectProphecy;
-use Psr\Log\LoggerInterface;
-use Psr\Log\LogLevel;
 
-class ValidationReportPrinterTest extends \PHPUnit_Framework_TestCase
+class ValidationErrorFormatterTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var LoggerInterface|ObjectProphecy
+     * @var ValidationErrorFormatter
      */
-    private $logger;
-
-    /**
-     * @var ValidationReportPrinter
-     */
-    private $printer;
+    private $formatter;
 
     protected function setUp()
     {
-        $this->logger = $this->prophesize(LoggerInterface::class);
-        $this->printer = new ValidationReportPrinter($this->logger->reveal());
+        $this->formatter = new ValidationErrorFormatter();
+    }
+
+    public function testDoesKnowItsContentType()
+    {
+        $this->assertNotEmpty($this->formatter->getContentTypes());
     }
 
     public function testDoesNotPrintAnEmptyReport()
     {
-        $this
-            ->logger
-            ->log(Argument::type('string'), Argument::type('string'), Argument::type('array'))
-            ->shouldNotBeCalled();
+        $result = $this
+            ->formatter
+            ->format([]);
 
-        $this
-            ->printer
-            ->printIt([], LogLevel::ERROR);
+        $this->assertEmpty($result);
     }
 
     public function testDoesNotPrintAllValidReport()
     {
-        $this
-            ->logger
-            ->log(Argument::type('string'), Argument::type('string'), Argument::type('array'))
-            ->shouldNotBeCalled();
-
         $report = [
             new Validator(),
             new Validator()
         ];
 
         $this
-            ->printer
-            ->printIt($report, LogLevel::ERROR);
+            ->formatter
+            ->format($report);
     }
 
     public function testPrintsProperErrorReport()
     {
-        $this
-            ->logger
-            ->log(Argument::type('string'), Argument::type('string'))
-            ->shouldBeCalled();
-
         $textPlainErrorOne = new ValidationError();
         $textPlainErrorOne->property = 'messageBody';
         $textPlainErrorOne->message = 'I am error one';
@@ -105,14 +87,21 @@ class ValidationReportPrinterTest extends \PHPUnit_Framework_TestCase
             $validationJsonSchema->reveal()
         ];
 
-        $this
-            ->printer
-            ->printIt($report, LogLevel::ERROR);
-    }
+        $result = $this
+            ->formatter
+            ->format($report);
 
-    public function testDoesKnowItsContentType()
-    {
-        $this->assertSame('application/vnd.hmaus.spas.validation_report', $this->printer->getContentType());
-    }
+        $expected = 'Plain Text Validator failed with:
+[error]   Property: messageBody
+[error]   Message : I am error one
+[error] 
+[error] Json Schema Validator failed with:
+[error]   Property: property_one
+[error]   Message : I am error one
+[error] 
+[error]   Property: property_two
+[error]   Message : I am error two';
 
+        $this->assertSame($expected, $result);
+    }
 }

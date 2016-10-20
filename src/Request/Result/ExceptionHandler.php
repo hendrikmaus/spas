@@ -3,9 +3,8 @@
 namespace Hmaus\Spas\Request\Result;
 
 use GuzzleHttp\Exception\RequestException;
-use Hmaus\Spas\Request\Result\Printer\Printer;
+use Hmaus\Spas\Formatter\FormatterService;
 use Psr\Log\LoggerInterface;
-use Psr\Log\LogLevel;
 
 class ExceptionHandler
 {
@@ -15,24 +14,14 @@ class ExceptionHandler
     private $logger;
 
     /**
-     * List of printers to output different content-types
-     *
-     * Format:
-     *   "content-type" => Printer
-     *
-     * @var Printer[]
+     * @var FormatterService
      */
-    private $printers = [];
+    private $formatterService;
 
-    /**
-     * @var Printer
-     */
-    private $universalPrinter;
-
-    public function __construct(LoggerInterface $logger, Printer $universalPrinter)
+    public function __construct(LoggerInterface $logger, FormatterService $formatterService)
     {
         $this->logger = $logger;
-        $this->universalPrinter = $universalPrinter;
+        $this->formatterService = $formatterService;
     }
 
     public function handle(\Exception $exception)
@@ -42,17 +31,7 @@ class ExceptionHandler
             return;
         }
 
-        $this->universalPrinter->printIt(
-            $exception->getMessage(), LogLevel::ERROR
-        );
-    }
-
-    /**
-     * @param Printer $printer
-     */
-    public function addPrinter(Printer $printer)
-    {
-        $this->printers[$printer->getContentType()] = $printer;
+        $this->logger->error($exception->getMessage());
     }
 
     /**
@@ -61,10 +40,7 @@ class ExceptionHandler
     private function handleRequestException(RequestException $requestException)
     {
         if (!$requestException->hasResponse()) {
-            // response on the exception can be null, hence we must be prepared for this
-            $this->universalPrinter->printIt(
-                $requestException->getMessage(), LogLevel::ERROR
-            );
+            $this->logger->error($requestException->getMessage());
             return;
         }
 
@@ -80,21 +56,12 @@ class ExceptionHandler
             return;
         }
 
-        $contentType = $response->getHeaderLine('content-type');
-        $printer = $this->getPrinterByContentType($contentType);
-        $printer->printIt($body, LogLevel::ERROR);
-    }
+        $formatter = $this
+            ->formatterService
+            ->getFormatterByContentType(
+                $response->getHeaderLine('content-type')
+            );
 
-    /**
-     * @param string $contentType
-     * @return Printer
-     */
-    private function getPrinterByContentType(string $contentType) : Printer
-    {
-        if (!isset($this->printers[$contentType])) {
-            return $this->universalPrinter;
-        }
-
-        return $this->printers[$contentType];
+        $this->logger->error($formatter->format($body));
     }
 }

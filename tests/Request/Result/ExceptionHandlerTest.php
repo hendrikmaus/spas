@@ -3,9 +3,9 @@
 namespace Hmaus\Spas\Tests\Request\Result;
 
 use GuzzleHttp\Exception\RequestException;
+use Hmaus\Spas\Formatter\FormatterService;
+use Hmaus\Spas\Formatter\JsonFormatter;
 use Hmaus\Spas\Request\Result\ExceptionHandler;
-use Hmaus\Spas\Request\Result\Printer\JsonPrinter;
-use Hmaus\Spas\Request\Result\Printer\Printer;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\RequestInterface;
@@ -27,57 +27,55 @@ class ExceptionHandlerTest extends \PHPUnit_Framework_TestCase
     private $handler;
 
     /**
-     * @var Printer|ObjectProphecy
+     * @var FormatterService|ObjectProphecy
      */
-    private $universalPrinter;
+    private $formatterService;
 
     /**
-     * @var Printer|ObjectProphecy
+     * @var JsonFormatter|ObjectProphecy
      */
-    private $jsonPrinter;
+    private $jsonFormatter;
 
     protected function setUp()
     {
         $this->logger = $this->prophesize(LoggerInterface::class);
-        $this->universalPrinter = $this->prophesize(Printer::class);
+        $this->formatterService = $this->prophesize(FormatterService::class);
 
         $this->handler = new ExceptionHandler(
             $this->logger->reveal(),
-            $this->universalPrinter->reveal()
+            $this->formatterService->reveal()
         );
 
-        $this->jsonPrinter = $this->prophesize(JsonPrinter::class);
+        $this->jsonFormatter = $this->prophesize(JsonFormatter::class);
         $this
-            ->jsonPrinter
-            ->getContentType()
-            ->willReturn('application/json');
-        
-        $this
-            ->handler
-            ->addPrinter($this->jsonPrinter->reveal());
+            ->jsonFormatter
+            ->getContentTypes()
+            ->willReturn(['application/json']);
     }
 
-    public function testUniversalPrinterWillHandleGenericExceptions()
+    public function testLoggerWillWriteGenericExceptions()
     {
+        $message = 'Generic testing error';
+
         $this
-            ->universalPrinter
-            ->printIt(Argument::type('string'), Argument::exact('error'))
+            ->logger
+            ->error(Argument::exact($message))
             ->shouldBeCalledTimes(1);
 
-        $genericException = new \Exception('Generic Testing Error');
+        $genericException = new \Exception($message);
 
         $this
             ->handler
             ->handle($genericException);
     }
 
-    public function testUniversalPrinterWillHandleResponselessExceptions()
+    public function testLoggerWillHandleResponselessExceptions()
     {
         $message = 'I do not have a response on me';
 
         $this
-            ->universalPrinter
-            ->printIt(Argument::exact($message), Argument::exact('error'))
+            ->logger
+            ->error(Argument::exact($message))
             ->shouldBeCalledTimes(1);
 
         $request = $this->prophesize(RequestInterface::class);
@@ -91,11 +89,6 @@ class ExceptionHandlerTest extends \PHPUnit_Framework_TestCase
     public function testHandlerWillLogStatusCodeAndReasonPhrase()
     {
         $message = 'I have a response on me';
-
-        $this
-            ->universalPrinter
-            ->printIt(Argument::cetera())
-            ->shouldNotBeCalled();
         
         $this
             ->logger
@@ -133,14 +126,9 @@ class ExceptionHandlerTest extends \PHPUnit_Framework_TestCase
         $body = 'I am the body';
 
         $this
-            ->universalPrinter
-            ->printIt(Argument::cetera())
-            ->shouldNotBeCalled();
-
-        $this
             ->logger
             ->error(Argument::type('string'))
-            ->shouldBeCalledTimes(1);
+            ->shouldBeCalledTimes(2);
 
         $request = $this->prophesize(RequestInterface::class);
 
@@ -164,56 +152,13 @@ class ExceptionHandlerTest extends \PHPUnit_Framework_TestCase
             ->willReturn('application/json');
 
         $this
-            ->jsonPrinter
-            ->printIt(Argument::exact($body), Argument::exact(LogLevel::ERROR))
-            ->shouldBeCalledTimes(1);
-
-        $responseLessException = new RequestException($message, $request->reveal(), $response->reveal());
+            ->formatterService
+            ->getFormatterByContentType(Argument::exact('application/json'))
+            ->willReturn($this->jsonFormatter->reveal());
 
         $this
-            ->handler
-            ->handle($responseLessException);
-    }
-
-    public function testUniversalPrinterWillHandleResponsesWithUnknownContentType()
-    {
-        $message = 'I have a response on me';
-        $body = 'I am the body';
-
-        $this
-            ->logger
-            ->error(Argument::type('string'))
-            ->shouldBeCalledTimes(1);
-
-        $request = $this->prophesize(RequestInterface::class);
-
-        $responseBody = $this->prophesize(StreamInterface::class);
-        $responseBody
-            ->getContents()
-            ->willReturn($body);
-
-        $response = $this->prophesize(ResponseInterface::class);
-        $response
-            ->getStatusCode()
-            ->willReturn(500);
-        $response
-            ->getReasonPhrase()
-            ->willReturn('I am the reason');
-        $response
-            ->getBody()
-            ->willReturn($responseBody->reveal());
-        $response
-            ->getHeaderLine(Argument::exact('content-type'))
-            ->willReturn('unknown content type');
-
-        $this
-            ->jsonPrinter
-            ->printIt(Argument::exact($body), Argument::exact(LogLevel::ERROR))
-            ->shouldNotBeCalled();
-
-        $this
-            ->universalPrinter
-            ->printIt(Argument::exact($body), Argument::exact(LogLevel::ERROR))
+            ->jsonFormatter
+            ->format(Argument::exact($body))
             ->shouldBeCalledTimes(1);
 
         $responseLessException = new RequestException($message, $request->reveal(), $response->reveal());

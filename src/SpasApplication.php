@@ -2,6 +2,7 @@
 
 namespace Hmaus\Spas;
 
+use Hmaus\Spas\Formatter\CompilerPass\FormatterPass;
 use Hmaus\Spas\Logger\TruncateableConsoleLogger;
 use Hmaus\Spas\Validation\CompilerPass\AddValidatorsPass;
 use Psr\Log\LogLevel;
@@ -42,6 +43,7 @@ class SpasApplication extends Application
         $loader->load('Resources/config/validators.xml');
 
         $this->container->addCompilerPass(new AddValidatorsPass());
+        $this->container->addCompilerPass(new FormatterPass());
     }
 
     private function setupCommands()

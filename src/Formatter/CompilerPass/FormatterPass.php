@@ -1,6 +1,6 @@
 <?php
 
-namespace Hmaus\Spas\Request\Result\CompilerPass;
+namespace Hmaus\Spas\Formatter\CompilerPass;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -9,21 +9,21 @@ use Symfony\Component\DependencyInjection\Reference;
 /**
  * @codeCoverageIgnore
  */
-class ExceptionHandlerPass implements CompilerPassInterface
+class FormatterPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        $serviceId = 'hmaus.spas.request.result.exception_handler';
+        $serviceId = 'hmaus.spas.formatter.service';
 
         if (!$container->has($serviceId)) {
             return;
         }
 
         $definition = $container->findDefinition($serviceId);
-        $taggedServices = $container->findTaggedServiceIds('hmaus.spas.tag.result_printer');
+        $taggedServices = $container->findTaggedServiceIds('hmaus.spas.tag.formatter');
 
         foreach (array_keys($taggedServices) as $id) {
-            $definition->addMethodCall('addPrinter', [new Reference($id)]);
+            $definition->addMethodCall('addFormatter', [new Reference($id)]);
         }
     }
 }

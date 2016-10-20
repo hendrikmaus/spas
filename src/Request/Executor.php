@@ -4,12 +4,11 @@ namespace Hmaus\Spas\Request;
 
 use GuzzleHttp\UriTemplate;
 use Hmaus\Spas\Event\HttpTransaction;
+use Hmaus\Spas\Formatter\FormatterService;
 use Hmaus\Spas\Request\Result\ExceptionHandler;
-use Hmaus\Spas\Request\Result\Printer\ValidationReportPrinter;
 use Hmaus\Spas\Validation\ValidatorService;
 use Hmaus\SpasParser\ParsedRequest;
 use Psr\Log\LoggerInterface;
-use Psr\Log\LogLevel;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\Event;
@@ -64,13 +63,19 @@ class Executor
      */
     private $hookData = '';
 
+    /**
+     * @var FormatterService
+     */
+    private $formatterService;
+
     public function __construct(
         LoggerInterface $logger,
         EventDispatcherInterface $dispatcher,
         HttpClient $http,
         ValidatorService $validator,
         Filesystem $filesystem,
-        ExceptionHandler $exceptionHandler
+        ExceptionHandler $exceptionHandler,
+        FormatterService $formatterService
     ) {
         $this->logger = $logger;
         $this->dispatcher = $dispatcher;
@@ -78,6 +83,7 @@ class Executor
         $this->validator = $validator;
         $this->filesystem = $filesystem;
         $this->exceptionHandler = $exceptionHandler;
+        $this->formatterService = $formatterService;
     }
 
     /**
@@ -181,10 +187,16 @@ class Executor
     private function printValidatorReport()
     {
         if (!$this->validator->isValid()) {
-            $printer = new ValidationReportPrinter($this->logger);
-            $printer->printIt(
-                $this->validator->getReport(),
-                LogLevel::ERROR
+            $formatter = $this
+                ->formatterService
+                ->getFormatterByContentType(
+                    $this->validator->getContentType()
+                );
+
+            $this->logger->error(
+                $formatter->format(
+                    $this->validator->getReport()
+                )
             );
         }
         else {

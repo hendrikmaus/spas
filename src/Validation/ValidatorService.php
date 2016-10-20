@@ -102,4 +102,9 @@ class ValidatorService
     {
         return $this->report;
     }
+
+    public function getContentType()
+    {
+        return 'application/vnd.hmaus.spas.validation.error';
+    }
 }

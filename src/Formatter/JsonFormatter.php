@@ -1,21 +1,28 @@
 <?php
 
-namespace Hmaus\Spas\Request\Result\Printer;
+namespace Hmaus\Spas\Formatter;
 
-class JsonPrinter extends Printer
+class JsonFormatter implements Formatter
 {
-    /**
-     * @param string $data
-     * @param string $logLevel
-     */
-    public function printIt($data, string $logLevel)
+    public function format($data) : string
     {
-        $this->log($logLevel, $this->indent($data));
+        return $this->isAlreadyIndented($data);
     }
 
-    public function getContentType() : string
+    public function getContentTypes()
     {
-        return 'application/json';
+        return [
+            'application/json'
+        ];
+    }
+
+    private function isAlreadyIndented(string $data) : string
+    {
+        if (strpos(substr($data, 0, 4), "\n")) {
+            return $data;
+        }
+
+        return $this->indent($data);
     }
 
     /**
@@ -73,5 +80,4 @@ class JsonPrinter extends Printer
 
         return $result;
     }
-
 }

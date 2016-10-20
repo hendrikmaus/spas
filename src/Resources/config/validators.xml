@@ -21,6 +21,7 @@
             <argument type="service" id="hmaus.spas.json_schema.validator"/>
             <tag name="hmaus.spas.tag.validator"/>
         </service>
+        <service class="JsonSchema\Validator" id="hmaus.spas.json_schema.validator"/>
 
     </services>
 </container>

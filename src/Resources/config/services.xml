@@ -5,12 +5,13 @@
 
     <services>
         <service class="Hmaus\Spas\SpasApplication" id="hmaus.spas.spas_application"/>
+        <service class="Symfony\Component\EventDispatcher\EventDispatcher" id="hmaus.spas.event_dispatcher"/>
 
+        <!-- Logging -->
         <service class="Hmaus\Spas\Logger\TruncateableConsoleLogger" id="hmaus.spas.logger"/>
         <service class="Symfony\Component\Console\Style\SymfonyStyle" id="hmaus.spas.io"/>
 
-        <service class="Hmaus\Spas\Filesystem\InputFinder" id="hmaus.spas.filesystem.input_finder"/>
-
+        <!-- HTTP -->
         <service class="GuzzleHttp\Client" id="hmaus.spas.httpclient"/>
 
         <service class="Hmaus\Spas\Request\HttpClient" id="hmaus.spas.request.httpclient">
@@ -19,8 +20,11 @@
             <argument type="service" id="hmaus.spas.spas_application"/>
         </service>
 
+        <!-- Files and Filesystem -->
         <service class="Symfony\Component\Filesystem\Filesystem" id="hmaus.spas.filesystem"/>
+        <service class="Hmaus\Spas\Filesystem\InputFinder" id="hmaus.spas.filesystem.input_finder"/>
 
+        <!-- Execution of tests -->
         <service class="Hmaus\Spas\Request\Executor" id="hmaus.spas.request.executor">
             <argument type="service" id="hmaus.spas.logger"/>
             <argument type="service" id="hmaus.spas.event_dispatcher"/>
@@ -28,37 +32,24 @@
             <argument type="service" id="hmaus.spas.validator"/>
             <argument type="service" id="hmaus.spas.filesystem"/>
             <argument type="service" id="hmaus.spas.request.result.exception_handler"/>
+            <argument type="service" id="hmaus.spas.formatter.service"/>
         </service>
 
-        <service class="Symfony\Component\EventDispatcher\EventDispatcher" id="hmaus.spas.event_dispatcher"/>
-
-        <service class="JsonSchema\Validator" id="hmaus.spas.json_schema.validator"/>
-
+        <!-- Error and Exception Handling -->
         <service class="Hmaus\Spas\Request\Result\ExceptionHandler" id="hmaus.spas.request.result.exception_handler">
             <argument type="service" id="hmaus.spas.logger"/>
-            <argument type="service" id="hmaus.spas.request.result.printer.universal_printer"/>
+            <argument type="service" id="hmaus.spas.formatter.service"/>
         </service>
 
-        <!-- Printers -->
-        <service class="Hmaus\Spas\Request\Result\Printer\Printer" id="hmaus.spas.request.result.printer" abstract="true">
-            <argument type="service" id="hmaus.spas.logger"/>
-        </service>
-        <service class="Hmaus\Spas\Request\Result\Printer\JsonPrinter"
-                 id="hmaus.spas.request.result.printer.json_printer"
-                 parent="hmaus.spas.request.result.printer">
-            <tag name="hmaus.spas.tag.result_printer"/>
+        <!-- Formatting -->
+        <service class="Hmaus\Spas\Formatter\FormatterService" id="hmaus.spas.formatter.service"/>
+
+        <service class="Hmaus\Spas\Formatter\JsonFormatter" id="hmaus.spas.formatter.json">
+            <tag name="hmaus.spas.tag.formatter"/>
         </service>
 
-        <service class="Hmaus\Spas\Request\Result\Printer\ValidationReportPrinter"
-                 id="hmaus.spas.request.result.printer.validation_report_printer"
-                 parent="hmaus.spas.request.result.printer">
-            <tag name="hmaus.spas.tag.result_printer"/>
-        </service>
-
-        <!-- universal printer is a fallback mechanism; not included in the regular printer set; hence no tag -->
-        <service class="Hmaus\Spas\Request\Result\Printer\UniversalPrinter"
-                 id="hmaus.spas.request.result.printer.universal_printer"
-                 parent="hmaus.spas.request.result.printer">
+        <service class="Hmaus\Spas\Formatter\ValidationErrorFormatter" id="hmaus.spas.formatter.validation_error">
+            <tag name="hmaus.spas.tag.formatter"/>
         </service>
     </services>
 </container>
