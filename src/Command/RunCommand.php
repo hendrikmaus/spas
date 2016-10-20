@@ -80,11 +80,32 @@ class RunCommand extends Command
                 null,
                 InputOption::VALUE_NONE,
                 'Do not truncate log outputs, useful when running filtered commands'
-            )
-        ;
+            );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $inputPath = $this->getInputPath($input);
+        $requestProviderClassName = $this->getRequestProvider($input);
+        $jsonDecodedInputData = $this->getDecodedInputData($inputPath);
+
+        /** @var Parser $requestProvider */
+        $requestProvider = new $requestProviderClassName();
+        $requests = $requestProvider->parse($jsonDecodedInputData);
+
+        $executor = $this->container->get('hmaus.spas.request.executor');
+        $executor->run($requests, $input, $output);
+
+        // todo event to propagate the report
+
+        return 0;
+    }
+
+    /**
+     * @param InputInterface $input
+     * @return string
+     */
+    private function getInputPath(InputInterface $input) : string
     {
         $inputPath = $input->getOption('file');
 
@@ -93,7 +114,15 @@ class RunCommand extends Command
                 sprintf('Given input file "%s" does not exist.', $inputPath)
             );
         }
+        return $inputPath;
+    }
 
+    /**
+     * @param InputInterface $input
+     * @return string
+     */
+    private function getRequestProvider(InputInterface $input) : string
+    {
         $requestProviderClassName = $input->getOption('request_provider');
 
         if (!class_exists($requestProviderClassName)) {
@@ -104,7 +133,15 @@ class RunCommand extends Command
                 )
             );
         }
+        return $requestProviderClassName;
+    }
 
+    /**
+     * @param $inputPath
+     * @return array
+     */
+    private function getDecodedInputData(string $inputPath) : array
+    {
         $rawInputData = file_get_contents($inputPath);
 
         if ($rawInputData === false) {
@@ -120,16 +157,6 @@ class RunCommand extends Command
                 sprintf('Given input file "%s" could not be json decoded', $inputPath)
             );
         }
-
-        /** @var Parser $requestProvider */
-        $requestProvider = new $requestProviderClassName();
-        $requests = $requestProvider->parse($jsonDecodedInputData);
-
-        $executor = $this->container->get('hmaus.spas.request.executor');
-        $executor->run($requests, $input, $output);
-
-        // todo event to propagate the report
-
-        return 0;
+        return $jsonDecodedInputData;
     }
 }
