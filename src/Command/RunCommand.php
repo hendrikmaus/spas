@@ -34,7 +34,6 @@ class RunCommand extends Command
             ->setDescription('Run test suite')
             ->addOption(
                 'file',
-                // todo should also support reading from stdin; one lies to pipe content in
                 'f',
                 InputOption::VALUE_REQUIRED,
                 'Path to the input file to use'
@@ -50,7 +49,7 @@ class RunCommand extends Command
                 'base_uri',
                 'b',
                 InputOption::VALUE_REQUIRED,
-                'Base URI to build requests with'
+                'Base URI to build requests with, e.g. https://example.com'
             )
             ->addOption(
                 'request_provider',
@@ -75,6 +74,12 @@ class RunCommand extends Command
                 null,
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
                 'Only run tests listed using filter option'
+            )
+            ->addOption(
+                'full_output',
+                null,
+                InputOption::VALUE_NONE,
+                'Do not truncate log outputs, useful when running filtered commands'
             )
         ;
     }
