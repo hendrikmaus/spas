@@ -6,7 +6,7 @@
     <services>
         <service class="Hmaus\Spas\SpasApplication" id="hmaus.spas.spas_application"/>
 
-        <service class="Symfony\Component\Console\Logger\ConsoleLogger" id="hmaus.spas.logger"/>
+        <service class="Hmaus\Spas\Logger\TruncateableConsoleLogger" id="hmaus.spas.logger"/>
         <service class="Symfony\Component\Console\Style\SymfonyStyle" id="hmaus.spas.io"/>
 
         <service class="Hmaus\Spas\Filesystem\InputFinder" id="hmaus.spas.filesystem.input_finder"/>

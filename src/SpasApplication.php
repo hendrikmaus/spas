@@ -2,13 +2,13 @@
 
 namespace Hmaus\Spas;
 
+use Hmaus\Spas\Logger\TruncateableConsoleLogger;
 use Hmaus\Spas\Validation\CompilerPass\AddValidatorsPass;
 use Psr\Log\LogLevel;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -59,7 +59,7 @@ class SpasApplication extends Application
             $output = new ConsoleOutput();
         }
 
-        $logger = new ConsoleLogger(
+        $logger = new TruncateableConsoleLogger(
             $output,
             [
                 LogLevel::NOTICE => OutputInterface::VERBOSITY_NORMAL,

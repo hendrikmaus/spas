@@ -42,13 +42,13 @@ class Printer
      */
     final protected function log(string $logLevel, string $message)
     {
-        if ($this->maximumPrintLength > 0) {
+        /*if ($this->maximumPrintLength > 0) {
             if (strlen($message) > $this->maximumPrintLength) {
                 $message = sprintf(
                     "%s\n\n(truncated)\n", substr($message, 0, $this->maximumPrintLength)
                 );
             }
-        }
+        }*/
 
         $this->logger->log($logLevel, $message);
     }

@@ -89,9 +89,9 @@ class RunCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $inputPath = $this->getInputPath($input);
         $requestProviderClassName = $this->getRequestProvider($input);
-        $jsonDecodedInputData = $this->getDecodedInputData($inputPath);
+        $jsonDecodedInputData = $this->getDecodedInputData($this->getInputPath($input));
+        $this->configureLogger($input);
 
         /** @var Parser $requestProvider */
         $requestProvider = new $requestProviderClassName();
@@ -155,5 +155,14 @@ class RunCommand extends Command
             );
         }
         return $jsonDecodedInputData;
+    }
+
+    /**
+     * @param InputInterface $input
+     */
+    private function configureLogger(InputInterface $input)
+    {
+        $fullLogging = $input->getOption('full_output');
+        $this->container->get('hmaus.spas.logger')->setShouldTruncate(!$fullLogging);
     }
 }
