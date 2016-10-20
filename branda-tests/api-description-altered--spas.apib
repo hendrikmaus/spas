@@ -75,9 +75,29 @@ Test case for json schema validator.
 + Response 200 (application/json)
     + Attributes (Camera)
 
+# GET /exception
+Spas thinks this has to return a 200, but it will return a 500 
+
++ Response 200 (application/json)
+    
+    ```
+    {
+      "type": "http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html",
+      "title": "Bad Request",
+      "detail": "Example exception",
+      "code": "EXCEPTION_EXAMPLE"
+    }
+    ```
+
 # Data Structures
 
 ## Camera
 + id: `cf4536` (string, required)
 + model: `80D` (string, required)
 + vendor: `Canon` (string, required)
+
+## Exception
++ type: `http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html` (string, required)
++ title: `Bad Request` (string, required)
++ detail: `Example exception` (string, required)
++ code: `EXCEPTION_EXAMPLE` (string, required)

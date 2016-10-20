@@ -35,9 +35,20 @@ Test case for json schema validator.
 
 + Response 200 (application/json)
     + Attributes (Camera)
+    
+# GET /exception
+
++ Response 500 (application/json)
+    + Attributes (Exception)
 
 # Data Structures
 
 ## Camera
 + id: `56` (number, required)
 + vendor: `Canon` (string, required)
+
+## Exception
++ type: `http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html` (string, required)
++ title: `Bad Request` (string, required)
++ detail: `Example exception` (string, required)
++ code: `EXCEPTION_EXAMPLE` (string, required)
