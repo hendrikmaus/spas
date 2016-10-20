@@ -89,8 +89,9 @@ class RunCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $inputPath = $this->getInputPath($input);
         $requestProviderClassName = $this->getRequestProvider($input);
-        $jsonDecodedInputData = $this->getDecodedInputData($this->getInputPath($input));
+        $jsonDecodedInputData = $this->getDecodedInputData($inputPath);
         $this->configureLogger($input);
 
         /** @var Parser $requestProvider */
