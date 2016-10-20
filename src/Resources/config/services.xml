@@ -9,6 +9,8 @@
         <service class="Symfony\Component\Console\Logger\ConsoleLogger" id="hmaus.spas.logger"/>
         <service class="Symfony\Component\Console\Style\SymfonyStyle" id="hmaus.spas.io"/>
 
+        <service class="Hmaus\Spas\Filesystem\InputFinder" id="hmaus.spas.filesystem.input_finder"/>
+
         <service class="GuzzleHttp\Client" id="hmaus.spas.httpclient"/>
 
         <service class="Hmaus\Spas\Request\HttpClient" id="hmaus.spas.request.httpclient">

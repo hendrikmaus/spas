@@ -6,6 +6,7 @@
     <services>
         <service class="Hmaus\Spas\Command\RunCommand" id="hmaus.spas.command.run">
             <argument type="service" id="service_container"/>
+            <argument type="service" id="hmaus.spas.filesystem.input_finder"/>
         </service>
     </services>
 </container>

@@ -2,6 +2,7 @@
 
 namespace Hmaus\Spas\Command;
 
+use Hmaus\Spas\Filesystem\InputFinder;
 use Hmaus\SpasParser\Parser;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\InvalidOptionException;
@@ -10,9 +11,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-/**
- * @codeCoverageIgnore
- */
 class RunCommand extends Command
 {
     /**
@@ -20,11 +18,17 @@ class RunCommand extends Command
      */
     private $container;
 
-    public function __construct(ContainerInterface $container)
+    /**
+     * @var InputFinder
+     */
+    private $inputFinder;
+
+    public function __construct(ContainerInterface $container, InputFinder $inputFinder)
     {
         parent::__construct();
 
         $this->container = $container;
+        $this->inputFinder = $inputFinder;
     }
 
     protected function configure()
@@ -142,14 +146,7 @@ class RunCommand extends Command
      */
     private function getDecodedInputData(string $inputPath) : array
     {
-        $rawInputData = file_get_contents($inputPath);
-
-        if ($rawInputData === false) {
-            throw new InvalidOptionException(
-                sprintf('Given input file "%s" could not be read as string.', $inputPath)
-            );
-        }
-
+        $rawInputData = $this->inputFinder->getContents($inputPath);
         $jsonDecodedInputData = json_decode($rawInputData, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
