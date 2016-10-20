@@ -3,6 +3,7 @@
 namespace Hmaus\Spas\Tests\Command {
     use Hmaus\Spas\Command\RunCommand;
     use Hmaus\Spas\Filesystem\InputFinder;
+    use Hmaus\Spas\Logger\TruncateableConsoleLogger;
     use Hmaus\Spas\Request\Executor;
     use Prophecy\Argument;
     use Prophecy\Prophecy\ObjectProphecy;
@@ -56,6 +57,11 @@ namespace Hmaus\Spas\Tests\Command {
          */
         private $filename = '/i/am/file';
 
+        /**
+         * @var TruncateableConsoleLogger|ObjectProphecy
+         */
+        private $logger;
+
         protected function setUp()
         {
             $this->container = $this->prophesize(ContainerInterface::class);
@@ -64,6 +70,7 @@ namespace Hmaus\Spas\Tests\Command {
             $this->output = $this->prophesize(OutputInterface::class);
             $this->executor = $this->prophesize(Executor::class);
             $this->filesystem = $this->prophesize(Filesystem::class);
+            $this->logger = $this->prophesize(TruncateableConsoleLogger::class);
 
             $this
                 ->container
@@ -79,6 +86,13 @@ namespace Hmaus\Spas\Tests\Command {
                     $this->executor->reveal()
                 );
 
+            $this
+                ->container
+                ->get(Argument::exact('hmaus.spas.logger'))
+                ->willReturn(
+                    $this->logger->reveal()
+                );
+
             $this->command = new RunCommand(
                 $this->container->reveal(),
                 $this->inputFinder->reveal()
@@ -89,7 +103,7 @@ namespace Hmaus\Spas\Tests\Command {
          * @expectedException \Symfony\Component\Console\Exception\InvalidOptionException
          * @expectedExceptionMessage Given input file "/i/am/file"
          */
-        public function testThrowsExceptionIFInputPathDoesNotExist()
+        public function testThrowsExceptionIfInputPathDoesNotExist()
         {
             $this
                 ->input
@@ -180,6 +194,11 @@ namespace Hmaus\Spas\Tests\Command {
                 ->input
                 ->getOption(Argument::exact('request_provider'))
                 ->willReturn('\Hmaus\Spas\Parser\Apib\ApibParsedRequestsProvider');
+
+            $this
+                ->input
+                ->getOption(Argument::exact('full_output'))
+                ->willReturn(true);
 
             // Make `getDecodedInputData` pass
             $this

@@ -7,7 +7,7 @@ use Symfony\Component\Console\Logger\ConsoleLogger;
 class TruncateableConsoleLogger extends ConsoleLogger
 {
     private $maxLength = 300;
-    private $shouldTruncate = false;
+    private $shouldTruncate = true;
 
     public function log($level, $message, array $context = [])
     {
