@@ -99,7 +99,7 @@ class RunCommand extends Command
         if (!class_exists($requestProviderClassName)) {
             throw new InvalidOptionException(
                 sprintf(
-                    'Could not load %s; make sure to have it available using the autloader',
+                    'Could not load request provider class "%s"; is it available to the autoloader?',
                     $requestProviderClassName
                 )
             );
