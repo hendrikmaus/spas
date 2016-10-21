@@ -24,7 +24,7 @@ class HttpClientTest extends \PHPUnit_Framework_TestCase
 
         $app
             ->getVersion()
-            ->willReturn('1')
+            ->willReturn('0.1.0')
             ->shouldBeCalledTimes(1);
 
         $client = new HttpClient(
@@ -54,7 +54,7 @@ class HttpClientTest extends \PHPUnit_Framework_TestCase
                     'headers' => [
                         'x-trv-test0' => ['zero'],
                         'x-trv-test1' => ['one'],
-                        'User-Agent' => 'spas/1', // user agent is added by the http client
+                        'User-Agent' => 'spas/v0.1.0', // user agent is added by the http client
                     ],
                     'body' => $parsedRequest->getContent()
                 ])
