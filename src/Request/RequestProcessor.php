@@ -49,11 +49,16 @@ class RequestProcessor
      * @var FormatterService
      */
     private $formatterService;
-    
+
     /**
      * @var OutputInterface
      */
     private $output;
+
+    /**
+     * @var FilterHandler
+     */
+    private $filterHandler;
 
     public function __construct(
         InputInterface $input,
@@ -63,7 +68,9 @@ class RequestProcessor
         ValidatorService $validatorService,
         HttpClient $http,
         ExceptionHandler $exceptionHandler,
-        FormatterService $formatterService)
+        FormatterService $formatterService,
+        FilterHandler $filterHandler
+    )
     {
         $this->logger = $logger;
         $this->dispatcher = $dispatcher;
@@ -73,13 +80,14 @@ class RequestProcessor
         $this->formatterService = $formatterService;
         $this->input = $input;
         $this->output = $output;
+        $this->filterHandler = $filterHandler;
     }
 
     public function process(ParsedRequest $request)
     {
         $this->logger->info($request->getName());
 
-        $this->applyFilters($request);
+        $this->filterHandler->filter($request);
 
         $request->setBaseUrl($this->input->getOption('base_uri'));
         $request->setHref(
@@ -105,20 +113,6 @@ class RequestProcessor
             $this->validator->reset();
         } catch (\Exception $exception) {
             $this->exceptionHandler->handle($exception);
-        }
-    }
-
-    /**
-     * @param ParsedRequest $request
-     */
-    private function applyFilters(ParsedRequest $request)
-    {
-        $filters = $this->input->getOption('filter');
-
-        if ($filters) {
-            if (!in_array($request->getName(), $filters)) {
-                $request->setEnabled(false);
-            }
         }
     }
 

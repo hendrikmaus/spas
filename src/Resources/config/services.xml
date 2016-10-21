@@ -50,6 +50,11 @@
             <argument type="service" id="hmaus.spas.request.httpclient"/>
             <argument type="service" id="hmaus.spas.request.result.exception_handler"/>
             <argument type="service" id="hmaus.spas.formatter.service"/>
+            <argument type="service" id="hmaus.spas.request.filter_handler"/>
+        </service>
+
+        <service class="Hmaus\Spas\Request\FilterHandler" id="hmaus.spas.request.filter_handler">
+            <argument type="service" id="hmaus.spas.console_input"/>
         </service>
 
         <!-- Error and Exception Handling -->
