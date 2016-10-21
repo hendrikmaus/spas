@@ -26,9 +26,9 @@ class SpasApplication extends Application
      */
     private $container;
 
-    public function __construct()
+    public function __construct($name, $version)
     {
-        parent::__construct();
+        parent::__construct($name, $version);
 
         $this->initContainer();
         $this->setupCommands();
@@ -74,6 +74,8 @@ class SpasApplication extends Application
 
         $io = new SymfonyStyle($input, $output);
         $this->container->set('hmaus.spas.io', $io);
+
+        $this->container->set('hmaus.spas.spas_application', $this);
 
         // make sure to compile the container so compiler passes run
         $this->container->compile();

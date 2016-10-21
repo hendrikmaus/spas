@@ -61,7 +61,7 @@ class HttpClient
         }
 
         $options['headers']['User-Agent'] = sprintf(
-            '%s/%s',
+            '%s/v%s',
             $this->application->getName(),
             $this->application->getVersion()
         );
