@@ -99,7 +99,7 @@ class RunCommand extends Command
         $requests = $requestProvider->parse($jsonDecodedInputData);
 
         $executor = $this->container->get('hmaus.spas.request.executor');
-        $executor->run($requests, $input, $output);
+        $executor->run($requests);
 
         // todo event to propagate the report
 

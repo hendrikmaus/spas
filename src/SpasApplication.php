@@ -56,10 +56,12 @@ class SpasApplication extends Application
         if (null === $input) {
             $input = new ArgvInput();
         }
+        $this->container->set('hmaus.spas.console_input', $input);
 
         if (null === $output) {
             $output = new ConsoleOutput();
         }
+        $this->container->set('hmaus.spas.console_output', $output);
 
         $logger = new TruncateableConsoleLogger(
             $output,

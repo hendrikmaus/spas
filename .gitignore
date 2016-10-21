@@ -4,6 +4,6 @@
 /phpunit.xml
 /ext/
 /sandbox
-/hooks
+/hooks/webservice*
 /test-*.sh
 /*.refract.json

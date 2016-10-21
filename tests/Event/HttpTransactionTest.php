@@ -7,7 +7,7 @@ use Hmaus\SpasParser\SpasRequest;
 
 class HttpTransactionTest extends \PHPUnit_Framework_TestCase
 {
-    public function testCanSetAndgetRequest()
+    public function testCanSetAndGetRequest()
     {
         $request = new SpasRequest();
         $event = new HttpTransaction($request);
