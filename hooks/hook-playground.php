@@ -19,7 +19,7 @@
  */
 
 use Hmaus\Spas\Event\BeforeAll;
-use Hmaus\Spas\Event\HttpTransaction;
+use Hmaus\Spas\Event\BeforeEach;
 use Hmaus\Spas\Request\HookHandler;
 
 /* Hooks are loaded by `Hmaus\Spas\Request\HookHandler`
@@ -47,7 +47,7 @@ $this->getDispatcher()->addListener(BeforeAll::class, function (BeforeAll $event
 
 
 /* Let's skip a request: */
-$this->getDispatcher()->addListener(HttpTransaction::NAME, function(HttpTransaction $event)
+$this->getDispatcher()->addListener(BeforeEach::NAME, function(BeforeEach $event)
 {
     $request = $event->getRequest();
 

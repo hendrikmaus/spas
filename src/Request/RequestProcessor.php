@@ -3,7 +3,8 @@
 namespace Hmaus\Spas\Request;
 
 use GuzzleHttp\UriTemplate;
-use Hmaus\Spas\Event\HttpTransaction;
+use Hmaus\Spas\Event\AfterEach;
+use Hmaus\Spas\Event\BeforeEach;
 use Hmaus\Spas\Formatter\FormatterService;
 use Hmaus\Spas\Request\Result\ExceptionHandler;
 use Hmaus\Spas\Validation\ValidatorService;
@@ -85,22 +86,28 @@ class RequestProcessor
 
     public function process(ParsedRequest $request)
     {
+        $this->dispatcher->dispatch(BeforeEach::NAME, new BeforeEach($request));
+
         $this->logger->info($request->getName());
 
+        // todo event BeforeFilter?
         $this->filterHandler->filter($request);
+        // todo event AfterFilter?
 
         $request->setBaseUrl($this->input->getOption('base_uri'));
+
+        // todo event BeforeUriExpansion?
         $request->setHref(
             (new UriTemplate())->expand($request->getHref(), $request->getParams()->all())
         );
+        // todo event AfterUriExpansion?
 
         if (!$request->isEnabled()) {
-            $this->printDisabled($request);
+            $this->logger->info('Disabled');
             return;
         }
 
         try {
-            $this->dispatcher->dispatch(HttpTransaction::NAME, new HttpTransaction($request));
             $this->printRequest($request);
 
             $response = $this->http->request($request);
@@ -108,12 +115,17 @@ class RequestProcessor
             // todo I guess here would be the right spot to look at repetition for polling
             // todo event listeners could flag the request as to be repeated
 
+            // todo event BeforeValidation
             $this->validator->validate($request, $response);
+            // todo event AfterValidation
             $this->printValidatorReport();
             $this->validator->reset();
         } catch (\Exception $exception) {
+            // todo event Exception
             $this->exceptionHandler->handle($exception);
         }
+
+        $this->dispatcher->dispatch(AfterEach::NAME, new AfterEach($request));
     }
 
     /**
@@ -123,16 +135,6 @@ class RequestProcessor
     {
         $this->logger->info(
             sprintf('%d %s', $response->getStatusCode(), $response->getReasonPhrase())
-        );
-    }
-
-    /**
-     * @param ParsedRequest $request
-     */
-    private function printDisabled(ParsedRequest $request)
-    {
-        $this->logger->info(
-            sprintf('Disabled', $request->getName())
         );
     }
 
@@ -162,7 +164,9 @@ class RequestProcessor
         }
     }
 
-
+    /**
+     * Log validation result to the console
+     */
     private function printValidatorReport()
     {
         if (!$this->validator->isValid()) {

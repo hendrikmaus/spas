@@ -5,7 +5,6 @@ namespace Hmaus\Spas\Request;
 use GuzzleHttp\Client;
 use Hmaus\Spas\SpasApplication;
 use Hmaus\SpasParser\ParsedRequest;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
 class HttpClient

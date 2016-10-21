@@ -49,7 +49,6 @@ class Executor
     public function run(array $requests)
     {
         $this->hookHandler->includeHooks();
-
         $this->dispatcher->dispatch(BeforeAll::NAME, new BeforeAll($requests));
 
         foreach ($requests as $request) {
@@ -58,11 +57,8 @@ class Executor
             $this->requestProcessor->process($request);
             $this->logger->info('-----------------');
         }
-        $this->logger->info('');
 
+        $this->logger->info('');
         $this->dispatcher->dispatch(AfterAll::NAME, new AfterAll($requests));
     }
-
-
-
 }
