@@ -43,7 +43,6 @@
 
         <service class="Hmaus\Spas\Request\RequestProcessor" id="hmaus.spas.request.processor">
             <argument type="service" id="hmaus.spas.console_input"/>
-            <argument type="service" id="hmaus.spas.console_output"/>
             <argument type="service" id="hmaus.spas.logger"/>
             <argument type="service" id="hmaus.spas.event_dispatcher"/>
             <argument type="service" id="hmaus.spas.validator"/>

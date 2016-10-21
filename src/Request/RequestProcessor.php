@@ -11,8 +11,7 @@ use Hmaus\Spas\Validation\ValidatorService;
 use Hmaus\SpasParser\ParsedRequest;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class RequestProcessor
 {
@@ -27,7 +26,7 @@ class RequestProcessor
     private $input;
 
     /**
-     * @var EventDispatcher
+     * @var EventDispatcherInterface
      */
     private $dispatcher;
 
@@ -52,20 +51,14 @@ class RequestProcessor
     private $formatterService;
 
     /**
-     * @var OutputInterface
-     */
-    private $output;
-
-    /**
      * @var FilterHandler
      */
     private $filterHandler;
 
     public function __construct(
         InputInterface $input,
-        OutputInterface $output,
         LoggerInterface $logger,
-        EventDispatcher $dispatcher,
+        EventDispatcherInterface $dispatcher,
         ValidatorService $validatorService,
         HttpClient $http,
         ExceptionHandler $exceptionHandler,
@@ -80,7 +73,6 @@ class RequestProcessor
         $this->exceptionHandler = $exceptionHandler;
         $this->formatterService = $formatterService;
         $this->input = $input;
-        $this->output = $output;
         $this->filterHandler = $filterHandler;
     }
 
@@ -104,6 +96,7 @@ class RequestProcessor
 
         if (!$request->isEnabled()) {
             $this->logger->info('Disabled');
+            $this->dispatcher->dispatch(AfterEach::NAME, new AfterEach($request));
             return;
         }
 
@@ -130,6 +123,7 @@ class RequestProcessor
 
     /**
      * @param $response
+     * @codeCoverageIgnore
      */
     private function printResponse($response)
     {
@@ -140,6 +134,7 @@ class RequestProcessor
 
     /**
      * @param ParsedRequest $request
+     * @codeCoverageIgnore
      */
     private function printRequest(ParsedRequest $request)
     {
