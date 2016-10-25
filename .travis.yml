@@ -1,0 +1,25 @@
+language: php
+
+php:
+  - 7.0
+  - 7.1
+  - hhvm
+
+matrix:
+  fast_finish: true
+  allow_failures:
+    - php: hhvm
+
+before_script:
+  - composer install --prefer-source --no-interaction --dev
+  - git config --global user.name travis-ci
+  - git config --global user.email travis@example.com
+
+script: vendor/bin/phpunit
+
+after_script:
+  - vendor/bin/test-reporter
+
+addons:
+  code_climate:
+    repo_token: 97b66258f23aec4cf808ee7a9becc448c9019045a2b9330803befbe67356bd8b

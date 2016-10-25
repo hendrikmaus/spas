@@ -4,7 +4,7 @@ It tests your API description against a given environment using real HTTP reques
 
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.0-8892BF.svg)](https://php.net/)
 [![Build Status](https://travis-ci.org/hendrikmaus/spas.svg?branch=master)](https://travis-ci.org/hendrikmaus/spas)
-[![codecov](https://codecov.io/gh/hendrikmaus/spas/branch/master/graph/badge.svg)](https://codecov.io/gh/hendrikmaus/spas)
+[![Test Coverage](https://codeclimate.com/github/hendrikmaus/spas/badges/coverage.svg)](https://codeclimate.com/github/hendrikmaus/spas/coverage)
 [![Code Climate](https://codeclimate.com/github/hendrikmaus/spas/badges/gpa.svg)](https://codeclimate.com/github/hendrikmaus/spas)
 
 ## Note
