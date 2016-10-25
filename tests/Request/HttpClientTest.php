@@ -37,8 +37,8 @@ class HttpClientTest extends \PHPUnit_Framework_TestCase
         $parsedRequest->setMethod('GET');
         $parsedRequest->setBaseUrl('http://example.com');
         $parsedRequest->setHref('/health');
-        $parsedRequest->headers->set('X-Trv-Test0', 'zero');
-        $parsedRequest->headers->set('X-Trv-Test1', 'one');
+        $parsedRequest->headers->set('X-Vnd-Test0', 'zero');
+        $parsedRequest->headers->set('X-Vnd-Test1', 'one');
         $parsedRequest->setContent('I am content');
 
         $guzzle
@@ -52,8 +52,8 @@ class HttpClientTest extends \PHPUnit_Framework_TestCase
                     'connect_timeout' => 10,
                     'timeout' => 10,
                     'headers' => [
-                        'x-trv-test0' => ['zero'],
-                        'x-trv-test1' => ['one'],
+                        'x-vnd-test0' => ['zero'],
+                        'x-vnd-test1' => ['one'],
                         'User-Agent' => 'spas/v0.1.0', // user agent is added by the http client
                     ],
                     'body' => $parsedRequest->getContent()
