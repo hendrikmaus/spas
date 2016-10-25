@@ -89,6 +89,11 @@ Spas thinks this has to return a 200, but it will return a 500
     }
     ```
 
+# GET /system/health
+
++ Response 200 (application/json)
+    + Attributes (Health)
+
 # Data Structures
 
 ## Camera
@@ -101,3 +106,6 @@ Spas thinks this has to return a 200, but it will return a 500
 + title: `Bad Request` (string, required)
 + detail: `Example exception` (string, required)
 + code: `EXCEPTION_EXAMPLE` (string, required)
+
+## Health
++ version: `324cbh` (string, required)

@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+vendor/bin/drafter api-description-altered--spas.apib \
+    --output spas-input.apib.refract.json \
+    --format json

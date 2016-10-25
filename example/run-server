@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+vendor/bin/branda mock \
+    --file "api-description--branda.apib"

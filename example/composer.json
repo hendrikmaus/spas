@@ -1,0 +1,36 @@
+{
+  "name": "hmaus/spas-example",
+  "type": "project",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Hendrik Maus",
+      "email": "aidentailor@gmail.com"
+    }
+  ],
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "../"
+    }
+  ],
+  "minimum-stability": "stable",
+  "require": {
+    "hmaus/drafter-installer": "^1.0",
+    "hmaus/spas-parser-apib": "^0.1.2",
+    "hmaus/spas": "dev-master as v1.0.0",
+    "hmaus/branda": "dev-master as v1.0.0"
+  },
+  "extra": {
+    "drafter-installer-tag": "v3.1.3"
+  },
+  "scripts": {
+    "install-drafter": "Hmaus\\Drafter\\Installer::installDrafter",
+    "post-install-cmd": [
+      "@install-drafter"
+    ],
+    "post-update-cmd": [
+      "@install-drafter"
+    ]
+  }
+}

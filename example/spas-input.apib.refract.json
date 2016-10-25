@@ -444,7 +444,26 @@
                           ]
                         }
                       ]
-                    },
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "element": "resource",
+              "meta": {
+                "title": ""
+              },
+              "attributes": {
+                "href": "/system/health"
+              },
+              "content": [
+                {
+                  "element": "transition",
+                  "meta": {
+                    "title": ""
+                  },
+                  "content": [
                     {
                       "element": "httpTransaction",
                       "content": [
@@ -458,7 +477,7 @@
                         {
                           "element": "httpResponse",
                           "attributes": {
-                            "statusCode": "500",
+                            "statusCode": "200",
                             "headers": {
                               "element": "httpHeaders",
                               "content": [
@@ -483,7 +502,7 @@
                               "element": "dataStructure",
                               "content": [
                                 {
-                                  "element": "Exception"
+                                  "element": "Health"
                                 }
                               ]
                             },
@@ -497,7 +516,7 @@
                               "attributes": {
                                 "contentType": "application/json"
                               },
-                              "content": "{\n  \"type\": \"http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html\",\n  \"title\": \"Bad Request\",\n  \"detail\": \"Example exception\",\n  \"code\": \"EXCEPTION_EXAMPLE\"\n}"
+                              "content": "{\n  \"version\": \"324cbh\"\n}"
                             },
                             {
                               "element": "asset",
@@ -509,7 +528,7 @@
                               "attributes": {
                                 "contentType": "application/schema+json"
                               },
-                              "content": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"type\": {\n      \"type\": \"string\"\n    },\n    \"title\": {\n      \"type\": \"string\"\n    },\n    \"detail\": {\n      \"type\": \"string\"\n    },\n    \"code\": {\n      \"type\": \"string\"\n    }\n  },\n  \"required\": [\n    \"type\",\n    \"title\",\n    \"detail\",\n    \"code\"\n  ]\n}"
+                              "content": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"version\": {\n      \"type\": \"string\"\n    }\n  },\n  \"required\": [\n    \"version\"\n  ]\n}"
                             }
                           ]
                         }
@@ -674,6 +693,37 @@
                         "value": {
                           "element": "string",
                           "content": "EXCEPTION_EXAMPLE"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "element": "dataStructure",
+              "content": [
+                {
+                  "element": "object",
+                  "meta": {
+                    "id": "Health"
+                  },
+                  "content": [
+                    {
+                      "element": "member",
+                      "attributes": {
+                        "typeAttributes": [
+                          "required"
+                        ]
+                      },
+                      "content": {
+                        "key": {
+                          "element": "string",
+                          "content": "version"
+                        },
+                        "value": {
+                          "element": "string",
+                          "content": "324cbh"
                         }
                       }
                     }

@@ -41,6 +41,11 @@ Test case for json schema validator.
 + Response 500 (application/json)
     + Attributes (Exception)
 
+# GET /system/health
+
++ Response 200 (application/json)
+    + Attributes (Health)
+
 # Data Structures
 
 ## Camera
@@ -52,3 +57,6 @@ Test case for json schema validator.
 + title: `Bad Request` (string, required)
 + detail: `Example exception` (string, required)
 + code: `EXCEPTION_EXAMPLE` (string, required)
+
+## Health
++ version: `324cbh` (string, required)

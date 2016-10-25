@@ -2,8 +2,8 @@
 /vendor/
 /composer.lock
 /phpunit.xml
-/ext/
-/sandbox
 /hooks/webservice*
-/test-*.sh
+/test-*
 /*.refract.json
+/example/vendor
+/example/composer.lock
