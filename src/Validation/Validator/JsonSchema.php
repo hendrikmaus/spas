@@ -108,5 +108,6 @@ class JsonSchema implements Validator
     {
         $this->errors = [];
         $this->valid  = false;
+        $this->jsonSchemaValidator->reset();
     }
 }
