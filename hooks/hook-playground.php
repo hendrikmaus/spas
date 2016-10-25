@@ -10,7 +10,7 @@
  * --hook_data $'{
  *     "readme": {
  *         "description": "Pass any string into spas and it will be available using $this->getHookData()",
- *         "header": "X-Trv-Api-Key"
+ *         "header": "X-Vnd-Api-Key"
  *     }
  * }'
  * ```
