@@ -40,7 +40,7 @@ class RunCommand extends Command
                 'file',
                 'f',
                 InputOption::VALUE_REQUIRED,
-                'Path to the input file to use'
+                'Path to the input JSON file to use'
             )
             ->addOption(
                 'type',
@@ -56,16 +56,16 @@ class RunCommand extends Command
                 'Base URI to build requests with, e.g. https://example.com'
             )
             ->addOption(
-                'request_provider',
+                'request_parser',
                 'p',
                 InputOption::VALUE_REQUIRED,
-                'Fully qualified class name for the request provider, must be available in autoloader'
+                'Fully qualified class name for a spas-parser implementation, must be available in the autoloader'
             )
             ->addOption(
                 'hook',
                 null,
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-                'Path to hook file(s)'
+                'Path to hook file(s); use multiple --hook options to pass multiple files'
             )
             ->addOption(
                 'hook_data',
@@ -77,13 +77,40 @@ class RunCommand extends Command
                 'filter',
                 null,
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-                'Only run tests listed using filter option'
+                'Only run tests listed using filter option; use multiple --filter options to pass multiple filters'
             )
             ->addOption(
                 'full_output',
                 null,
                 InputOption::VALUE_NONE,
-                'Do not truncate log outputs, useful when running filtered commands'
+                'Do not truncate log outputs, useful when running filtered commands for debugging and inspection'
+            )
+            ->setHelp(
+                <<<'EOF'
+                
+Spas <info>%command.name%</info> builds HTTP requests from a given API Description
+and sends them to the specified environment.
+
+<comment>Usage flow:</comment>
+
+  - Send your API Description through its respective parser
+    to get the parse result as a json file
+  - Call <info>spas run</info> (example below),
+    add the respective spas-parser implementation so spas itself can 
+    understand your parse result
+
+<comment>Example Command:</comment>
+  <info>
+  spas run \
+      --file "api-description.apib.refract.json" \
+      --type apib-refract \
+      --base_uri http://localhost:8000 \
+      --request_parser "\Hmaus\Spas\Parser\Apib"
+  </info>
+
+To implement another request parser, please refer to the respective guide on:
+<fg=blue>https://github.com/hendrikmaus/spas-parser</>
+EOF
             );
     }
 
@@ -128,17 +155,17 @@ class RunCommand extends Command
      */
     private function getRequestProvider(InputInterface $input) : string
     {
-        $requestProviderClassName = $input->getOption('request_provider');
+        $parser = $input->getOption('request_parser');
 
-        if (!class_exists($requestProviderClassName)) {
+        if (!class_exists($parser)) {
             throw new InvalidOptionException(
                 sprintf(
                     'Could not load request provider class "%s"; is it available to the autoloader?',
-                    $requestProviderClassName
+                    $parser
                 )
             );
         }
-        return $requestProviderClassName;
+        return $parser;
     }
 
     /**
@@ -147,15 +174,15 @@ class RunCommand extends Command
      */
     private function getDecodedInputData(string $inputPath) : array
     {
-        $rawInputData = $this->inputFinder->getContents($inputPath);
-        $jsonDecodedInputData = json_decode($rawInputData, true);
+        $rawData = $this->inputFinder->getContents($inputPath);
+        $decodedData = json_decode($rawData, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new InvalidOptionException(
                 sprintf('Given input file "%s" could not be json decoded', $inputPath)
             );
         }
-        return $jsonDecodedInputData;
+        return $decodedData;
     }
 
     /**

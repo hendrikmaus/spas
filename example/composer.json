@@ -17,7 +17,7 @@
   "minimum-stability": "stable",
   "require": {
     "hmaus/drafter-installer": "^1.0",
-    "hmaus/spas-parser-apib": "^0.1.2",
+    "hmaus/spas-parser-apib": "^1.0.0",
     "hmaus/spas": "dev-master as v1.0.0",
     "hmaus/branda": "dev-master as v1.0.0"
   },
