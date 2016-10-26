@@ -3,7 +3,7 @@
 namespace Hmaus\Spas\Command;
 
 use Hmaus\Spas\Filesystem\InputFinder;
-use Hmaus\SpasParser\Parser;
+use Hmaus\Spas\Parser\Parser;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Console\Input\InputInterface;

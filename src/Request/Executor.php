@@ -4,7 +4,7 @@ namespace Hmaus\Spas\Request;
 
 use Hmaus\Spas\Event\AfterAll;
 use Hmaus\Spas\Event\BeforeAll;
-use Hmaus\SpasParser\ParsedRequest;
+use Hmaus\Spas\Parser\ParsedRequest;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 

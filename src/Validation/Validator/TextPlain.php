@@ -5,7 +5,7 @@ namespace Hmaus\Spas\Validation\Validator;
 use GuzzleHttp\Psr7\Response;
 use Hmaus\Spas\Validation\ValidationError;
 use Hmaus\Spas\Validation\Validator;
-use Hmaus\SpasParser\ParsedRequest;
+use Hmaus\Spas\Parser\ParsedRequest;
 use SebastianBergmann\Diff\Differ;
 
 class TextPlain implements Validator

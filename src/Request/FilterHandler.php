@@ -2,7 +2,7 @@
 
 namespace Hmaus\Spas\Request;
 
-use Hmaus\SpasParser\ParsedRequest;
+use Hmaus\Spas\Parser\ParsedRequest;
 use Symfony\Component\Console\Input\InputInterface;
 
 class FilterHandler

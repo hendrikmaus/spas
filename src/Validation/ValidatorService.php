@@ -3,7 +3,7 @@
 namespace Hmaus\Spas\Validation;
 
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
-use Hmaus\SpasParser\ParsedRequest;
+use Hmaus\Spas\Parser\ParsedRequest;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Monolog\Logger;
 

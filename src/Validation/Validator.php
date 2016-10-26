@@ -3,7 +3,7 @@
 namespace Hmaus\Spas\Validation;
 
 use GuzzleHttp\Psr7\Response;
-use Hmaus\SpasParser\ParsedRequest;
+use Hmaus\Spas\Parser\ParsedRequest;
 
 interface Validator
 {

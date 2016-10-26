@@ -5,7 +5,7 @@ namespace Hmaus\Spas\Validation\Validator;
 use GuzzleHttp\Psr7\Response;
 use Hmaus\Spas\Validation\ValidationError;
 use Hmaus\Spas\Validation\Validator;
-use Hmaus\SpasParser\ParsedRequest;
+use Hmaus\Spas\Parser\ParsedRequest;
 
 class NoContent implements Validator
 {

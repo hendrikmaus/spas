@@ -8,7 +8,7 @@ use Hmaus\Spas\Event\BeforeEach;
 use Hmaus\Spas\Formatter\FormatterService;
 use Hmaus\Spas\Request\Result\ExceptionHandler;
 use Hmaus\Spas\Validation\ValidatorService;
-use Hmaus\SpasParser\ParsedRequest;
+use Hmaus\Spas\Parser\ParsedRequest;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;

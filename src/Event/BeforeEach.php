@@ -2,7 +2,7 @@
 
 namespace Hmaus\Spas\Event;
 
-use Hmaus\SpasParser\ParsedRequest;
+use Hmaus\Spas\Parser\ParsedRequest;
 use Symfony\Component\EventDispatcher\Event;
 
 class BeforeEach extends Event

@@ -2,7 +2,7 @@
 
 namespace Hmaus\Spas\Event;
 
-use Hmaus\SpasParser\ParsedRequest;
+use Hmaus\Spas\Parser\ParsedRequest;
 use Symfony\Component\EventDispatcher\Event;
 
 class AfterAll extends Event
@@ -10,7 +10,7 @@ class AfterAll extends Event
     const NAME = 'hmaus.spas.event.after_all';
 
     /**
-     * @var array|\Hmaus\SpasParser\ParsedRequest[]
+     * @var array|\Hmaus\Spas\Parser\ParsedRequest[]
      */
     private $requests;
 
