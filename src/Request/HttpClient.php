@@ -106,6 +106,17 @@ class HttpClient
             $options['body'] = $request->getContent();
         }
 
+        // todo if we want to log stats, this should be refactored
+        $options['on_stats'] = function (TransferStats $stats) {
+            $stats = $stats->getHandlerStats();
+            $size = (int)$stats['size_download'];
+            $time = round($stats['total_time'], 3);
+
+            $this->logger->info(
+                sprintf('Stats: Received %d bytes in %g seconds', $size, $time)
+            );
+        };
+
         return $options;
     }
 
