@@ -81,7 +81,7 @@ class HttpClient
      * @param ParsedRequest $request
      * @return array
      */
-    private function computeGuzzleOptions(ParsedRequest $request) : array
+    public function computeGuzzleOptions(ParsedRequest $request) : array
     {
         $options = [];
         $options['allow_redirects'] = false;
