@@ -5,7 +5,7 @@ namespace Hmaus\Spas\Tests\Request;
 use Hmaus\Spas\Request\Executor;
 use Hmaus\Spas\Request\HookHandler;
 use Hmaus\Spas\Request\RequestProcessor;
-use Hmaus\SpasParser\ParsedRequest;
+use Hmaus\Spas\Parser\ParsedRequest;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Log\LoggerInterface;

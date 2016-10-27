@@ -4,6 +4,7 @@ namespace Hmaus\Spas\Tests\Command {
     use Hmaus\Spas\Command\RunCommand;
     use Hmaus\Spas\Filesystem\InputFinder;
     use Hmaus\Spas\Logger\TruncateableConsoleLogger;
+    use Hmaus\Spas\Parser\Apib;
     use Hmaus\Spas\Request\Executor;
     use Prophecy\Argument;
     use Prophecy\Prophecy\ObjectProphecy;
@@ -138,7 +139,7 @@ namespace Hmaus\Spas\Tests\Command {
             // error out in `getRequestProvider`
             $this
                 ->input
-                ->getOption(Argument::exact('request_provider'))
+                ->getOption(Argument::exact('request_parser'))
                 ->willReturn(null);
 
             $this->callExecute();
@@ -164,8 +165,8 @@ namespace Hmaus\Spas\Tests\Command {
             // Make `getRequestProvider` pass
             $this
                 ->input
-                ->getOption(Argument::exact('request_provider'))
-                ->willReturn('\Hmaus\Spas\Parser\Apib\ApibParsedRequestsProvider');
+                ->getOption(Argument::exact('request_parser'))
+                ->willReturn(Apib::class);
 
             // Error out in `getDecodedInputData`
             $this
@@ -192,8 +193,8 @@ namespace Hmaus\Spas\Tests\Command {
             // Make `getRequestProvider` pass
             $this
                 ->input
-                ->getOption(Argument::exact('request_provider'))
-                ->willReturn('\Hmaus\Spas\Parser\Apib\ApibParsedRequestsProvider');
+                ->getOption(Argument::exact('request_parser'))
+                ->willReturn(Apib::class);
 
             $this
                 ->input

@@ -3,7 +3,7 @@
 namespace Hmaus\Spas\Tests\Request;
 
 use Hmaus\Spas\Request\FilterHandler;
-use Hmaus\SpasParser\ParsedRequest;
+use Hmaus\Spas\Parser\ParsedRequest;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Input\InputInterface;

@@ -3,7 +3,7 @@
 namespace Hmaus\Spas\Tests\Event;
 
 use Hmaus\Spas\Event\BeforeEach;
-use Hmaus\SpasParser\SpasRequest;
+use Hmaus\Spas\Parser\SpasRequest;
 
 class BeforeEachTest extends \PHPUnit_Framework_TestCase
 {

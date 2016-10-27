@@ -5,7 +5,7 @@ namespace Hmaus\Spas\Tests\Validation;
 use GuzzleHttp\Psr7\Response;
 use Hmaus\Spas\Validation\Validator;
 use Hmaus\Spas\Validation\ValidatorService;
-use Hmaus\SpasParser\ParsedRequest;
+use Hmaus\Spas\Parser\ParsedRequest;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\StreamInterface;

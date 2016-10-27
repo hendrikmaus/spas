@@ -6,8 +6,8 @@ use GuzzleHttp\Psr7\Response;
 use Hmaus\Spas\Validation\ValidationError;
 use Hmaus\Spas\Validation\Validator\NoContent;
 use Hmaus\Spas\Validation\Validator;
-use Hmaus\SpasParser\ParsedRequest;
-use Hmaus\SpasParser\ParsedResponse;
+use Hmaus\Spas\Parser\ParsedRequest;
+use Hmaus\Spas\Parser\ParsedResponse;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\StreamInterface;
 
