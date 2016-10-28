@@ -27,5 +27,9 @@
             <tag name="hmaus.spas.tag.validator"/>
         </service>
 
+        <service class="Hmaus\Spas\Validation\Validator\Header" id="hmaus.spas.validator.header">
+            <tag name="hmaus.spas.tag.validator"/>
+        </service>
+
     </services>
 </container>
