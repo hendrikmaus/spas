@@ -20,6 +20,10 @@
         <log type="coverage-text" target="php://stdout" showUncoveredFiles="true"/>-->
     </logging>
 
+    <listeners>
+        <listener class="JohnKary\PHPUnit\Listener\SpeedTrapListener"/>
+    </listeners>
+
     <testsuites>
         <testsuite name="Spas Test Suite">
             <directory>./tests/</directory>

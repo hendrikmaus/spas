@@ -34,6 +34,7 @@
     "hmaus/drafter-installer": "^1.0",
     "hmaus/drafter-php": "^4.0",
     "hmaus/spas-parser-apib": "^1.0.0",
+    "johnkary/phpunit-speedtrap": "^1.0",
     "phpunit/phpunit": "^5.0",
     "symfony/var-dumper": "^3.1"
   },
