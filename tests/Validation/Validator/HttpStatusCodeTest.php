@@ -88,6 +88,23 @@ class HttpStatusCodeTest extends \PHPUnit_Framework_TestCase
         $this->assertEmpty($this->validator->getErrors());
     }
 
+    public function testValidatesTrueIfStatusCode202Returns200()
+    {
+        $this
+            ->response
+            ->getStatusCode()
+            ->willReturn(200);
+
+        $this
+            ->parsedResponse
+            ->getStatusCode()
+            ->willReturn(202);
+
+        $this->validator->validate($this->parsedRequest->reveal(), $this->response->reveal());
+        $this->assertTrue($this->validator->isValid());
+        $this->assertEmpty($this->validator->getErrors());
+    }
+
     public function testItCanHasId()
     {
         $this->assertNotEmpty($this->validator->getId());

@@ -24,13 +24,22 @@ class HttpStatusCode implements Validator
         $expected = $request->getResponse()->getStatusCode();
         $actual   = $response->getStatusCode();
 
-        $this->isValid = $expected === $actual;
+        $this->expectedVsActual($expected, $actual);
 
         if (!$this->isValid()) {
             $error = new ValidationError();
             $error->property = 'HTTP Status Code';
             $error->message  = sprintf('Expected %d does not match actual %d', $expected, $actual);
             $this->errors[]  = $error;
+        }
+    }
+
+    private function expectedVsActual(int $expected, int $actual)
+    {
+        $this->isValid = $expected === $actual;
+
+        if ($expected === 202 && $actual === 200) {
+            $this->isValid = true;
         }
     }
 
