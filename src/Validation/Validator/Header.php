@@ -30,6 +30,10 @@ class Header implements Validator
                 continue;
             }
 
+            if ($header === 'retry-after' && $response->getStatusCode() === 200) {
+                continue;
+            }
+
             $this->addError(
                 'Header Missing',
                 sprintf('Expected "%s", but not found', $header)

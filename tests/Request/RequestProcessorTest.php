@@ -7,20 +7,18 @@ use Hmaus\Spas\Event\AfterEach;
 use Hmaus\Spas\Event\BeforeEach;
 use Hmaus\Spas\Formatter\FormatterService;
 use Hmaus\Spas\Formatter\ValidationErrorFormatter;
+use Hmaus\Spas\Parser\SpasResponse;
 use Hmaus\Spas\Request\FilterHandler;
 use Hmaus\Spas\Request\HttpClient;
 use Hmaus\Spas\Request\RequestProcessor;
 use Hmaus\Spas\Request\Result\ExceptionHandler;
 use Hmaus\Spas\Validation\ValidatorService;
-use Hmaus\Spas\Parser\ParsedRequest;
 use Hmaus\Spas\Parser\SpasRequest;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\HttpFoundation\ParameterBag;
 
 class RequestProcessorTest extends \PHPUnit_Framework_TestCase
 {

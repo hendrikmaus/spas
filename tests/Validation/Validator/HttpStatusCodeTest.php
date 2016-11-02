@@ -8,6 +8,7 @@ use Hmaus\Spas\Parser\ParsedResponse;
 use Hmaus\Spas\Validation\ValidationError;
 use Hmaus\Spas\Validation\Validator\HttpStatusCode;
 use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Log\LoggerInterface;
 
 class HttpStatusCodeTest extends \PHPUnit_Framework_TestCase
 {
@@ -33,7 +34,8 @@ class HttpStatusCodeTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->validator = new HttpStatusCode();
+        $logger = $this->prophesize(LoggerInterface::class);
+        $this->validator = new HttpStatusCode($logger->reveal());
 
         $this->parsedResponse = $this->prophesize(ParsedResponse::class);
         $this->parsedRequest = $this->prophesize(ParsedRequest::class);

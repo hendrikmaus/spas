@@ -6,6 +6,7 @@ use GuzzleHttp\Psr7\Response;
 use Hmaus\Spas\Parser\ParsedRequest;
 use Hmaus\Spas\Validation\ValidationError;
 use Hmaus\Spas\Validation\Validator;
+use Psr\Log\LoggerInterface;
 
 class HttpStatusCode implements Validator
 {
@@ -18,6 +19,16 @@ class HttpStatusCode implements Validator
      * @var ValidationError[]
      */
     private $errors = [];
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
 
     public function validate(ParsedRequest $request, Response $response)
     {
@@ -39,6 +50,7 @@ class HttpStatusCode implements Validator
         $this->isValid = $expected === $actual;
 
         if ($expected === 202 && $actual === 200) {
+            $this->logger->info('Expected HTTP 202; actual HTTP 200 -> valid edge case');
             $this->isValid = true;
         }
     }

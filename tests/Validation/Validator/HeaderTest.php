@@ -61,6 +61,10 @@ class HeaderTest extends \PHPUnit_Framework_TestCase
             );
 
         $this->response = $this->prophesize(Response::class);
+        $this
+            ->response
+            ->getStatusCode()
+            ->willReturn(200);
     }
 
     private function runValidatior()
@@ -123,6 +127,23 @@ class HeaderTest extends \PHPUnit_Framework_TestCase
                     'X-Vnd-Test' => '42',
                     'ETag' => '253f8o7',
                     'Cache-Control' => 'maxage 3600'
+                ],
+                [
+                    'Header Missing' => 1
+                ],
+                true
+            ],
+            [
+                [
+                    'User-Agent' => 'mozilla',
+                    'X-Vnd-Test' => '4711',
+                    'Retry-After' => 1 // important to test an edge case
+                ],
+                [
+                    'User-Agent' => '42',
+                    'X-Vnd-Test' => '42',
+                    'ETag' => '253f8o7',
+                    'Cache-Control' => 'maxage 3600',
                 ],
                 [
                     'Header Missing' => 1
