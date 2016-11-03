@@ -113,7 +113,7 @@ class HttpClient
             $time = round($stats['total_time'], 3);
 
             $this->logger->info(
-                sprintf('Stats: Received %d bytes in %g seconds', $size, $time)
+                sprintf('Received %d bytes in %g seconds', $size, $time)
             );
         };
 
