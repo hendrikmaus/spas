@@ -85,6 +85,13 @@ class RunCommand extends Command
                 InputOption::VALUE_NONE,
                 'Do not truncate log outputs, useful when running filtered commands for debugging and inspection'
             )
+            ->addOption(
+                'polling_count',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'How often spas should re-try pollage resources that return the HTTP Retry-After header',
+                3
+            )
             ->setHelp(
                 <<<'EOF'
                 

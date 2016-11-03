@@ -97,6 +97,9 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
         $request->setHref('/health');
         $request->setEnabled(true);
 
+        $response = new SpasResponse();
+        $request->setResponse($response);
+
         $baseUrl = 'http://example.com';
         $this
             ->input
@@ -112,6 +115,11 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
             ->filterHandler
             ->filter($request)
             ->shouldBeCalledTimes(1);
+
+        $this
+            ->input
+            ->getOption('polling_count')
+            ->willReturn(3);
 
         $response = $this->prophesize(Response::class);
 
@@ -159,6 +167,9 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
         $request->setHref('/health');
         $request->setEnabled(true);
 
+        $response = new SpasResponse();
+        $request->setResponse($response);
+
         $baseUrl = 'http://example.com';
         $this
             ->input
@@ -174,6 +185,11 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
             ->filterHandler
             ->filter($request)
             ->shouldBeCalledTimes(1);
+
+        $this
+            ->input
+            ->getOption('polling_count')
+            ->willReturn(3);
 
         $response = $this->prophesize(Response::class);
 
@@ -308,6 +324,261 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
         $this
             ->exceptionHandler
             ->handle(Argument::type(\Exception::class))
+            ->shouldBeCalledTimes(1);
+
+        $this
+            ->dispatcher
+            ->dispatch(AfterEach::NAME, Argument::type(AfterEach::class))
+            ->shouldBeCalledTimes(1);
+
+        $this
+            ->requestProcessor
+            ->process(
+                $request
+            );
+    }
+
+    public function testPollsWhenRetryAfterHeaderIsRecognized()
+    {
+        $request = new SpasRequest();
+        $request->setName('Group > Resource > Action');
+        $request->setHref('/health');
+        $request->setEnabled(true);
+
+        $response = new SpasResponse();
+        $request->setResponse($response);
+
+        $baseUrl = 'http://example.com';
+        $this
+            ->input
+            ->getOption('base_uri')
+            ->willReturn($baseUrl);
+
+        $this
+            ->dispatcher
+            ->dispatch(BeforeEach::NAME, Argument::type(BeforeEach::class))
+            ->shouldBeCalledTimes(1);
+
+        $this
+            ->filterHandler
+            ->filter($request)
+            ->shouldBeCalledTimes(1);
+
+        $this
+            ->input
+            ->getOption('polling_count')
+            ->willReturn(3);
+
+        $response = $this->prophesize(Response::class);
+        $response
+            ->hasHeader('retry-after')
+            ->willReturn(true);
+
+        $response
+            ->getHeader('retry-after')
+            ->willReturn([0]); // values are an array on there
+
+        $response
+            ->getStatusCode()
+            ->willReturn(200);
+
+        $response
+            ->getReasonPhrase()
+            ->willReturn('OK');
+
+        $this
+            ->httpClient
+            ->request($request)
+            ->willReturn($response->reveal())
+            ->shouldBeCalledTimes(3);
+
+        $this
+            ->validatorService
+            ->validate(
+                $request,
+                $response->reveal()
+            )
+            ->shouldBeCalledTimes(1);
+
+        $this
+            ->validatorService
+            ->isValid()
+            ->willReturn(true)
+            ->shouldBeCalledTimes(1);
+
+        $this
+            ->validatorService
+            ->reset()
+            ->shouldBeCalledTimes(1);
+
+        $this
+            ->dispatcher
+            ->dispatch(AfterEach::NAME, Argument::type(AfterEach::class))
+            ->shouldBeCalledTimes(1);
+
+        $this
+            ->requestProcessor
+            ->process(
+                $request
+            );
+    }
+
+    public function testAbortPollingIfRetryAfterIsTooLarge()
+    {
+        $request = new SpasRequest();
+        $request->setName('Group > Resource > Action');
+        $request->setHref('/health');
+        $request->setEnabled(true);
+
+        $response = new SpasResponse();
+        $request->setResponse($response);
+
+        $baseUrl = 'http://example.com';
+        $this
+            ->input
+            ->getOption('base_uri')
+            ->willReturn($baseUrl);
+
+        $this
+            ->dispatcher
+            ->dispatch(BeforeEach::NAME, Argument::type(BeforeEach::class))
+            ->shouldBeCalledTimes(1);
+
+        $this
+            ->filterHandler
+            ->filter($request)
+            ->shouldBeCalledTimes(1);
+
+        $this
+            ->input
+            ->getOption('polling_count')
+            ->willReturn(3);
+
+        $response = $this->prophesize(Response::class);
+        $response
+            ->hasHeader('retry-after')
+            ->willReturn(true);
+
+        $response
+            ->getHeader('retry-after')
+            ->willReturn([100]); // values are an array on there
+
+        $response
+            ->getStatusCode()
+            ->willReturn(200);
+
+        $response
+            ->getReasonPhrase()
+            ->willReturn('OK');
+
+        $this
+            ->httpClient
+            ->request($request)
+            ->willReturn($response->reveal())
+            ->shouldBeCalledTimes(1);
+
+        $this
+            ->validatorService
+            ->validate(
+                $request,
+                $response->reveal()
+            )
+            ->shouldBeCalledTimes(1);
+
+        $this
+            ->validatorService
+            ->isValid()
+            ->willReturn(true)
+            ->shouldBeCalledTimes(1);
+
+        $this
+            ->validatorService
+            ->reset()
+            ->shouldBeCalledTimes(1);
+
+        $this
+            ->dispatcher
+            ->dispatch(AfterEach::NAME, Argument::type(AfterEach::class))
+            ->shouldBeCalledTimes(1);
+
+        $this
+            ->requestProcessor
+            ->process(
+                $request
+            );
+    }
+
+    public function testAbortPollingIfRetryAfterIsNotNumeric()
+    {
+        $request = new SpasRequest();
+        $request->setName('Group > Resource > Action');
+        $request->setHref('/health');
+        $request->setEnabled(true);
+
+        $response = new SpasResponse();
+        $request->setResponse($response);
+
+        $baseUrl = 'http://example.com';
+        $this
+            ->input
+            ->getOption('base_uri')
+            ->willReturn($baseUrl);
+
+        $this
+            ->dispatcher
+            ->dispatch(BeforeEach::NAME, Argument::type(BeforeEach::class))
+            ->shouldBeCalledTimes(1);
+
+        $this
+            ->filterHandler
+            ->filter($request)
+            ->shouldBeCalledTimes(1);
+
+        $this
+            ->input
+            ->getOption('polling_count')
+            ->willReturn(3);
+
+        $response = $this->prophesize(Response::class);
+        $response
+            ->hasHeader('retry-after')
+            ->willReturn(true);
+
+        $response
+            ->getHeader('retry-after')
+            ->willReturn(['2016-11-11']); // values are an array on there
+
+        $response
+            ->getStatusCode()
+            ->willReturn(200);
+
+        $response
+            ->getReasonPhrase()
+            ->willReturn('OK');
+
+        $this
+            ->httpClient
+            ->request($request)
+            ->willReturn($response->reveal())
+            ->shouldBeCalledTimes(1);
+
+        $this
+            ->validatorService
+            ->validate(
+                $request,
+                $response->reveal()
+            )
+            ->shouldBeCalledTimes(1);
+
+        $this
+            ->validatorService
+            ->isValid()
+            ->willReturn(true)
+            ->shouldBeCalledTimes(1);
+
+        $this
+            ->validatorService
+            ->reset()
             ->shouldBeCalledTimes(1);
 
         $this

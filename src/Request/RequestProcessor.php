@@ -16,6 +16,12 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class RequestProcessor
 {
     /**
+     * Amount of max seconds spas will wait until re-triggering a pollabe resource
+     * @type int
+     */
+    const RETRY_AFTER_THRESHHOLD = 2;
+
+    /**
      * @var LoggerInterface
      */
     private $logger;
@@ -103,22 +109,83 @@ class RequestProcessor
         try {
             $this->printRequest($request);
 
-            $response = $this->http->request($request);
-            $this->printResponse($response);
-            // todo I guess here would be the right spot to look at repetition for polling
-            // todo event listeners could flag the request as to be repeated
+            $response = $this->doRequest($request);
 
             // todo event BeforeValidation
             $this->validator->validate($request, $response);
             // todo event AfterValidation
+
             $this->printValidatorReport();
             $this->validator->reset();
-        } catch (\Exception $exception) {
+        }
+        catch (\Exception $exception) {
             // todo event Exception
             $this->exceptionHandler->handle($exception);
         }
 
         $this->dispatcher->dispatch(AfterEach::NAME, new AfterEach($request));
+    }
+
+    /**
+     * Do request and handle polling for resources that return HTTP Retry-After header
+     *
+     * @param ParsedRequest $request
+     * @param int $attempt How often the request was repeated
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    private function doRequest(ParsedRequest $request, $attempt = 0)
+    {
+        $attempt++;
+
+        $pollingThreshhold = $this->input->getOption('polling_count') - 1;
+
+        $response = $this->http->request($request);
+        $this->printResponse($response);
+
+        if (!$response->hasHeader('retry-after')) {
+            return $response;
+        }
+
+        if ($attempt > $pollingThreshhold) {
+            $this->logger->warning(
+                sprintf(
+                    'Retried %d time(s), validating last response',
+                    $pollingThreshhold + 1
+                )
+            );
+            return $response;
+        }
+
+        $retryAfter = $response->getHeader('retry-after');
+        $retryAfter = array_pop($retryAfter);
+
+        if (!is_numeric($retryAfter)) {
+            // todo spas could try to work with dates
+            $this->logger->warning('Retry-After header contains a value spas cannot work with:');
+            $this->logger->warning(sprintf('  %s', $retryAfter));
+            $this->logger->warning('Validating last response');
+
+            return $response;
+        }
+
+        $retryAfter = (int)$retryAfter;
+
+        if ($retryAfter > static::RETRY_AFTER_THRESHHOLD) {
+            $this->logger->warning(
+                sprintf(
+                    'Retry-After header wants to wait longer than spas\' threshhold of %d seconds',
+                    static::RETRY_AFTER_THRESHHOLD
+                )
+            );
+            return $response;
+        }
+
+        $this->logger->info('');
+        $this->logger->info(sprintf('Waiting %d second(s) until next try', $retryAfter));
+
+        usleep($retryAfter * 1000000);
+
+        return $this->doRequest($request, $attempt);
     }
 
     /**

@@ -50,6 +50,30 @@ Test case for json schema validator.
 
 + Response 200 (application/json)
     + Attributes (Health)
+    
+# GET /polling
+
++ Response 202 (application/json)
+    + Headers
+    
+            Retry-After: 1
+    
+    + Attributes (Poll)
+    
++ Response 200 (application/json)
+    + Attributes (Poll)
+
+# GET /polling/unsupported
+
++ Response 202 (application/json)
+    + Headers
+    
+            Retry-After: 2016-11-02T14:51:53+01:00
+    
+    + Attributes (Poll)
+    
++ Response 200 (application/json)
+    + Attributes (Poll)
 
 # Data Structures
 
@@ -65,3 +89,6 @@ Test case for json schema validator.
 
 ## Health
 + version: `324cbh` (string, required)
+
+## Poll
++ msg: `I am a polling set` (string, required)
