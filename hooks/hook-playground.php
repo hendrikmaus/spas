@@ -38,7 +38,7 @@ $this->getDispatcher();
 
 
 /* Events are found in Hmaus\Spas\Event\ namespace and have a constant called NAME: */
-$this->getDispatcher()->addListener(BeforeAll::class, function (BeforeAll $event)
+$this->getDispatcher()->addListener(BeforeAll::NAME, function (BeforeAll $event)
 {
     $this->getLogger()->info('Playground: before all fired');
 
