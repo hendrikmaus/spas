@@ -21,7 +21,18 @@
     </logging>
 
     <listeners>
-        <listener class="JohnKary\PHPUnit\Listener\SpeedTrapListener"/>
+        <listener class="JohnKary\PHPUnit\Listener\SpeedTrapListener">
+            <arguments>
+                <array>
+                    <element key="slowThreshold">
+                        <integer>400</integer>
+                    </element>
+                    <element key="reportLength">
+                        <integer>5</integer>
+                    </element>
+                </array>
+            </arguments>
+        </listener>
     </listeners>
 
     <testsuites>
