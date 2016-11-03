@@ -158,7 +158,7 @@ class HookHandlerTest extends \PHPUnit_Framework_TestCase
 
         $this
             ->logger
-            ->warning(Argument::type('string'))
+            ->warning(Argument::cetera())
             ->shouldBeCalled();
 
         $this

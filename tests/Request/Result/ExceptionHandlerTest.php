@@ -92,7 +92,7 @@ class ExceptionHandlerTest extends \PHPUnit_Framework_TestCase
         
         $this
             ->logger
-            ->error(Argument::type('string'))
+            ->error(Argument::type('string'), Argument::type('array'))
             ->shouldBeCalledTimes(1);
 
         $request = $this->prophesize(RequestInterface::class);
@@ -127,7 +127,7 @@ class ExceptionHandlerTest extends \PHPUnit_Framework_TestCase
 
         $this
             ->logger
-            ->error(Argument::type('string'))
+            ->error(Argument::cetera())
             ->shouldBeCalledTimes(2);
 
         $request = $this->prophesize(RequestInterface::class);

@@ -47,7 +47,7 @@ class ExceptionHandler
         $response = $requestException->getResponse();
 
         $this->logger->error(
-            sprintf('%d %s', $response->getStatusCode(), $response->getReasonPhrase())
+            '{0} {1}', [$response->getStatusCode(), $response->getReasonPhrase()]
         );
 
         $body = $response->getBody()->getContents();

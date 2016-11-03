@@ -52,7 +52,7 @@ class HookHandler
         foreach ($this->getHookFiles() as $hookfile) {
             if (!$this->filesystem->exists($hookfile)) {
                 $this->logger->warning('Hook file could not be loaded:');
-                $this->logger->warning(sprintf('  "%s"', $hookfile));
+                $this->logger->warning('  "{0}"', [$hookfile]);
                 $this->logger->warning('Make sure the path is correct and readable');
                 continue;
             }

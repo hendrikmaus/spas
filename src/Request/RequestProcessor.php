@@ -2,13 +2,14 @@
 
 namespace Hmaus\Spas\Request;
 
+use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\UriTemplate;
 use Hmaus\Spas\Event\AfterEach;
 use Hmaus\Spas\Event\BeforeEach;
 use Hmaus\Spas\Formatter\FormatterService;
+use Hmaus\Spas\Parser\ParsedRequest;
 use Hmaus\Spas\Request\Result\ExceptionHandler;
 use Hmaus\Spas\Validation\ValidatorService;
-use Hmaus\Spas\Parser\ParsedRequest;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -148,10 +149,8 @@ class RequestProcessor
 
         if ($attempt > $pollingThreshhold) {
             $this->logger->warning(
-                sprintf(
-                    'Retried %d time(s), validating last response',
-                    $pollingThreshhold + 1
-                )
+                'Retried {0} time(s), validating last response',
+                [$pollingThreshhold + 1]
             );
             return $response;
         }
@@ -162,7 +161,7 @@ class RequestProcessor
         if (!is_numeric($retryAfter)) {
             // todo spas could try to work with dates
             $this->logger->warning('Retry-After header contains a value spas cannot work with:');
-            $this->logger->warning(sprintf('  %s', $retryAfter));
+            $this->logger->warning('  {0}', [$retryAfter]);
             $this->logger->warning('Validating last response');
 
             return $response;
@@ -172,16 +171,14 @@ class RequestProcessor
 
         if ($retryAfter > static::RETRY_AFTER_THRESHHOLD) {
             $this->logger->warning(
-                sprintf(
-                    'Retry-After header wants to wait longer than spas\' threshhold of %d seconds',
-                    static::RETRY_AFTER_THRESHHOLD
-                )
-            );
+                'Retry-After header wants to wait longer than spas\' threshhold of %d seconds', [
+                static::RETRY_AFTER_THRESHHOLD
+            ]);
             return $response;
         }
 
         $this->logger->info('');
-        $this->logger->info(sprintf('Waiting %d second(s) until next try', $retryAfter));
+        $this->logger->info('Waiting {0} second(s) until next try', [$retryAfter]);
 
         usleep($retryAfter * 1000000);
 
@@ -192,11 +189,9 @@ class RequestProcessor
      * @param $response
      * @codeCoverageIgnore
      */
-    private function printResponse($response)
+    private function printResponse(Response $response)
     {
-        $this->logger->info(
-            sprintf('%d %s', $response->getStatusCode(), $response->getReasonPhrase())
-        );
+        $this->logger->info('{0} {1}', [$response->getStatusCode(), $response->getReasonPhrase()]);
     }
 
     /**
@@ -208,21 +203,15 @@ class RequestProcessor
         $maxPrintLength = 70;
 
         if (strlen($request->getHref()) > $maxPrintLength) {
-            $this->logger->info(
-                sprintf(
-                    '%s %s...',
-                    $request->getMethod(),
-                    substr($request->getHref(), 0, $maxPrintLength) // todo disbale that with an option?
-                )
-            );
+            $this->logger->info('{0} {1}...', [
+                $request->getMethod(),
+                substr($request->getHref(), 0, $maxPrintLength)
+            ]);
         } else {
-            $this->logger->info(
-                sprintf(
-                    '%s %s',
-                    $request->getMethod(),
-                    $request->getHref()
-                )
-            );
+            $this->logger->info('{0} {1}', [
+                $request->getMethod(),
+                $request->getHref()
+            ]);
         }
     }
 
