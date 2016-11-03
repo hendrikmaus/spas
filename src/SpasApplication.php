@@ -10,6 +10,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -68,6 +69,10 @@ class SpasApplication extends Application
             [
                 LogLevel::NOTICE => OutputInterface::VERBOSITY_NORMAL,
                 LogLevel::INFO => OutputInterface::VERBOSITY_NORMAL,
+            ],
+            [
+                LogLevel::WARNING => 'comment',
+                LogLevel::NOTICE => 'fg=blue'
             ]
         );
         $this->container->set('hmaus.spas.logger', $logger);
