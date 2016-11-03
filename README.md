@@ -1,6 +1,6 @@
 # Spas
 That sounds like "spa", but plural.  
-It tests your API description against a given environment using real HTTP request.
+It tests your API description against a given environment using real HTTP requests.
 
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.0-8892BF.svg)](https://php.net/)
 [![Build Status](https://travis-ci.org/hendrikmaus/spas.svg?branch=master)](https://travis-ci.org/hendrikmaus/spas)
