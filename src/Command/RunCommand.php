@@ -59,7 +59,8 @@ class RunCommand extends Command
                 'request_parser',
                 'p',
                 InputOption::VALUE_REQUIRED,
-                'Fully qualified class name for a spas-parser implementation, must be available in the autoloader'
+                'Fully qualified class name for a spas-parser implementation, must be available in the autoloader',
+                '\Hmaus\Spas\Parser\Apib'
             )
             ->addOption(
                 'hook',
@@ -71,7 +72,7 @@ class RunCommand extends Command
                 'hook_data',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'Data to inject into hooks; e.g. csv, json string, whatever your hooks understand '
+                'Data to inject into hooks; e.g. csv, json string, whatever your hooks understand'
             )
             ->addOption(
                 'filter',
