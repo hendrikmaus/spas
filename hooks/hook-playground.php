@@ -37,18 +37,35 @@ $this->getLogger()->info('Playground: loaded');
 $this->getDispatcher();
 
 
+/* The HookHandler provides the raw input hook data and a parameter bag to store your data across hooks/events */
+$this->getRawHookData();
+$bag = $this->getHookDataBag();
+$bag->set('my_key', 'my_value');
+/* You ahve to take care of putting your data into the bag */
+
+
 /* Events are found in Hmaus\Spas\Event\ namespace and have a constant called NAME: */
 $this->getDispatcher()->addListener(BeforeAll::NAME, function (BeforeAll $event)
 {
+    /** @var HookHandler $this */
+    
     $this->getLogger()->info('Playground: before all fired');
 
     /* $event->getRequests() let's you access all requests spas will fire */
+    
+    /* hook data is accessible */
+    $this->getLogger()->info(
+        'Playground: "{0}" is shared with this event',
+        [$this->getHookDataBag()->get('my_key')]
+    );
 });
 
 
 /* Let's skip a request: */
 $this->getDispatcher()->addListener(BeforeEach::NAME, function(BeforeEach $event)
 {
+    /** @var HookHandler $this */
+    
     $request = $event->getRequest();
 
     if ($request->getName() === 'Group > Resource > Name') {
@@ -57,5 +74,11 @@ $this->getDispatcher()->addListener(BeforeEach::NAME, function(BeforeEach $event
 
     /* You can copy&paste the `Group > Resource > Name` from spas' console
      * output. Make sure to give proper naming to your resources in the api description */
+
+    /* hook data is accessible */
+    /*$this->getLogger()->info(
+        'Playground: "{0}" is shared with this event',
+        [$this->getHookDataBag()->get('my_key')]
+    );*/
 });
 

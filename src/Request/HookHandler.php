@@ -5,6 +5,7 @@ namespace Hmaus\Spas\Request;
 
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -14,6 +15,7 @@ class HookHandler
      * @var InputInterface
      */
     private $input;
+
     /**
      * @var EventDispatcherInterface
      */
@@ -32,7 +34,12 @@ class HookHandler
     /**
      * @var string
      */
-    private $hookData;
+    private $rawHookData;
+
+    /**
+     * @var ParameterBag
+     */
+    private $hookDataBag;
 
     public function __construct(
         InputInterface $input,
@@ -45,6 +52,7 @@ class HookHandler
         $this->dispatcher = $dispatcher;
         $this->logger = $logger;
         $this->filesystem = $filesystem;
+        $this->hookDataBag = new ParameterBag();
     }
 
     public function includeHooks()
@@ -80,23 +88,83 @@ class HookHandler
      *
      * @return string
      */
-    public function getHookData() : string
+    public function getRawHookData() : string
     {
-        if ($this->hookData !== null) {
-            return $this->hookData;
+        if ($this->rawHookData !== null) {
+            return $this->rawHookData;
         }
 
-        // todo decorate the input and add a default value parameter to the getOption method
         $hookdata = $this->input->getOption('hook_data');
 
         if ($hookdata === null) {
-            $this->hookData = '';
+            $this->rawHookData = '';
         }
         else {
-            $this->hookData = $hookdata;
+            $this->rawHookData = $hookdata;
         }
 
-        return $this->hookData;
+        return $this->rawHookData;
+    }
+
+    public function getHookDataFromJson() : array
+    {
+        $data = $this->getRawHookData();
+        $data = json_decode($data, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $this->logger->error(
+                'Hook Handler: Passed hook data failed in json decoding process: "{0}"', [json_last_error_msg()]
+            );
+            return [];
+        }
+
+        return $data;
+    }
+
+    /**
+     * Helper method to apply defaults on top of incoming hook data
+     *
+     * For example, you are in a header hook and the data comes in as json:
+     *
+     *   {
+     *       "header-hook": {
+     *           "field1": true
+     *       }
+     *   }
+     *
+     * But you are expecting not only field1, but also field2.
+     * You want to apply a default so your code can rely on field2 being there.
+     *
+     *   $data = HookHandler::getHookDataFromJson()
+     *
+     * Call the helper:
+     *
+     *   $defaults = [
+     *       'field1' => false,
+     *       'field2' => false
+     *   ];
+     *
+     *   HookHandler::applyHookDataDefaults('header-hook', $defaults, $data)
+     *
+     * This will give you:
+     *
+     *   [
+     *       'field1' => true,
+     *       'field2' => false
+     *   ]
+     *
+     * @param string $key Key to find the hook data in
+     * @param array $defaults Defaults values to apply
+     * @param array $data Hook data
+     * @return array
+     */
+    public function applyHookDataDefaults(string $key, array $defaults, array $data) : array
+    {
+        if (isset($data[$key])) {
+            return array_merge($defaults, $data[$key]);
+        }
+
+        return $defaults;
     }
 
     /**
@@ -113,5 +181,21 @@ class HookHandler
     public function getDispatcher() : EventDispatcherInterface
     {
         return $this->dispatcher;
+    }
+
+    /**
+     * @return ParameterBag
+     */
+    public function getHookDataBag(): ParameterBag
+    {
+        return $this->hookDataBag;
+    }
+
+    /**
+     * @param ParameterBag $hookDataBag
+     */
+    public function setHookDataBag(ParameterBag $hookDataBag)
+    {
+        $this->hookDataBag = $hookDataBag;
     }
 }

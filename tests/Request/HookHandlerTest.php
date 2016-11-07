@@ -7,6 +7,7 @@ use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -72,7 +73,7 @@ class HookHandlerTest extends \PHPUnit_Framework_TestCase
 
         $actual = $this
             ->hookHandler
-            ->getHookData();
+            ->getRawHookData();
 
         $this->assertEmpty($actual);
 
@@ -82,7 +83,7 @@ class HookHandlerTest extends \PHPUnit_Framework_TestCase
          */
         $actual = $this
             ->hookHandler
-            ->getHookData();
+            ->getRawHookData();
 
         $this->assertEmpty($actual);
     }
@@ -99,7 +100,7 @@ class HookHandlerTest extends \PHPUnit_Framework_TestCase
 
         $actual = $this
             ->hookHandler
-            ->getHookData();
+            ->getRawHookData();
 
         $this->assertSame($hookData, $actual);
 
@@ -109,7 +110,7 @@ class HookHandlerTest extends \PHPUnit_Framework_TestCase
          */
         $actual = $this
             ->hookHandler
-            ->getHookData();
+            ->getRawHookData();
 
         $this->assertSame($hookData, $actual);
     }
@@ -186,6 +187,96 @@ class HookHandlerTest extends \PHPUnit_Framework_TestCase
             ->includeHooks();
 
         $this->assertTrue($GLOBALS['spas.hooks.loaded']);
+    }
+
+    public function testCanProvideDataBag()
+    {
+        $bag = $this->hookHandler->getHookDataBag();
+        $this->assertInstanceOf(ParameterBag::class, $bag);
+        $this->assertCount(0, $bag->all());
+
+        $newBag = new ParameterBag(['some' => 'thing']);
+        $this->hookHandler->setHookDataBag($newBag);
+        $this->assertSame($newBag, $this->hookHandler->getHookDataBag());
+    }
+
+    public function testCanApplyHookDataDefaults()
+    {
+        $this
+            ->input
+            ->getOption('hook_data')
+            ->willReturn('{"hook-data":{"field1":true}}')
+            ->shouldBeCalledTimes(1);
+
+        $key = 'hook-data';
+
+        $defaults = [
+            'field1' => false,
+            'field2' => false
+        ];
+
+        $data = $this->hookHandler->getHookDataFromJson();
+
+        $expected = [
+            'field1' => true,
+            'field2' => false
+        ];
+
+        $this->assertSame(
+            $expected,
+            $this->hookHandler->applyHookDataDefaults($key, $defaults, $data)
+        );
+    }
+
+    public function testCanApplyDefaults()
+    {
+        $key = 'hook-data';
+
+        $defaults = [
+            'field1' => false,
+            'field2' => false
+        ];
+
+        $data = $this->hookHandler->getHookDataFromJson();
+
+        $this->assertSame(
+            $defaults,
+            $this->hookHandler->applyHookDataDefaults($key, $defaults, $data)
+        );
+    }
+
+    public function testCanGetHookdataFromJson()
+    {
+        $data = ['some' => 'thing'];
+
+        $this
+            ->input
+            ->getOption('hook_data')
+            ->willReturn(json_encode($data))
+            ->shouldBeCalledTimes(1);
+
+        $this
+            ->logger
+            ->error(Argument::cetera())
+            ->shouldNotBeCalled();
+
+        $this->assertSame($data, $this->hookHandler->getHookDataFromJson());
+    }
+
+    public function testLogsErrorWhenHookDataIsNotValidJson()
+    {
+        $this
+            ->input
+            ->getOption('hook_data')
+            ->willReturn('{')
+            ->shouldBeCalledTimes(1);
+
+        $this
+            ->logger
+            ->error(Argument::containingString('Hook Handler: Passed hook data failed in json decoding process'), Argument::type('array'))
+            ->shouldBeCalledTimes(1);
+
+        $this->assertSame([], $this->hookHandler->getHookDataFromJson());
     }
 
 }
