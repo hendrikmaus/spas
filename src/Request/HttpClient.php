@@ -72,6 +72,9 @@ class HttpClient
      * decode_content
      *   guzzle shall decode gzip etc automatically
      *
+     * veriffy
+     *   do not verify ssl certs
+     *
      * body
      *   add body contained in the given request
      *
@@ -91,6 +94,7 @@ class HttpClient
         $options['headers'] = [];
         $options['synchronous'] = true;
         $options['decode_content'] = true;
+        $options['verify'] = false;
 
         foreach ($request->getHeaders()->all() as $headerName => $headerValue) {
             $options['headers'][$headerName] = $headerValue;
