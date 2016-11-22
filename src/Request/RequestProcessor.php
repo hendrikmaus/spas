@@ -116,6 +116,7 @@ class RequestProcessor
             $this->validator->validate($request, $response);
             // todo event AfterValidation
 
+            $this->printErrorResponse($response);
             $this->printValidatorReport();
             $this->validator->reset();
         }
@@ -235,5 +236,29 @@ class RequestProcessor
         } else {
             $this->logger->info('Passed');
         }
+    }
+
+    /**
+     * If the validator found issues, this helper prints what the server has to say
+     *
+     * @param Response $response
+     */
+    private function printErrorResponse(Response $response)
+    {
+        if ($this->validator->isValid()) {
+            return;
+        }
+
+        $contentType = $response->getHeader('content-type');
+        $contentType = array_pop($contentType);
+
+        $body = $response->getBody()->getContents();
+        $formatter = $this->formatterService->getFormatterByContentType($contentType);
+
+        $this
+            ->logger
+            ->error(
+                $formatter->format($body)
+            );
     }
 }
