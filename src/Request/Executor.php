@@ -45,6 +45,7 @@ class Executor
 
     /**
      * @param ParsedRequest[] $requests
+     * @return boolean
      */
     public function run(array $requests)
     {
@@ -60,5 +61,12 @@ class Executor
 
         $this->logger->info('');
         $this->dispatcher->dispatch(AfterAll::NAME, new AfterAll($requests));
+
+        $report = $this->requestProcessor->getReport();
+
+        $this->logger->info('-----------------');
+        $this->logger->info('Passed: {0} ; Failed: {1} ; Disabled: {2}', array_values($report));
+
+        return $report['fail'] === 0;
     }
 }

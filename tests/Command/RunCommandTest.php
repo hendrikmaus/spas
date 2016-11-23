@@ -221,9 +221,12 @@ namespace Hmaus\Spas\Tests\Command {
   ]
 }');
 
-            $result = $this->callExecute();
+            $this
+                ->executor
+                ->run(Argument::any())
+                ->willReturn(0);
 
-            $this->assertSame(0, $result);
+            $this->callExecute();
         }
 
         private function getExecuteMethod() : \ReflectionMethod

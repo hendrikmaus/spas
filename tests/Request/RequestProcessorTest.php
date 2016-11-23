@@ -5,6 +5,7 @@ namespace Hmaus\Spas\Tests\Request;
 use GuzzleHttp\Psr7\Response;
 use Hmaus\Spas\Event\AfterEach;
 use Hmaus\Spas\Event\BeforeEach;
+use Hmaus\Spas\Formatter\Formatter;
 use Hmaus\Spas\Formatter\FormatterService;
 use Hmaus\Spas\Formatter\ValidationErrorFormatter;
 use Hmaus\Spas\Parser\SpasResponse;
@@ -16,6 +17,7 @@ use Hmaus\Spas\Validation\ValidatorService;
 use Hmaus\Spas\Parser\SpasRequest;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Http\Message\StreamInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -141,7 +143,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
             ->validatorService
             ->isValid()
             ->willReturn(true)
-            ->shouldBeCalledTimes(1);
+            ->shouldBeCalledTimes(2);
 
         $this
             ->validatorService
@@ -193,6 +195,32 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
 
         $response = $this->prophesize(Response::class);
 
+        $response
+            ->getHeader('content-type')
+            ->willReturn(['application/json'])
+            ->shouldBeCalledTimes(1);
+
+        $response
+            ->getStatusCode()
+            ->willReturn(200);
+
+        $response
+            ->getReasonPhrase()
+            ->willReturn('OK');
+
+        $response
+            ->hasHeader(Argument::any())
+            ->willReturn(false);
+
+        $body = $this->prophesize(StreamInterface::class);
+        $body
+            ->getContents()
+            ->willReturn('{"error":"here"}');
+
+        $response
+            ->getBody()
+            ->willReturn($body->reveal());
+
         $this
             ->httpClient
             ->request($request)
@@ -211,7 +239,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
             ->validatorService
             ->isValid()
             ->willReturn(false)
-            ->shouldBeCalledTimes(1);
+            ->shouldBeCalledTimes(2);
 
         $contentType = 'validator';
         $this
@@ -220,18 +248,20 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
             ->willReturn($contentType)
             ->shouldBeCalledTimes(1);
 
-        $formatter = new ValidationErrorFormatter();
+        $formatter = $this->prophesize(Formatter::class);
+        $formatter
+            ->format(Argument::any())
+            ->willReturn('Formatted Message');
 
         $this
             ->formatterService
-            ->getFormatterByContentType($contentType)
-            ->willReturn($formatter)
-            ->shouldBeCalledTimes(1);
+            ->getFormatterByContentType(Argument::any())
+            ->willReturn($formatter->reveal())
+            ->shouldBeCalledTimes(2);
 
         $this
             ->validatorService
-            ->getReport()
-            ->shouldBeCalledTimes(1);
+            ->getReport();
 
         $this
             ->validatorService
@@ -248,6 +278,9 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
             ->process(
                 $request
             );
+
+        $report = $this->requestProcessor->getReport();
+        $this->assertSame(1, $report['fail']);
     }
 
     public function testRequestsCanBeDisabled()
@@ -404,7 +437,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
             ->validatorService
             ->isValid()
             ->willReturn(true)
-            ->shouldBeCalledTimes(1);
+            ->shouldBeCalledTimes(2);
 
         $this
             ->validatorService
@@ -489,7 +522,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
             ->validatorService
             ->isValid()
             ->willReturn(true)
-            ->shouldBeCalledTimes(1);
+            ->shouldBeCalledTimes(2);
 
         $this
             ->validatorService
@@ -574,7 +607,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
             ->validatorService
             ->isValid()
             ->willReturn(true)
-            ->shouldBeCalledTimes(1);
+            ->shouldBeCalledTimes(2);
 
         $this
             ->validatorService

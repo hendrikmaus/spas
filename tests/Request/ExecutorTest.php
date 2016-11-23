@@ -81,12 +81,18 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
 
         $this
             ->logger
-            ->info(Argument::type('string'))
+            ->info(Argument::type('string'), Argument::cetera())
             ->shouldBeCalled();
 
         $this
             ->requestProcessor
             ->process(Argument::exact($parsedRequest->reveal()))
+            ->shouldBeCalledTimes(1);
+
+        $this
+            ->requestProcessor
+            ->getReport()
+            ->willReturn(['pass' => 0, 'fail' => 0, 'disable' => 0])
             ->shouldBeCalledTimes(1);
 
         $this

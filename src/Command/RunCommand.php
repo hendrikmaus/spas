@@ -134,11 +134,9 @@ EOF
         $requests = $requestProvider->parse($jsonDecodedInputData);
 
         $executor = $this->container->get('hmaus.spas.request.executor');
-        $executor->run($requests);
+        $result = $executor->run($requests);
 
-        // todo event to propagate the report
-
-        return 0;
+        return $result === true ? 0 : 1;
     }
 
     /**

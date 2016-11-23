@@ -62,6 +62,15 @@ class RequestProcessor
      */
     private $filterHandler;
 
+    /**
+     * @var array
+     */
+    private $report = [
+        'pass' => 0,
+        'fail' => 0,
+        'disbale' => 0
+    ];
+
     public function __construct(
         InputInterface $input,
         LoggerInterface $logger,
@@ -102,6 +111,7 @@ class RequestProcessor
         // todo event AfterUriExpansion?
 
         if (!$request->isEnabled()) {
+            $this->disabled();
             $this->logger->info('Disabled');
             $this->dispatcher->dispatch(AfterEach::NAME, new AfterEach($request));
             return;
@@ -118,14 +128,21 @@ class RequestProcessor
 
             $this->printErrorResponse($response);
             $this->printValidatorReport();
+
             $this->validator->reset();
         }
         catch (\Exception $exception) {
             // todo event Exception
+            $this->failed();
             $this->exceptionHandler->handle($exception);
         }
 
         $this->dispatcher->dispatch(AfterEach::NAME, new AfterEach($request));
+    }
+
+    public function getReport()
+    {
+        return $this->report;
     }
 
     /**
@@ -222,6 +239,8 @@ class RequestProcessor
     private function printValidatorReport()
     {
         if (!$this->validator->isValid()) {
+            $this->failed();
+
             $formatter = $this
                 ->formatterService
                 ->getFormatterByContentType(
@@ -234,6 +253,7 @@ class RequestProcessor
                 )
             );
         } else {
+            $this->passed();
             $this->logger->info('Passed');
         }
     }
@@ -260,5 +280,20 @@ class RequestProcessor
             ->error(
                 $formatter->format($body)
             );
+    }
+
+    private function failed()
+    {
+        $this->report['fail'] += 1;
+    }
+
+    private function passed()
+    {
+        $this->report['pass'] += 1;
+    }
+
+    private function disabled()
+    {
+        $this->report['disbale'] += 1;
     }
 }
