@@ -53,10 +53,7 @@ class Executor
         $this->dispatcher->dispatch(BeforeAll::NAME, new BeforeAll($requests));
 
         foreach ($requests as $request) {
-            $this->logger->info('');
-            $this->logger->info('-----------------');
             $this->requestProcessor->process($request);
-            $this->logger->info('-----------------');
         }
 
         $this->logger->info('');
@@ -65,7 +62,7 @@ class Executor
         $report = $this->requestProcessor->getReport();
 
         $this->logger->info('-----------------');
-        $this->logger->info('Passed: {0} ; Failed: {1} ; Disabled: {2}', array_values($report));
+        $this->logger->info('Passed: {0}, Failed: {1}, Disabled: {2}', array_values($report));
 
         return $report['fail'] === 0;
     }

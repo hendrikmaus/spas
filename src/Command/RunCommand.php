@@ -93,6 +93,16 @@ class RunCommand extends Command
                 'How often spas should re-try pollage resources that return the HTTP Retry-After header',
                 3
             )
+            ->addOption(
+                'all_transactions',
+                null,
+                InputOption::VALUE_NONE,
+                'Whether to run all transactions for a resource
+                
+                By default, spas will only run the first transaction per resource, which is usually the happy case.
+                If you intend to also run all the error/failures from your description, use this flag
+                and provide hooks to manipulate the requests in order to make requests fail the way you expect'
+            )
             ->setHelp(
                 <<<'EOF'
                 

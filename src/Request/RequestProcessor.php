@@ -68,7 +68,8 @@ class RequestProcessor
     private $report = [
         'pass' => 0,
         'fail' => 0,
-        'disbale' => 0
+        'disbale' => 0,
+        'processed' => []
     ];
 
     public function __construct(
@@ -94,6 +95,13 @@ class RequestProcessor
 
     public function process(ParsedRequest $request)
     {
+        if ($this->wasAlreadyProcessed($request->getName()) && $this->input->getOption('all_transactions') == null) {
+            return;
+        }
+
+        $this->logger->info('');
+        $this->logger->info('-----------------');
+
         $this->dispatcher->dispatch(BeforeEach::NAME, new BeforeEach($request));
 
         $this->logger->info($request->getName());
@@ -138,6 +146,10 @@ class RequestProcessor
         }
 
         $this->dispatcher->dispatch(AfterEach::NAME, new AfterEach($request));
+
+        $this->processed($request->getName());
+
+        $this->logger->info('-----------------');
     }
 
     public function getReport()
@@ -295,5 +307,15 @@ class RequestProcessor
     private function disabled()
     {
         $this->report['disbale'] += 1;
+    }
+
+    private function processed(string $name)
+    {
+        $this->report['processed'][] = $name;
+    }
+
+    private function wasAlreadyProcessed(string $name) : bool
+    {
+        return in_array($name, $this->report['processed']);
     }
 }
