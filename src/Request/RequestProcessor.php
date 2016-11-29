@@ -99,12 +99,9 @@ class RequestProcessor
             return;
         }
 
-        $this->logger->info('');
-        $this->logger->info('-----------------');
-
-        $this->dispatcher->dispatch(BeforeEach::NAME, new BeforeEach($request));
-
+        $this->beginLogBlock();
         $this->logger->info($request->getName());
+        $this->dispatcher->dispatch(BeforeEach::NAME, new BeforeEach($request));
 
         // todo event BeforeFilter?
         $this->filterHandler->filter($request);
@@ -122,6 +119,7 @@ class RequestProcessor
             $this->disabled();
             $this->logger->info('Disabled');
             $this->dispatcher->dispatch(AfterEach::NAME, new AfterEach($request));
+            $this->endLogBlock();
             return;
         }
 
@@ -317,5 +315,16 @@ class RequestProcessor
     private function wasAlreadyProcessed(string $name) : bool
     {
         return in_array($name, $this->report['processed']);
+    }
+
+    private function beginLogBlock()
+    {
+        $this->logger->info('');
+        $this->logger->info('-----------------');
+    }
+
+    private function endLogBlock()
+    {
+        $this->logger->info('-----------------');
     }
 }
