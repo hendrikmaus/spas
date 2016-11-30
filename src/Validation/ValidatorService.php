@@ -2,15 +2,14 @@
 
 namespace Hmaus\Spas\Validation;
 
-use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Hmaus\Spas\Parser\ParsedRequest;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Bridge\Monolog\Logger;
 
 class ValidatorService
 {
     /**
-     * @var Logger
+     * @var LoggerInterface
      */
     private $logger;
 
@@ -33,10 +32,10 @@ class ValidatorService
      * Run the validator chain
      *
      * @param ParsedRequest $request
-     * @param GuzzleResponse $response
+     * @param ResponseInterface $response
      * @return $this
      */
-    public function validate(ParsedRequest $request, GuzzleResponse $response)
+    public function validate(ParsedRequest $request, ResponseInterface $response)
     {
         foreach ($this->validators as $validator) {
             $validator->validate($request, $response);
@@ -44,7 +43,6 @@ class ValidatorService
             $this->report[$validator->getId()] = $validator;
         }
 
-        // todo add header validator
         // todo allow hooks to add in validators
         // todo think of a strategy to validate responses with content but no schema
 

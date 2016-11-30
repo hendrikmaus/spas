@@ -2,8 +2,8 @@
 
 namespace Hmaus\Spas\Validation;
 
-use GuzzleHttp\Psr7\Response;
 use Hmaus\Spas\Parser\ParsedRequest;
+use Psr\Http\Message\ResponseInterface;
 
 interface Validator
 {
@@ -11,10 +11,10 @@ interface Validator
      * Validate given request and response
      *
      * @param ParsedRequest $request
-     * @param Response $response
+     * @param ResponseInterface $response
      * @return mixed
      */
-    public function validate(ParsedRequest $request, Response $response);
+    public function validate(ParsedRequest $request, ResponseInterface $response);
 
     /**
      * Whether or not the validation result is valid

@@ -2,16 +2,16 @@
 
 namespace Hmaus\Spas\Validation\Validator;
 
-use GuzzleHttp\Psr7\Response;
 use Hmaus\Spas\Validation\ValidationError;
 use Hmaus\Spas\Validation\Validator;
 use Hmaus\Spas\Parser\ParsedRequest;
+use Psr\Http\Message\ResponseInterface;
 
 class NoContent implements Validator
 {
     private $valid = false;
 
-    public function validate(ParsedRequest $request, Response $response)
+    public function validate(ParsedRequest $request, ResponseInterface $response)
     {
         $isNoContentResponse = $response->getReasonPhrase() === 'No Content';
 
@@ -22,7 +22,7 @@ class NoContent implements Validator
         }
 
         $this->valid = (
-            !$request->getResponse()->getBody() && !$response->getBody()->getContents()
+            !$request->getExpectedResponse()->getBody() && !$response->getBody()->getContents()
         );
     }
 

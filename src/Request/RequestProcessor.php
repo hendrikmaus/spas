@@ -8,13 +8,16 @@ use Hmaus\Spas\Event\AfterEach;
 use Hmaus\Spas\Event\BeforeEach;
 use Hmaus\Spas\Formatter\FormatterService;
 use Hmaus\Spas\Parser\ParsedRequest;
+use Hmaus\Spas\Parser\SpasResponse;
 use Hmaus\Spas\Request\Options\Repetition;
 use Hmaus\Spas\Request\Result\ExceptionHandler;
 use Hmaus\Spas\Request\Result\ProcessorReport;
 use Hmaus\Spas\Validation\ValidatorService;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\HeaderBag;
 
 class RequestProcessor
 {
@@ -107,7 +110,7 @@ class RequestProcessor
         $this->dispatcher->dispatch(BeforeEach::NAME, new BeforeEach($request));
         $this->filterHandler->filter($request);
         $request->setBaseUrl($this->input->getOption('base_uri'));
-        $request->setHref((new UriTemplate())->expand($request->getHref(), $request->getParams()->all()));
+        $request->setHref((new UriTemplate())->expand($request->getUriTemplate(), $request->getParams()->all()));
 
         if (!$request->isEnabled()) {
             $this->report->disabled();
@@ -120,6 +123,11 @@ class RequestProcessor
         try {
             $this->printRequest($request);
             $response = $this->doRequest($request);
+            $this->addActualResponse($response, $request);
+
+            // todo make sure that the event is fired in error cases
+            $this->dispatcher->dispatch(AfterEach::NAME, new AfterEach($request));
+            // todo if hooks marked request as failed, the validator needs to pick that up as well
             $this->validator->validate($request, $response);
             $this->printErrorResponse($response);
             $this->printValidatorReport();
@@ -129,7 +137,6 @@ class RequestProcessor
             $this->exceptionHandler->handle($exception);
         }
 
-        $this->dispatcher->dispatch(AfterEach::NAME, new AfterEach($request));
         $this->checkforRepetition($request);
         $this->report->processed($request->getName());
     }
@@ -347,5 +354,21 @@ class RequestProcessor
         $onlyRunHappyCaseTransactions = $this->input->getOption('all_transactions') == null;
 
         return $wasProcessed && $onlyRunHappyCaseTransactions;
+    }
+
+    /**
+     * Map guzzle response to a ParsedResponse and add it to the request
+     * This way, hooks can work with the results of a request
+     * @param ResponseInterface $response
+     * @param ParsedRequest $request
+     */
+    private function addActualResponse(ResponseInterface $response, ParsedRequest $request)
+    {
+        $parsedResponse = new SpasResponse();
+        $parsedResponse->setBody($response->getBody()->getContents());
+        $parsedResponse->setHeaders(new HeaderBag($response->getHeaders()));
+        $parsedResponse->setStatusCode($response->getStatusCode());
+
+        $request->setActualResponse($parsedResponse);
     }
 }

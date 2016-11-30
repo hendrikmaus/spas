@@ -2,10 +2,10 @@
 
 namespace Hmaus\Spas\Validation\Validator;
 
-use GuzzleHttp\Psr7\Response;
 use Hmaus\Spas\Parser\ParsedRequest;
 use Hmaus\Spas\Validation\ValidationError;
 use Hmaus\Spas\Validation\Validator;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
 class HttpStatusCode implements Validator
@@ -30,9 +30,9 @@ class HttpStatusCode implements Validator
         $this->logger = $logger;
     }
 
-    public function validate(ParsedRequest $request, Response $response)
+    public function validate(ParsedRequest $request, ResponseInterface $response)
     {
-        $expected = $request->getResponse()->getStatusCode();
+        $expected = $request->getExpectedResponse()->getStatusCode();
         $actual   = $response->getStatusCode();
 
         $this->expectedVsActual($expected, $actual);

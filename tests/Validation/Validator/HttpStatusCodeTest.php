@@ -41,7 +41,7 @@ class HttpStatusCodeTest extends \PHPUnit_Framework_TestCase
         $this->parsedRequest = $this->prophesize(ParsedRequest::class);
         $this
             ->parsedRequest
-            ->getResponse()
+            ->getExpectedResponse()
             ->willReturn(
                 $this->parsedResponse->reveal()
             );

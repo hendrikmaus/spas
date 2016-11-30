@@ -112,7 +112,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
         $request->setEnabled(true);
 
         $response = new SpasResponse();
-        $request->setResponse($response);
+        $request->setExpectedResponse($response);
 
         $baseUrl = 'http://example.com';
         $this
@@ -130,19 +130,19 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
             ->filter($request)
             ->shouldBeCalledTimes(1);
 
-        $response = $this->prophesize(Response::class);
+        $httpresponse = new Response();
 
         $this
             ->httpClient
             ->request($request)
-            ->willReturn($response->reveal())
+            ->willReturn($httpresponse)
             ->shouldBeCalledTimes(1);
 
         $this
             ->validatorService
             ->validate(
                 $request,
-                $response->reveal()
+                $httpresponse
             )
             ->shouldBeCalledTimes(1);
 
@@ -177,7 +177,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
         $request->setEnabled(true);
 
         $response = new SpasResponse();
-        $request->setResponse($response);
+        $request->setExpectedResponse($response);
 
         $baseUrl = 'http://example.com';
         $this
@@ -213,6 +213,10 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
         $response
             ->hasHeader(Argument::any())
             ->willReturn(false);
+
+        $response
+            ->getHeaders()
+            ->willReturn(['retry-after' => ['100']]);
 
         $body = $this->prophesize(StreamInterface::class);
         $body
@@ -381,7 +385,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
         $request->setEnabled(true);
 
         $response = new SpasResponse();
-        $request->setResponse($response);
+        $request->setExpectedResponse($response);
 
         $baseUrl = 'http://example.com';
         $this
@@ -409,12 +413,25 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
             ->willReturn([0]); // values are an array on there
 
         $response
+            ->getHeaders()
+            ->willReturn(['retry-after' => ['100']]);
+
+        $response
             ->getStatusCode()
             ->willReturn(200);
 
         $response
             ->getReasonPhrase()
             ->willReturn('OK');
+
+        $body = $this->prophesize(StreamInterface::class);
+        $body
+            ->getContents()
+            ->willReturn('{"error":"here"}');
+
+        $response
+            ->getBody()
+            ->willReturn($body->reveal());
 
         $this
             ->httpClient
@@ -461,7 +478,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
         $request->setEnabled(true);
 
         $response = new SpasResponse();
-        $request->setResponse($response);
+        $request->setExpectedResponse($response);
 
         $baseUrl = 'http://example.com';
         $this
@@ -489,12 +506,25 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
             ->willReturn([100]); // values are an array on there
 
         $response
+            ->getHeaders()
+            ->willReturn(['retry-after' => ['100']]);
+
+        $response
             ->getStatusCode()
             ->willReturn(200);
 
         $response
             ->getReasonPhrase()
             ->willReturn('OK');
+
+        $body = $this->prophesize(StreamInterface::class);
+        $body
+            ->getContents()
+            ->willReturn('{"error":"here"}');
+
+        $response
+            ->getBody()
+            ->willReturn($body->reveal());
 
         $this
             ->httpClient
@@ -541,7 +571,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
         $request->setEnabled(true);
 
         $response = new SpasResponse();
-        $request->setResponse($response);
+        $request->setExpectedResponse($response);
 
         $baseUrl = 'http://example.com';
         $this
@@ -569,12 +599,25 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
             ->willReturn(['2016-11-11']); // values are an array on there
 
         $response
+            ->getHeaders()
+            ->willReturn(['retry-after' => ['2016-11-11']]);
+
+        $response
             ->getStatusCode()
             ->willReturn(200);
 
         $response
             ->getReasonPhrase()
             ->willReturn('OK');
+
+        $body = $this->prophesize(StreamInterface::class);
+        $body
+            ->getContents()
+            ->willReturn('{"error":"here"}');
+
+        $response
+            ->getBody()
+            ->willReturn($body->reveal());
 
         $this
             ->httpClient
@@ -629,7 +672,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
         );
 
         $response = new SpasResponse();
-        $request->setResponse($response);
+        $request->setExpectedResponse($response);
 
         $baseUrl = 'http://example.com';
         $this
@@ -647,19 +690,19 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
             ->filter($request)
             ->shouldBeCalledTimes(2);
 
-        $response = $this->prophesize(Response::class);
+        $httpresponse = new Response();
 
         $this
             ->httpClient
             ->request($request)
-            ->willReturn($response->reveal())
+            ->willReturn($httpresponse)
             ->shouldBeCalledTimes(2);
 
         $this
             ->validatorService
             ->validate(
                 $request,
-                $response->reveal()
+                $httpresponse
             )
             ->shouldBeCalledTimes(2);
 
@@ -694,7 +737,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
         $request->setEnabled(true);
 
         $response = new SpasResponse();
-        $request->setResponse($response);
+        $request->setExpectedResponse($response);
 
         $baseUrl = 'http://example.com';
         $this
@@ -712,19 +755,19 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
             ->filter($request)
             ->shouldBeCalledTimes(1);
 
-        $response = $this->prophesize(Response::class);
+        $httpresponse = new Response();
 
         $this
             ->httpClient
             ->request($request)
-            ->willReturn($response->reveal())
+            ->willReturn($httpresponse)
             ->shouldBeCalledTimes(1);
 
         $this
             ->validatorService
             ->validate(
                 $request,
-                $response->reveal()
+                $httpresponse
             )
             ->shouldBeCalledTimes(1);
 

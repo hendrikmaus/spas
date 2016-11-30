@@ -12,7 +12,6 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Log\LoggerInterface;
-use Psr\Log\LogLevel;
 
 class ExceptionHandlerTest extends \PHPUnit_Framework_TestCase
 {
