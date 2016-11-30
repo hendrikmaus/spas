@@ -121,6 +121,25 @@ class HookHandler
         return $data;
     }
 
+
+    /**
+     * Helper method to get hook data using a specific key
+     *
+     * @param string $key Key to find the hook data in
+     * @return array
+     */
+    public function getHookDataWithKey(string $key) : array
+    {
+        $data = $this->getHookDataFromJson();
+
+        if (!isset($data[$key])) {
+            $this->logger->warning('No hook data with key \'{0}\' found.',[$key]);
+            return [];
+        }
+
+        return $data[$key];
+    }
+
     /**
      * Helper method to apply defaults on top of incoming hook data
      *
