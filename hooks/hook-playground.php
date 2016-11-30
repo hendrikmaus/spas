@@ -94,8 +94,7 @@ $this->getDispatcher()->addListener(BeforeEach::NAME, function(BeforeEach $event
         return;
     }
 
-    /** @var Repetition $repetitionConfig */
-    $repetitionConfig = $request->getProcessorOptions()->get(Repetition::class);
+    $repetitionConfig = $request->getRepetitionConfig();
 
     if ($repetitionConfig->times === 0) {
         $repetitionConfig->times = 3;

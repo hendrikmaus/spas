@@ -9,7 +9,6 @@ use Hmaus\Spas\Event\BeforeEach;
 use Hmaus\Spas\Formatter\FormatterService;
 use Hmaus\Spas\Parser\ParsedRequest;
 use Hmaus\Spas\Parser\SpasResponse;
-use Hmaus\Spas\Request\Options\Repetition;
 use Hmaus\Spas\Request\Result\ExceptionHandler;
 use Hmaus\Spas\Request\Result\ProcessorReport;
 use Hmaus\Spas\Validation\ValidatorService;
@@ -105,7 +104,6 @@ class RequestProcessor
             return;
         }
 
-        $this->applyProcessorOptions($request);
         $this->beginLogBlock($request);
         $this->dispatcher->dispatch(BeforeEach::NAME, new BeforeEach($request));
         $this->filterHandler->filter($request);
@@ -307,32 +305,13 @@ class RequestProcessor
     }
 
     /**
-     * Apply defaults options to the the request
-     * @param ParsedRequest $request
-     */
-    private function applyProcessorOptions(ParsedRequest $request)
-    {
-        $options = $request->getProcessorOptions();
-
-        if ($options->has(Repetition::class)) {
-            return;
-        }
-
-        $request->getProcessorOptions()->add([
-            Repetition::class => new Repetition()
-        ]);
-    }
-
-    /**
      * @param ParsedRequest $request
      */
     private function checkforRepetition(ParsedRequest $request)
     {
-        /** @var Repetition $repetitionConfig */
-        $repetitionConfig = $request->getProcessorOptions()->get(Repetition::class);
-
-        $shouldRepeat = $repetitionConfig->repeat;
-        $repeatetEnough = $repetitionConfig->count < $repetitionConfig->times - 1;
+        $repetitionConfig = $request->getRepetitionConfig();
+        $shouldRepeat     = $repetitionConfig->repeat;
+        $repeatetEnough   = $repetitionConfig->count < $repetitionConfig->times - 1;
 
         if ($shouldRepeat && $repeatetEnough) {
             $repetitionConfig->count += 1;
