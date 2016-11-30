@@ -8,7 +8,7 @@ It tests your API description against a given environment using real HTTP reques
 [![Code Climate](https://codeclimate.com/github/hendrikmaus/spas/badges/gpa.svg)](https://codeclimate.com/github/hendrikmaus/spas)
 
 ## Note
-Spas is currently **experimental**!
+Spas is currently **alpha**, so its API is subject to change!
 
 ## How It Works / Example
 There is a running example in the `example` dir including a readme to follow along.
