@@ -121,7 +121,7 @@ and sends them to the specified environment.
   <info>
   spas run \
       --file "api-description.apib.refract.json" \
-      --type apib-refract \
+      --type apib \
       --base_uri http://localhost:8000 \
       --request_parser "\Hmaus\Spas\Parser\Apib"
   </info>
