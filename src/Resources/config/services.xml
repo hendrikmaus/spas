@@ -50,6 +50,7 @@
             <argument type="service" id="hmaus.spas.request.result.exception_handler"/>
             <argument type="service" id="hmaus.spas.formatter.service"/>
             <argument type="service" id="hmaus.spas.request.filter_handler"/>
+            <argument type="service" id="hmaus.spas.processor_report"/>
         </service>
 
         <service class="Hmaus\Spas\Request\FilterHandler" id="hmaus.spas.request.filter_handler">
@@ -72,5 +73,7 @@
         <service class="Hmaus\Spas\Formatter\ValidationErrorFormatter" id="hmaus.spas.formatter.validation_error">
             <tag name="hmaus.spas.tag.formatter"/>
         </service>
+
+        <service class="Hmaus\Spas\Request\Result\ProcessorReport" id="hmaus.spas.processor_report"/>
     </services>
 </container>

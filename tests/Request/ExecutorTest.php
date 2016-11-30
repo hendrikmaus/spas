@@ -6,6 +6,7 @@ use Hmaus\Spas\Request\Executor;
 use Hmaus\Spas\Request\HookHandler;
 use Hmaus\Spas\Request\RequestProcessor;
 use Hmaus\Spas\Parser\ParsedRequest;
+use Hmaus\Spas\Request\Result\ProcessorReport;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Log\LoggerInterface;
@@ -92,7 +93,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
         $this
             ->requestProcessor
             ->getReport()
-            ->willReturn(['pass' => 0, 'fail' => 0, 'disable' => 0])
+            ->willReturn(new ProcessorReport())
             ->shouldBeCalledTimes(1);
 
         $this

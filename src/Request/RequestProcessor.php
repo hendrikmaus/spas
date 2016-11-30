@@ -8,7 +8,9 @@ use Hmaus\Spas\Event\AfterEach;
 use Hmaus\Spas\Event\BeforeEach;
 use Hmaus\Spas\Formatter\FormatterService;
 use Hmaus\Spas\Parser\ParsedRequest;
+use Hmaus\Spas\Request\Options\Repetition;
 use Hmaus\Spas\Request\Result\ExceptionHandler;
+use Hmaus\Spas\Request\Result\ProcessorReport;
 use Hmaus\Spas\Validation\ValidatorService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;
@@ -63,14 +65,9 @@ class RequestProcessor
     private $filterHandler;
 
     /**
-     * @var array
+     * @var ProcessorReport
      */
-    private $report = [
-        'pass' => 0,
-        'fail' => 0,
-        'disbale' => 0,
-        'processed' => []
-    ];
+    private $report;
 
     public function __construct(
         InputInterface $input,
@@ -80,7 +77,8 @@ class RequestProcessor
         HttpClient $http,
         ExceptionHandler $exceptionHandler,
         FormatterService $formatterService,
-        FilterHandler $filterHandler
+        FilterHandler $filterHandler,
+        ProcessorReport $processorReport
     )
     {
         $this->logger = $logger;
@@ -91,32 +89,28 @@ class RequestProcessor
         $this->formatterService = $formatterService;
         $this->input = $input;
         $this->filterHandler = $filterHandler;
+        $this->report = $processorReport;
     }
 
+    /**
+     * Process each individual transaction
+     * @param ParsedRequest $request
+     */
     public function process(ParsedRequest $request)
     {
-        if ($this->wasAlreadyProcessed($request->getName()) && $this->input->getOption('all_transactions') == null) {
+        if ($this->shouldExit($request)) {
             return;
         }
 
-        $this->beginLogBlock();
-        $this->logger->info($request->getName());
+        $this->applyProcessorOptions($request);
+        $this->beginLogBlock($request);
         $this->dispatcher->dispatch(BeforeEach::NAME, new BeforeEach($request));
-
-        // todo event BeforeFilter?
         $this->filterHandler->filter($request);
-        // todo event AfterFilter?
-
         $request->setBaseUrl($this->input->getOption('base_uri'));
-
-        // todo event BeforeUriExpansion?
-        $request->setHref(
-            (new UriTemplate())->expand($request->getHref(), $request->getParams()->all())
-        );
-        // todo event AfterUriExpansion?
+        $request->setHref((new UriTemplate())->expand($request->getHref(), $request->getParams()->all()));
 
         if (!$request->isEnabled()) {
-            $this->disabled();
+            $this->report->disabled();
             $this->logger->info('Disabled');
             $this->dispatcher->dispatch(AfterEach::NAME, new AfterEach($request));
             $this->endLogBlock();
@@ -125,31 +119,25 @@ class RequestProcessor
 
         try {
             $this->printRequest($request);
-
             $response = $this->doRequest($request);
-
-            // todo event BeforeValidation
             $this->validator->validate($request, $response);
-            // todo event AfterValidation
-
             $this->printErrorResponse($response);
             $this->printValidatorReport();
-
             $this->validator->reset();
-        }
-        catch (\Exception $exception) {
-            // todo event Exception
-            $this->failed();
+        } catch (\Exception $exception) {
+            $this->report->failed();
             $this->exceptionHandler->handle($exception);
         }
 
         $this->dispatcher->dispatch(AfterEach::NAME, new AfterEach($request));
-
-        $this->processed($request->getName());
-
-        $this->logger->info('-----------------');
+        $this->checkforRepetition($request);
+        $this->report->processed($request->getName());
     }
 
+    /**
+     * Report getter
+     * @return ProcessorReport
+     */
     public function getReport()
     {
         return $this->report;
@@ -249,7 +237,7 @@ class RequestProcessor
     private function printValidatorReport()
     {
         if (!$this->validator->isValid()) {
-            $this->failed();
+            $this->report->failed();
 
             $formatter = $this
                 ->formatterService
@@ -263,7 +251,7 @@ class RequestProcessor
                 )
             );
         } else {
-            $this->passed();
+            $this->report->passed();
             $this->logger->info('Passed');
         }
     }
@@ -292,39 +280,72 @@ class RequestProcessor
             );
     }
 
-    private function failed()
-    {
-        $this->report['fail'] += 1;
-    }
-
-    private function passed()
-    {
-        $this->report['pass'] += 1;
-    }
-
-    private function disabled()
-    {
-        $this->report['disbale'] += 1;
-    }
-
-    private function processed(string $name)
-    {
-        $this->report['processed'][] = $name;
-    }
-
-    private function wasAlreadyProcessed(string $name) : bool
-    {
-        return in_array($name, $this->report['processed']);
-    }
-
-    private function beginLogBlock()
+    /**
+     * Print the visual start of a request being processed
+     * @param ParsedRequest $request
+     */
+    private function beginLogBlock(ParsedRequest $request)
     {
         $this->logger->info('');
         $this->logger->info('-----------------');
+        $this->logger->info($request->getName());
     }
 
+    /**
+     * Print the visual end of a processed request
+     */
     private function endLogBlock()
     {
         $this->logger->info('-----------------');
+    }
+
+    /**
+     * Apply defaults options to the the request
+     * @param ParsedRequest $request
+     */
+    private function applyProcessorOptions(ParsedRequest $request)
+    {
+        $options = $request->getProcessorOptions();
+
+        if ($options->has(Repetition::class)) {
+            return;
+        }
+
+        $request->getProcessorOptions()->add([
+            Repetition::class => new Repetition()
+        ]);
+    }
+
+    /**
+     * @param ParsedRequest $request
+     */
+    private function checkforRepetition(ParsedRequest $request)
+    {
+        /** @var Repetition $repetitionConfig */
+        $repetitionConfig = $request->getProcessorOptions()->get(Repetition::class);
+
+        $shouldRepeat = $repetitionConfig->repeat;
+        $repeatetEnough = $repetitionConfig->count < $repetitionConfig->times - 1;
+
+        if ($shouldRepeat && $repeatetEnough) {
+            $repetitionConfig->count += 1;
+            $this->logger->info('Repeating request');
+            $this->endLogBlock();
+            $this->process($request);
+        } else {
+            $this->endLogBlock();
+        }
+    }
+
+    /**
+     * @param ParsedRequest $request
+     * @return bool
+     */
+    private function shouldExit(ParsedRequest $request): bool
+    {
+        $wasProcessed = $this->report->wasProcessed($request->getName());
+        $onlyRunHappyCaseTransactions = $this->input->getOption('all_transactions') == null;
+
+        return $wasProcessed && $onlyRunHappyCaseTransactions;
     }
 }

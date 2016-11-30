@@ -7,12 +7,13 @@ use Hmaus\Spas\Event\AfterEach;
 use Hmaus\Spas\Event\BeforeEach;
 use Hmaus\Spas\Formatter\Formatter;
 use Hmaus\Spas\Formatter\FormatterService;
-use Hmaus\Spas\Formatter\ValidationErrorFormatter;
 use Hmaus\Spas\Parser\SpasResponse;
 use Hmaus\Spas\Request\FilterHandler;
 use Hmaus\Spas\Request\HttpClient;
+use Hmaus\Spas\Request\Options\Repetition;
 use Hmaus\Spas\Request\RequestProcessor;
 use Hmaus\Spas\Request\Result\ExceptionHandler;
+use Hmaus\Spas\Request\Result\ProcessorReport;
 use Hmaus\Spas\Validation\ValidatorService;
 use Hmaus\Spas\Parser\SpasRequest;
 use Prophecy\Argument;
@@ -80,6 +81,16 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
         $this->formatterService = $this->prophesize(FormatterService::class);
         $this->filterHandler = $this->prophesize(FilterHandler::class);
 
+        $this
+            ->input
+            ->getOption('all_transactions')
+            ->willReturn(null);
+
+        $this
+            ->input
+            ->getOption('polling_count')
+            ->willReturn(3);
+
         $this->requestProcessor = new RequestProcessor(
             $this->input->reveal(),
             $this->logger->reveal(),
@@ -88,7 +99,8 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
             $this->httpClient->reveal(),
             $this->exceptionHandler->reveal(),
             $this->formatterService->reveal(),
-            $this->filterHandler->reveal()
+            $this->filterHandler->reveal(),
+            new ProcessorReport()
         );
     }
 
@@ -117,11 +129,6 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
             ->filterHandler
             ->filter($request)
             ->shouldBeCalledTimes(1);
-
-        $this
-            ->input
-            ->getOption('polling_count')
-            ->willReturn(3);
 
         $response = $this->prophesize(Response::class);
 
@@ -187,11 +194,6 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
             ->filterHandler
             ->filter($request)
             ->shouldBeCalledTimes(1);
-
-        $this
-            ->input
-            ->getOption('polling_count')
-            ->willReturn(3);
 
         $response = $this->prophesize(Response::class);
 
@@ -280,7 +282,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
             );
 
         $report = $this->requestProcessor->getReport();
-        $this->assertSame(1, $report['fail']);
+        $this->assertSame(1, $report->getFailed());
     }
 
     public function testRequestsCanBeDisabled()
@@ -397,11 +399,6 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
             ->filter($request)
             ->shouldBeCalledTimes(1);
 
-        $this
-            ->input
-            ->getOption('polling_count')
-            ->willReturn(3);
-
         $response = $this->prophesize(Response::class);
         $response
             ->hasHeader('retry-after')
@@ -481,11 +478,6 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
             ->filterHandler
             ->filter($request)
             ->shouldBeCalledTimes(1);
-
-        $this
-            ->input
-            ->getOption('polling_count')
-            ->willReturn(3);
 
         $response = $this->prophesize(Response::class);
         $response
@@ -567,11 +559,6 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
             ->filter($request)
             ->shouldBeCalledTimes(1);
 
-        $this
-            ->input
-            ->getOption('polling_count')
-            ->willReturn(3);
-
         $response = $this->prophesize(Response::class);
         $response
             ->hasHeader('retry-after')
@@ -619,6 +606,152 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
             ->dispatch(AfterEach::NAME, Argument::type(AfterEach::class))
             ->shouldBeCalledTimes(1);
 
+        $this
+            ->requestProcessor
+            ->process(
+                $request
+            );
+    }
+
+    public function testCanRepeatRequests()
+    {
+        $request = new SpasRequest();
+        $request->setName('Group > Resource > Action');
+        $request->setHref('/health');
+        $request->setEnabled(true);
+
+        $repetitionConfig = new Repetition();
+        $repetitionConfig->repeat = true;
+        $repetitionConfig->times = 2;
+        $repetitionConfig->count = 0;
+        $request->getProcessorOptions()->set(
+            Repetition::class, $repetitionConfig
+        );
+
+        $response = new SpasResponse();
+        $request->setResponse($response);
+
+        $baseUrl = 'http://example.com';
+        $this
+            ->input
+            ->getOption('base_uri')
+            ->willReturn($baseUrl);
+
+        $this
+            ->dispatcher
+            ->dispatch(BeforeEach::NAME, Argument::type(BeforeEach::class))
+            ->shouldBeCalledTimes(2);
+
+        $this
+            ->filterHandler
+            ->filter($request)
+            ->shouldBeCalledTimes(2);
+
+        $response = $this->prophesize(Response::class);
+
+        $this
+            ->httpClient
+            ->request($request)
+            ->willReturn($response->reveal())
+            ->shouldBeCalledTimes(2);
+
+        $this
+            ->validatorService
+            ->validate(
+                $request,
+                $response->reveal()
+            )
+            ->shouldBeCalledTimes(2);
+
+        $this
+            ->validatorService
+            ->isValid()
+            ->willReturn(true)
+            ->shouldBeCalledTimes(4);
+
+        $this
+            ->validatorService
+            ->reset()
+            ->shouldBeCalledTimes(2);
+
+        $this
+            ->dispatcher
+            ->dispatch(AfterEach::NAME, Argument::type(AfterEach::class))
+            ->shouldBeCalledTimes(2);
+
+        $this
+            ->requestProcessor
+            ->process(
+                $request
+            );
+    }
+
+    public function testShouldOnlyRunHappyCaseTransactions()
+    {
+        $request = new SpasRequest();
+        $request->setName('Group > Resource > Action');
+        $request->setHref('/health');
+        $request->setEnabled(true);
+
+        $response = new SpasResponse();
+        $request->setResponse($response);
+
+        $baseUrl = 'http://example.com';
+        $this
+            ->input
+            ->getOption('base_uri')
+            ->willReturn($baseUrl);
+
+        $this
+            ->dispatcher
+            ->dispatch(BeforeEach::NAME, Argument::type(BeforeEach::class))
+            ->shouldBeCalledTimes(1);
+
+        $this
+            ->filterHandler
+            ->filter($request)
+            ->shouldBeCalledTimes(1);
+
+        $response = $this->prophesize(Response::class);
+
+        $this
+            ->httpClient
+            ->request($request)
+            ->willReturn($response->reveal())
+            ->shouldBeCalledTimes(1);
+
+        $this
+            ->validatorService
+            ->validate(
+                $request,
+                $response->reveal()
+            )
+            ->shouldBeCalledTimes(1);
+
+        $this
+            ->validatorService
+            ->isValid()
+            ->willReturn(true)
+            ->shouldBeCalledTimes(2);
+
+        $this
+            ->validatorService
+            ->reset()
+            ->shouldBeCalledTimes(1);
+
+        $this
+            ->dispatcher
+            ->dispatch(AfterEach::NAME, Argument::type(AfterEach::class))
+            ->shouldBeCalledTimes(1);
+
+        $this
+            ->requestProcessor
+            ->process(
+                $request
+            );
+
+        // run the same request a second time, so the processor will immediately exit
+        // the test asserts the behaviour as it sets "shouldBeCalledTimes" above
         $this
             ->requestProcessor
             ->process(

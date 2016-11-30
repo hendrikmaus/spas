@@ -62,8 +62,13 @@ class Executor
         $report = $this->requestProcessor->getReport();
 
         $this->logger->info('-----------------');
-        $this->logger->info('Passed: {0}, Failed: {1}, Disabled: {2}', array_values($report));
+        $this->logger->info(
+            'Passed: {0}, Failed: {1}, Disabled: {2}', [
+            $report->getPassed(),
+            $report->getFailed(),
+            $report->getDisabled()
+        ]);
 
-        return $report['fail'] === 0;
+        return $report->hasFailures();
     }
 }

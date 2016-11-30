@@ -21,6 +21,7 @@
 use Hmaus\Spas\Event\BeforeAll;
 use Hmaus\Spas\Event\BeforeEach;
 use Hmaus\Spas\Request\HookHandler;
+use Hmaus\Spas\Request\Options\Repetition;
 
 /* Hooks are loaded by `Hmaus\Spas\Request\HookHandler`
  * use this line in every scope to get syntax completion: */
@@ -80,5 +81,28 @@ $this->getDispatcher()->addListener(BeforeEach::NAME, function(BeforeEach $event
         'Playground: "{0}" is shared with this event',
         [$this->getHookDataBag()->get('my_key')]
     );*/
+});
+
+/* let's repeat a request */
+$this->getDispatcher()->addListener(BeforeEach::NAME, function(BeforeEach $event)
+{
+    /** @var HookHandler $this */
+
+    $request = $event->getRequest();
+
+    if ($request->getName() !== 'Group > Resource > Name') {
+        return;
+    }
+
+    /** @var Repetition $repetitionConfig */
+    $repetitionConfig = $request->getProcessorOptions()->get(Repetition::class);
+
+    if ($repetitionConfig->times === 0) {
+        $repetitionConfig->times = 3;
+    }
+
+    $repetitionConfig->repeat = true;
+
+    $this->getLogger()->info('Playground: Counted ' . ($repetitionConfig->count + 1) . ' hits');
 });
 
