@@ -7,10 +7,10 @@ use Hmaus\Spas\Event\AfterEach;
 use Hmaus\Spas\Event\BeforeEach;
 use Hmaus\Spas\Formatter\Formatter;
 use Hmaus\Spas\Formatter\FormatterService;
+use Hmaus\Spas\Parser\Options\Repetition;
 use Hmaus\Spas\Parser\SpasResponse;
 use Hmaus\Spas\Request\FilterHandler;
 use Hmaus\Spas\Request\HttpClient;
-use Hmaus\Spas\Request\Options\Repetition;
 use Hmaus\Spas\Request\RequestProcessor;
 use Hmaus\Spas\Request\Result\ExceptionHandler;
 use Hmaus\Spas\Request\Result\ProcessorReport;
@@ -667,9 +667,8 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
         $repetitionConfig->repeat = true;
         $repetitionConfig->times = 2;
         $repetitionConfig->count = 0;
-        $request->getProcessorOptions()->set(
-            Repetition::class, $repetitionConfig
-        );
+
+        $request->setRepetitionConfig($repetitionConfig);
 
         $response = new SpasResponse();
         $request->setExpectedResponse($response);

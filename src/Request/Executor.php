@@ -69,6 +69,6 @@ class Executor
             $report->getDisabled()
         ]);
 
-        return $report->hasFailures();
+        return !$report->hasFailures();
     }
 }

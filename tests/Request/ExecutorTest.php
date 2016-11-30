@@ -90,15 +90,46 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
             ->process(Argument::exact($parsedRequest->reveal()))
             ->shouldBeCalledTimes(1);
 
+        $report = new ProcessorReport();
+        $report->passed();
+        $report->disabled();
+
         $this
             ->requestProcessor
             ->getReport()
-            ->willReturn(new ProcessorReport())
+            ->willReturn($report)
             ->shouldBeCalledTimes(1);
 
-        $this
+        $result = $this
             ->executor
             ->run([$parsedRequest->reveal()]);
+
+        $this->assertTrue($result);
+    }
+
+    public function testExitCode()
+    {
+        $parsedRequest = $this->prophesize(ParsedRequest::class);
+
+        $this
+            ->requestProcessor
+            ->process(Argument::exact($parsedRequest->reveal()))
+            ->shouldBeCalledTimes(1);
+
+        $report = new ProcessorReport();
+        $report->failed();
+
+        $this
+            ->requestProcessor
+            ->getReport()
+            ->willReturn($report)
+            ->shouldBeCalledTimes(1);
+
+        $result = $this
+            ->executor
+            ->run([$parsedRequest->reveal()]);
+
+        $this->assertFalse($result);
     }
 
 }

@@ -122,8 +122,6 @@ class RequestProcessor
             $this->printRequest($request);
             $response = $this->doRequest($request);
             $this->addActualResponse($response, $request);
-
-            // todo make sure that the event is fired in error cases
             $this->dispatcher->dispatch(AfterEach::NAME, new AfterEach($request));
             // todo if hooks marked request as failed, the validator needs to pick that up as well
             $this->validator->validate($request, $response);
@@ -131,6 +129,7 @@ class RequestProcessor
             $this->printValidatorReport();
             $this->validator->reset();
         } catch (\Exception $exception) {
+            $this->dispatcher->dispatch(AfterEach::NAME, new AfterEach($request));
             $this->report->failed();
             $this->exceptionHandler->handle($exception);
         }
