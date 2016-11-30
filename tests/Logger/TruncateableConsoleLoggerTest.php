@@ -54,7 +54,7 @@ class TruncateableConsoleLoggerTest extends \PHPUnit_Framework_TestCase
     {
         $this
             ->output
-            ->writeln(Argument::exact('<error>[error] log that shit</error>'))
+            ->writeln(Argument::exact('<error>[error] log that shit</error>'), Argument::type('integer'))
             ->shouldBeCalledTimes(1);
 
         $this->logger->log('error', 'log that shit');
@@ -64,7 +64,7 @@ class TruncateableConsoleLoggerTest extends \PHPUnit_Framework_TestCase
     {
         $this
             ->output
-            ->writeln(Argument::exact('<error>[error] log that shit</error>'))
+            ->writeln(Argument::exact('<error>[error] log that shit</error>'), Argument::type('integer'))
             ->shouldBeCalledTimes(1);
 
         $this
@@ -83,7 +83,7 @@ class TruncateableConsoleLoggerTest extends \PHPUnit_Framework_TestCase
     {
         $this
             ->output
-            ->writeln(Argument::exact('<error>[error] log that shit</error>'))
+            ->writeln(Argument::exact('<error>[error] log that shit</error>'), Argument::type('integer'))
             ->shouldBeCalledTimes(1);
 
         $this
@@ -101,7 +101,7 @@ class TruncateableConsoleLoggerTest extends \PHPUnit_Framework_TestCase
     {
         $this
             ->output
-            ->writeln(Argument::containingString('(truncated)'))
+            ->writeln(Argument::containingString('(truncated)'), Argument::type('integer'))
             ->shouldBeCalledTimes(1);
 
         $this
