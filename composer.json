@@ -8,16 +8,6 @@
       "email": "aidentailor@gmail.com"
     }
   ],
-  "repositories": {
-    "hmaus/spas-parser": {
-      "type": "vcs",
-      "url": "../spas-parser"
-    },
-    "hmaus/spas-parser-apib": {
-      "type": "vcs",
-      "url": "../spas-parser-apib"
-    }
-  },
   "minimum-stability": "stable",
   "require": {
     "php": ">=7.0",
