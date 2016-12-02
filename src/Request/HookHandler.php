@@ -3,11 +3,12 @@
 namespace Hmaus\Spas\Request;
 
 
+use Hmaus\Spas\Hook\Hook;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\ParameterBag;
 
 class HookHandler
 {
@@ -57,16 +58,26 @@ class HookHandler
 
     public function includeHooks()
     {
-        foreach ($this->getHookFiles() as $hookfile) {
-            if (!$this->filesystem->exists($hookfile)) {
+        foreach ($this->getHookFiles() as $hookname) {
+            if (class_exists($hookname)) {
+                /** @var Hook $hook */
+                $hook = new $hookname($this, $this->dispatcher, $this->logger, new ParameterBag());
+                $hook->setup();
+                continue;
+            }
+
+            // DEPRECATED
+            // legacy hooks to be removed with spas 1.0
+            if (!$this->filesystem->exists($hookname)) {
                 $this->logger->warning('Hook file could not be loaded:');
-                $this->logger->warning('  "{0}"', [$hookfile]);
+                $this->logger->warning('  "{0}"', [$hookname]);
                 $this->logger->warning('Make sure the path is correct and readable');
                 continue;
             }
 
             /** @noinspection PhpIncludeInspection */
-            include $hookfile;
+            include $hookname;
+            // DEPRECATED
         }
     }
 
