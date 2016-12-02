@@ -1,0 +1,62 @@
+<?php
+
+namespace Hmaus\Spas\Validation\Validator;
+
+use Hmaus\Spas\Parser\ParsedRequest;
+use Hmaus\Spas\Validation\ValidationError;
+use Hmaus\Spas\Validation\Validator;
+use Psr\Http\Message\ResponseInterface;
+
+class RequestTaggedFailed implements Validator
+{
+    /**
+     * @var bool
+     */
+    private $isValid = false;
+
+    /**
+     * @var ValidationError[]
+     */
+    private $errors = [];
+
+    public function validate(ParsedRequest $request, ResponseInterface $response)
+    {
+        $tagged = isset($request->failed);
+
+        $this->isValid = !$tagged;
+    }
+
+    public function isValid() : bool
+    {
+        return $this->isValid;
+    }
+
+    public function getId() : string
+    {
+        return 'request_tagged_failed';
+    }
+
+    public function getName() : string
+    {
+        return 'Request Tagged as Failed';
+    }
+
+    public function getErrors() : array
+    {
+        return $this->errors;
+    }
+
+    public function reset()
+    {
+        $this->isValid = false;
+        $this->errors = [];
+    }
+
+    private function addError(string $property, string $message)
+    {
+        $error = new ValidationError();
+        $error->property = $property;
+        $error->message = $message;
+        $this->errors[] = $error;
+    }
+}

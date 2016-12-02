@@ -41,14 +41,14 @@ class HelloHookData extends Hook
         $handler->getRawHookData();
 
         // Get your decoded JSON data as assoc array
-        $handler->getJsonHookData($this->getShortName());
+        $handler->getJsonHookData(static::class);
 
         // Define defaults here and apply them to the JSON data as you retrieve it
         $defaults = [
             'apikey' => '',
             'header' => 'X-Vnd-ApiKey'
         ];
-        $data = $handler->getJsonHookDataWithDefaults($this->getShortName(), $defaults);
+        $data = $handler->getJsonHookDataWithDefaults(static::class, $defaults);
 
         $this->log($data['apikey']);
     }

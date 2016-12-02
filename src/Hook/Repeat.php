@@ -56,7 +56,7 @@ class Repeat extends Hook
 
     protected function onBeforeAll(BeforeAll $event)
     {
-        $data = $this->hookHandler->getJsonHookData($this->getShortName());
+        $data = $this->hookHandler->getJsonHookData(static::class);
 
         $defaults = [
             'name' => '',

@@ -123,7 +123,7 @@ and sends them to the specified environment.
       --file "api-description.apib.refract.json" \
       --type apib \
       --base_uri http://localhost:8000 \
-      --request_parser "\Hmaus\Spas\Parser\Apib"
+      --request_parser "Hmaus\Spas\Parser\Apib"
   </info>
 
 To implement another request parser, please refer to the respective guide on:

@@ -17,6 +17,7 @@
     "jonnyw/php-phantomjs": "^4.5",
     "justinrainbow/json-schema": "^2.0",
     "sebastian/diff": "^1.4",
+    "seld/jsonlint": "^1.5",
     "symfony/config": "^3.1",
     "symfony/console": "^3.1",
     "symfony/dependency-injection": "^3.1",

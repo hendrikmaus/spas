@@ -71,7 +71,7 @@ Simply browse `/src/Hook` to see pre-built hooks; all the ones prefixed with `He
 Take your spas command add an option:
 
 ```bash
---hook "\Hmaus\Spas\Hook\HelloWorld"
+--hook "Hmaus\Spas\Hook\HelloWorld"
 ```
 
 As you can see, the hooks are simply passed using their fully qulified class name. So as long as the classes
@@ -80,8 +80,8 @@ sit inside thee autloader, you can use them right away.
 To pass multiple hooks, simply repeat the `--hook` option for every one of them.
 
 ```bash
---hook "\Hmaus\Spas\Hook\HelloWorld"
---hook "\Hmaus\Spas\Hook\HelloHookData"
+--hook "Hmaus\Spas\Hook\HelloWorld"
+--hook "Hmaus\Spas\Hook\HelloHookData"
 ```
 
 ### Pass Data to Hooks
@@ -89,16 +89,19 @@ Many of your hooks shall be flexible in what they can do, hence you want to conf
 We suggest to use JSON format to pass data into a hook like so:
 
 ```bash
---hook "\Hmaus\Spas\Hook\HelloHookData"
+--hook "Hmaus\Spas\Hook\HelloHookData"
 --hook_data $'{
-    "HelloHookData": {
+    "Hmaus-Spas-Hook-HelloHookData": {
         "apikey": "ewifvweilfvf"
     },
-    "SomeOtherHook": {
+    "Your-Namespace-SomeOtherHook": {
         "hook-data-option": "contains all data passed to all hooks"
     }
 }'
 ```
+
+Note that you need to replace the backslashes with dashes for the `--hook_data`.  
+Let me know if you know how to make it work with the backslashes.
 
 ### Write Your Own Hooks
 Once you examine the existing hooks, you should already gathered all there is to know.  

@@ -39,6 +39,12 @@
             <argument type="service" id="hmaus.spas.event_dispatcher"/>
             <argument type="service" id="hmaus.spas.logger"/>
             <argument type="service" id="hmaus.spas.filesystem"/>
+            <argument type="service">
+                <service class="Symfony\Component\HttpFoundation\ParameterBag"/>
+            </argument>
+            <argument type="service">
+                <service class="Seld\JsonLint\JsonParser"/>
+            </argument>
         </service>
 
         <service class="Hmaus\Spas\Request\RequestProcessor" id="hmaus.spas.request.processor">

@@ -45,24 +45,24 @@ class EnableDisable extends Hook
         ];
 
         $this->bag->add(
-            $this->hookHandler->getJsonHookDataWithDefaults($this->getShortName(), $defaults)
+            $this->hookHandler->getJsonHookDataWithDefaults(static::class, $defaults)
         );
     }
 
     private function onBeforeEach(BeforeEach $event)
     {
         $request = $event->getRequest();
-        $name    = strtolower($request->getName());
+        $name    = $request->getName();
 
         foreach ($this->bag->get('disable') as $disbaled) {
-            if (strpos($name, strtolower($disbaled)) === false) {
+            if (!$this->contains($disbaled, $name)) {
                 continue;
             }
             $request->setEnabled(false);
         }
 
         foreach ($this->bag->get('enable') as $enabled) {
-            if (strpos($name, strtolower($enabled)) === false) {
+            if (!$this->contains($enabled, $name)) {
                 continue;
             }
             $request->setEnabled(true);

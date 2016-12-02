@@ -2,9 +2,9 @@
 
 namespace Hmaus\Spas\Request;
 
-
 use Hmaus\Spas\Hook\Hook;
 use Psr\Log\LoggerInterface;
+use Seld\JsonLint\JsonParser;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -42,18 +42,26 @@ class HookHandler
      */
     private $hookDataBag;
 
+    /**
+     * @var JsonParser
+     */
+    private $jsonParser;
+
     public function __construct(
         InputInterface $input,
         EventDispatcherInterface $dispatcher,
         LoggerInterface $logger,
-        Filesystem $filesystem
+        Filesystem $filesystem,
+        ParameterBag $parameterBag,
+        JsonParser $jsonParser
     )
     {
         $this->input = $input;
         $this->dispatcher = $dispatcher;
         $this->logger = $logger;
         $this->filesystem = $filesystem;
-        $this->hookDataBag = new ParameterBag();
+        $this->hookDataBag = $parameterBag;
+        $this->jsonParser = $jsonParser;
     }
 
     public function includeHooks()
@@ -81,7 +89,7 @@ class HookHandler
         }
     }
 
-    public function getHookFiles() : array
+    public function getHookFiles(): array
     {
         $hookfiles = $this->input->getOption('hook');
 
@@ -99,7 +107,7 @@ class HookHandler
      *
      * @return string
      */
-    public function getRawHookData() : string
+    public function getRawHookData(): string
     {
         if ($this->rawHookData !== null) {
             return $this->rawHookData;
@@ -109,8 +117,7 @@ class HookHandler
 
         if ($hookdata === null) {
             $this->rawHookData = '';
-        }
-        else {
+        } else {
             $this->rawHookData = $hookdata;
         }
 
@@ -121,21 +128,22 @@ class HookHandler
      * @param string $key optional key to get from the data-set
      * @return array
      */
-    public function getJsonHookData(string $key = '') : array
+    public function getJsonHookData(string $key = ''): array
     {
         $data = $this->getRawHookData();
-        $data = json_decode($data, true);
 
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            $this->logger->error(
-                'Hook Handler: Passed hook data failed in json decoding process: "{0}"', [json_last_error_msg()]
-            );
+        try {
+            $data = $this->jsonParser->parse($data, JsonParser::PARSE_TO_ASSOC);
+        } catch (\Exception $exception) {
+            $this->logger->error('Hook Handler: {0}', [$exception->getMessage()]);
             return [];
         }
 
         if ($key === '') {
             return $data;
         }
+
+        $key = str_replace('\\','-', $key);
 
         if (!isset($data[$key])) {
             $this->logger->error(
@@ -183,7 +191,7 @@ class HookHandler
      * @param array $defaults Defaults values to apply
      * @return array
      */
-    public function getJsonHookDataWithDefaults(string $key, array $defaults = []) : array
+    public function getJsonHookDataWithDefaults(string $key, array $defaults = []): array
     {
         return array_merge($defaults, $this->getJsonHookData($key));
     }
@@ -192,7 +200,7 @@ class HookHandler
      * @return array
      * @deprecated use \Hmaus\Spas\Request\HookHandler::getJsonHookData instead; removed with spas 1.0
      */
-    public function getHookDataFromJson() : array
+    public function getHookDataFromJson(): array
     {
         return $this->getJsonHookData();
     }
@@ -204,7 +212,7 @@ class HookHandler
      * @return array
      * @deprecated use \Hmaus\Spas\Request\HookHandler::getJsonHookData instead; removed with spas 1.0
      */
-    public function getHookDataWithKey(string $key) : array
+    public function getHookDataWithKey(string $key): array
     {
         return $this->getJsonHookData($key);
     }
@@ -247,7 +255,7 @@ class HookHandler
      * @return array
      * @deprecated use \Hmaus\Spas\Request\HookHandler::getJsonHookDataWithDefaults instead; removed with spas 1.0
      */
-    public function applyHookDataDefaults(string $key, array $defaults, array $data) : array
+    public function applyHookDataDefaults(string $key, array $defaults, array $data): array
     {
         if (isset($data[$key])) {
             return array_merge($defaults, $data[$key]);
@@ -259,7 +267,7 @@ class HookHandler
     /**
      * @return LoggerInterface
      */
-    public function getLogger() : LoggerInterface
+    public function getLogger(): LoggerInterface
     {
         return $this->logger;
     }
@@ -267,7 +275,7 @@ class HookHandler
     /**
      * @return EventDispatcherInterface
      */
-    public function getDispatcher() : EventDispatcherInterface
+    public function getDispatcher(): EventDispatcherInterface
     {
         return $this->dispatcher;
     }

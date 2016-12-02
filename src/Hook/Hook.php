@@ -72,17 +72,25 @@ abstract class Hook
     {
         $this->hookHandler->getLogger()->log(
             $level,
-            sprintf('%s: %s', $this->getShortName(), $msg),
+            sprintf('%s: %s', (new \ReflectionClass(static::class))->getShortName(), $msg),
             $context
         );
     }
 
     /**
-     * Helper to get short class name of concrete implementations
-     * @return string
+     * Helper to search for a name fragment inside a request name
+     *
+     * @param string $needle
+     * @param string $haystack
+     * @return bool
      */
-    protected function getShortName() : string
+    protected function contains(string $needle, string $haystack, bool $forceLowercase = true) : bool
     {
-        return (new \ReflectionClass(static::class))->getShortName();
+        if ($forceLowercase) {
+            $needle   = mb_strtolower($needle);
+            $haystack = mb_strtolower($haystack);
+        }
+
+        return mb_strpos($haystack, $needle) !== false;
     }
 }

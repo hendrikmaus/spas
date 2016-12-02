@@ -6,6 +6,7 @@ use Hmaus\Spas\Request\HookHandler;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Log\LoggerInterface;
+use Seld\JsonLint\JsonParser;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -49,7 +50,9 @@ class HookHandlerTest extends \PHPUnit_Framework_TestCase
             $this->input->reveal(),
             $this->dispatcher->reveal(),
             $this->logger->reveal(),
-            $this->filesystem->reveal()
+            $this->filesystem->reveal(),
+            new ParameterBag(),
+            new JsonParser()
         );
     }
 
@@ -215,8 +218,6 @@ class HookHandlerTest extends \PHPUnit_Framework_TestCase
             'field2' => false
         ];
 
-        $data = $this->hookHandler->getHookDataFromJson();
-
         $expected = [
             'field1' => true,
             'field2' => false
@@ -224,7 +225,7 @@ class HookHandlerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame(
             $expected,
-            $this->hookHandler->applyHookDataDefaults($key, $defaults, $data)
+            $this->hookHandler->getJsonHookDataWithDefaults($key, $defaults)
         );
     }
 
@@ -237,11 +238,9 @@ class HookHandlerTest extends \PHPUnit_Framework_TestCase
             'field2' => false
         ];
 
-        $data = $this->hookHandler->getHookDataFromJson();
-
         $this->assertSame(
             $defaults,
-            $this->hookHandler->applyHookDataDefaults($key, $defaults, $data)
+            $this->hookHandler->getJsonHookDataWithDefaults($key, $defaults)
         );
     }
 
@@ -260,7 +259,7 @@ class HookHandlerTest extends \PHPUnit_Framework_TestCase
             ->error(Argument::cetera())
             ->shouldNotBeCalled();
 
-        $this->assertSame($data, $this->hookHandler->getHookDataFromJson());
+        $this->assertSame($data, $this->hookHandler->getJsonHookData());
     }
 
     public function testLogsErrorWhenHookDataIsNotValidJson()
@@ -273,10 +272,10 @@ class HookHandlerTest extends \PHPUnit_Framework_TestCase
 
         $this
             ->logger
-            ->error(Argument::containingString('Hook Handler: Passed hook data failed in json decoding process'), Argument::type('array'))
+            ->error(Argument::containingString('Hook Handler:'), Argument::type('array'))
             ->shouldBeCalledTimes(1);
 
-        $this->assertSame([], $this->hookHandler->getHookDataFromJson());
+        $this->assertSame([], $this->hookHandler->getJsonHookData());
     }
 
 }
