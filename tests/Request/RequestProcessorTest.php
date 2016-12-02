@@ -665,7 +665,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
 
         $repetitionConfig = new Repetition();
         $repetitionConfig->repeat = true;
-        $repetitionConfig->times = 2;
+        $repetitionConfig->times = 1;
         $repetitionConfig->count = 0;
 
         $request->setRepetitionConfig($repetitionConfig);
