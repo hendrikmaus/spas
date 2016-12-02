@@ -66,7 +66,7 @@ class HookHandler
                 continue;
             }
 
-            // DEPRECATED
+            // @deprecated
             // legacy hooks to be removed with spas 1.0
             if (!$this->filesystem->exists($hookname)) {
                 $this->logger->warning('Hook file could not be loaded:');
@@ -77,7 +77,7 @@ class HookHandler
 
             /** @noinspection PhpIncludeInspection */
             include $hookname;
-            // DEPRECATED
+            // @deprecated
         }
     }
 
@@ -117,7 +117,11 @@ class HookHandler
         return $this->rawHookData;
     }
 
-    public function getHookDataFromJson() : array
+    /**
+     * @param string $key optional key to get from the data-set
+     * @return array
+     */
+    public function getJsonHookData(string $key = '') : array
     {
         $data = $this->getRawHookData();
         $data = json_decode($data, true);
@@ -129,22 +133,14 @@ class HookHandler
             return [];
         }
 
-        return $data;
-    }
-
-
-    /**
-     * Helper method to get hook data using a specific key
-     *
-     * @param string $key Key to find the hook data in
-     * @return array
-     */
-    public function getHookDataWithKey(string $key) : array
-    {
-        $data = $this->getHookDataFromJson();
+        if ($key === '') {
+            return $data;
+        }
 
         if (!isset($data[$key])) {
-            $this->logger->warning('No hook data with key \'{0}\' found.',[$key]);
+            $this->logger->error(
+                'Hook Handler: Requested data key "{0}" was not found', [$key]
+            );
             return [];
         }
 
@@ -185,8 +181,71 @@ class HookHandler
      *
      * @param string $key Key to find the hook data in
      * @param array $defaults Defaults values to apply
+     * @return array
+     */
+    public function getJsonHookDataWithDefaults(string $key, array $defaults = []) : array
+    {
+        return array_merge($defaults, $this->getJsonHookData($key));
+    }
+
+    /**
+     * @return array
+     * @deprecated use \Hmaus\Spas\Request\HookHandler::getJsonHookData instead; removed with spas 1.0
+     */
+    public function getHookDataFromJson() : array
+    {
+        return $this->getJsonHookData();
+    }
+
+    /**
+     * Helper method to get hook data using a specific key
+     *
+     * @param string $key Key to find the hook data in
+     * @return array
+     * @deprecated use \Hmaus\Spas\Request\HookHandler::getJsonHookData instead; removed with spas 1.0
+     */
+    public function getHookDataWithKey(string $key) : array
+    {
+        return $this->getJsonHookData($key);
+    }
+
+    /**
+     * Helper method to apply defaults on top of incoming hook data
+     *
+     * For example, you are in a header hook and the data comes in as json:
+     *
+     *   {
+     *       "header-hook": {
+     *           "field1": true
+     *       }
+     *   }
+     *
+     * But you are expecting not only field1, but also field2.
+     * You want to apply a default so your code can rely on field2 being there.
+     *
+     *   $data = HookHandler::getHookDataFromJson()
+     *
+     * Call the helper:
+     *
+     *   $defaults = [
+     *       'field1' => false,
+     *       'field2' => false
+     *   ];
+     *
+     *   HookHandler::applyHookDataDefaults('header-hook', $defaults, $data)
+     *
+     * This will give you:
+     *
+     *   [
+     *       'field1' => true,
+     *       'field2' => false
+     *   ]
+     *
+     * @param string $key Key to find the hook data in
+     * @param array $defaults Defaults values to apply
      * @param array $data Hook data
      * @return array
+     * @deprecated use \Hmaus\Spas\Request\HookHandler::getJsonHookDataWithDefaults instead; removed with spas 1.0
      */
     public function applyHookDataDefaults(string $key, array $defaults, array $data) : array
     {

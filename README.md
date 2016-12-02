@@ -22,7 +22,7 @@ Running spas looks like:
 - get parse result from your api description parser
 - call spas with it
 
-## Installation And Usage
+## Installation
 
 ### Docker
 tbd.
@@ -59,3 +59,48 @@ composer require hmaus/spas
 ```
 
 With a default composer config, spas should now be available as `vendor/bin/spas`.
+
+## Hooks
+The hook system is what makes spas pretty flexible. It allows you to add bits and pieces of
+code to manipulate requests, assert outcomes and much more.
+
+There are a few pre-built hooks for you to examine and try out.  
+Simply browse `/src/Hook` to see pre-built hooks; all the ones prefixed with `Hello` are examples to learn from.
+
+### Run Hook
+Take your spas command add an option:
+
+```bash
+--hook "\Hmaus\Spas\Hook\HelloWorld"
+```
+
+As you can see, the hooks are simply passed using their fully qulified class name. So as long as the classes
+sit inside thee autloader, you can use them right away.
+
+To pass multiple hooks, simply repeat the `--hook` option for every one of them.
+
+```bash
+--hook "\Hmaus\Spas\Hook\HelloWorld"
+--hook "\Hmaus\Spas\Hook\HelloHookData"
+```
+
+### Pass Data to Hooks
+Many of your hooks shall be flexible in what they can do, hence you want to configure them from the outside.  
+We suggest to use JSON format to pass data into a hook like so:
+
+```bash
+--hook "\Hmaus\Spas\Hook\HelloHookData"
+--hook_data $'{
+    "HelloHookData": {
+        "apikey": "ewifvweilfvf"
+    },
+    "SomeOtherHook": {
+        "hook-data-option": "contains all data passed to all hooks"
+    }
+}'
+```
+
+### Write Your Own Hooks
+Once you examine the existing hooks, you should already gathered all there is to know.  
+Create a new class that is ato-loadable, extend `\Hmaus\Spas\Hook\Hook`, implement the one abstract
+method and check Hook's API and the pre-built examples for best practices.

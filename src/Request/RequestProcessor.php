@@ -312,14 +312,20 @@ class RequestProcessor
         $shouldRepeat     = $repetitionConfig->repeat;
         $repeatedEnough   = $repetitionConfig->count >= $repetitionConfig->times;
 
-        if ($shouldRepeat && !$repeatedEnough) {
+        if (!$shouldRepeat) {
+            $this->endLogBlock();
+            return;
+        }
+
+        if (!$repeatedEnough) {
             $repetitionConfig->count += 1;
             $this->logger->info('Repeating request');
             $this->endLogBlock();
             $this->process($request);
-        } else {
-            $this->endLogBlock();
+            return;
         }
+
+        $this->endLogBlock();
     }
 
     /**
