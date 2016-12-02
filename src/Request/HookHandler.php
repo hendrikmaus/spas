@@ -146,8 +146,8 @@ class HookHandler
         $key = str_replace('\\','-', $key);
 
         if (!isset($data[$key])) {
-            $this->logger->error(
-                'Hook Handler: Requested data key "{0}" was not found', [$key]
+            $this->logger->warning(
+                'Hook Handler: "{0}" was not found in hook data', [$key]
             );
             return [];
         }
