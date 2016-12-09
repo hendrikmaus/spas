@@ -38,6 +38,12 @@ class HookHandler
     private $rawHookData;
 
     /**
+     * Hook data after decoding, which is json decoding
+     * @var array
+     */
+    private $decodedHookData;
+
+    /**
      * @var ParameterBag
      */
     private $hookDataBag;
@@ -125,34 +131,44 @@ class HookHandler
     }
 
     /**
+     * Setter to override the decoded hook data
+     * @param array $data
+     */
+    public function setHookData(array $data)
+    {
+        $this->decodedHookData = $data;
+    }
+
+    /**
      * @param string $key optional key to get from the data-set
      * @return array
      */
     public function getJsonHookData(string $key = ''): array
     {
-        $data = $this->getRawHookData();
-
-        try {
-            $data = $this->jsonParser->parse($data, JsonParser::PARSE_TO_ASSOC);
-        } catch (\Exception $exception) {
-            $this->logger->error('Hook Handler: {0}', [$exception->getMessage()]);
-            return [];
+        if ($this->decodedHookData === null) {
+            try {
+                $data = $this->getRawHookData();
+                $this->decodedHookData = $this->jsonParser->parse($data, JsonParser::PARSE_TO_ASSOC);
+            } catch (\Exception $exception) {
+                $this->logger->error('Hook Handler: {0}', [$exception->getMessage()]);
+                return [];
+            }
         }
 
         if ($key === '') {
-            return $data;
+            return $this->decodedHookData;
         }
 
         $key = str_replace('\\','-', $key);
 
-        if (!isset($data[$key])) {
+        if (!isset($this->decodedHookData[$key])) {
             $this->logger->warning(
                 'Hook Handler: "{0}" was not found in hook data', [$key]
             );
             return [];
         }
 
-        return $data[$key];
+        return $this->decodedHookData[$key];
     }
 
     /**
