@@ -10,9 +10,12 @@
  *             "Part of the resource name",
  *             "you get the names from the log output",
  *             "be as precise as you can",
- *             "be less precise on purpose, to switch whole groups
+ *             "be less precise on purpose, to switch whole groups."
  *         ],
  *         "enable": [
+ *             "Note that Spas will process only",
+ *             "the requests, whose names contain",
+ *             "the strings that are provided here."
  *         ]
  *     }
  * }'
@@ -54,18 +57,23 @@ class EnableDisable extends Hook
         $request = $event->getRequest();
         $name    = $request->getName();
 
-        foreach ($this->bag->get('disable') as $disbaled) {
-            if (!$this->contains($disbaled, $name)) {
+        foreach ($this->bag->get('disable') as $disabled) {
+            if (!$this->contains($disabled, $name)) {
                 continue;
             }
             $request->setEnabled(false);
         }
 
+        $count = 0;
+
         foreach ($this->bag->get('enable') as $enabled) {
             if (!$this->contains($enabled, $name)) {
-                continue;
+                $count++;
             }
-            $request->setEnabled(true);
+        }
+
+        if ($count == count($this->bag->get('enable'))) {
+            $request->setEnabled(false);
         }
     }
 }
