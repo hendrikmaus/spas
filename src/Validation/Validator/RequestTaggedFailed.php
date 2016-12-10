@@ -19,11 +19,20 @@ class RequestTaggedFailed implements Validator
      */
     private $errors = [];
 
+    /**
+     * @var string
+     */
+    private $requestName = '';
+
     public function validate(ParsedRequest $request, ResponseInterface $response)
     {
-        $tagged = isset($request->failed);
+        $this->requestName = $request->getName();
 
-        $this->isValid = !$tagged;
+        $this->isValid = !$request->hasFailed();
+
+        if (!$this->isValid()) {
+            $this->addError("Custom error message", $request->getCustomErrorMessage());
+        }
     }
 
     public function isValid() : bool
@@ -38,7 +47,7 @@ class RequestTaggedFailed implements Validator
 
     public function getName() : string
     {
-        return 'Request Tagged as Failed';
+        return $this->requestName;
     }
 
     public function getErrors() : array
