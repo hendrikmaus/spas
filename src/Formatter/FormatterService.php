@@ -31,12 +31,16 @@ class FormatterService
      */
     public function getFormatterByContentType(string $type) : Formatter
     {
-        if (!isset($this->formatters[$type])) {
-            throw new \Exception(
-                sprintf('Content-type "%s" is not supported', $type)
-            );
+        foreach ($this->formatters as $formatter) {
+            foreach ($formatter->getContentTypes() as $contentType) {
+                if (strpos($type, $contentType) !== false) {
+                    return $formatter;
+                }
+            }
         }
 
-        return $this->formatters[$type];
+        throw new \Exception(
+            sprintf('Content-type "%s" is not supported', $type)
+        );
     }
 }

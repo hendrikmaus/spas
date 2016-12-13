@@ -88,8 +88,8 @@ class HttpClient
     {
         $options = [];
         $options['allow_redirects'] = false;
-        $options['connect_timeout'] = 10;
-        $options['timeout'] = 10;
+        $options['connect_timeout'] = 30;
+        $options['timeout'] = 30;
         $options['http_errors'] = false;
         $options['headers'] = [];
         $options['synchronous'] = true;
