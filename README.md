@@ -24,9 +24,6 @@ Running spas looks like:
 
 ## Installation
 
-### Docker
-tbd.
-
 ### From Source
 The recommended way to install spas & co is by using [composer](https://getcomposer.org).
 
