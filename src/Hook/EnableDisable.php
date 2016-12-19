@@ -51,9 +51,9 @@ class EnableDisable extends Hook
             $this->hookHandler->getJsonHookDataWithDefaults(static::class, $defaults)
         );
 
-        if (count($this->bag->get("disable")) > 0) {
-            $this->log("Requests that are supposed to be disabled were found, skipping the ones that should remain enabled.");
-            $this->bag->set("enable", []);
+        if (count($this->bag->get('disable')) > 0) {
+            $this->log('Requests that are supposed to be disabled were found, skipping the ones that should remain enabled.');
+            $this->bag->set('enable', []);
         }
     }
 
