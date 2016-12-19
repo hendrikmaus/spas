@@ -34,5 +34,9 @@
             <tag name="hmaus.spas.tag.validator"/>
         </service>
 
+        <service class="Hmaus\Spas\Validation\Validator\RequestTaggedFailed" id="hmaus.spas.validator.request_tagged_failed">
+            <tag name="hmaus.spas.tag.validator"/>
+        </service>
+
     </services>
 </container>
