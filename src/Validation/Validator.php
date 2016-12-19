@@ -3,7 +3,6 @@
 namespace Hmaus\Spas\Validation;
 
 use Hmaus\Spas\Parser\ParsedRequest;
-use Psr\Http\Message\ResponseInterface;
 
 interface Validator
 {
@@ -11,10 +10,9 @@ interface Validator
      * Validate given request and response
      *
      * @param ParsedRequest $request
-     * @param ResponseInterface $response
      * @return mixed
      */
-    public function validate(ParsedRequest $request, ResponseInterface $response);
+    public function validate(ParsedRequest $request);
 
     /**
      * Whether or not the validation result is valid

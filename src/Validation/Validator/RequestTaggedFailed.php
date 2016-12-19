@@ -5,7 +5,6 @@ namespace Hmaus\Spas\Validation\Validator;
 use Hmaus\Spas\Parser\ParsedRequest;
 use Hmaus\Spas\Validation\ValidationError;
 use Hmaus\Spas\Validation\Validator;
-use Psr\Http\Message\ResponseInterface;
 
 class RequestTaggedFailed implements Validator
 {
@@ -24,7 +23,7 @@ class RequestTaggedFailed implements Validator
      */
     private $requestName = '';
 
-    public function validate(ParsedRequest $request, ResponseInterface $response)
+    public function validate(ParsedRequest $request)
     {
         $this->requestName = $request->getName();
 

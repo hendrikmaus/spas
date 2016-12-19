@@ -11,8 +11,9 @@ class NoContent implements Validator
 {
     private $valid = false;
 
-    public function validate(ParsedRequest $request, ResponseInterface $response)
+    public function validate(ParsedRequest $request)
     {
+        $response = $request->getActualResponse();
         $isNoContentResponse = $response->getReasonPhrase() === 'No Content';
 
         if (!$isNoContentResponse) {

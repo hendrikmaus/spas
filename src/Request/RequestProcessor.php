@@ -120,12 +120,10 @@ class RequestProcessor
 
         try {
             $this->printRequest($request);
-            $response = $this->doRequest($request);
-            $this->addActualResponse($response, $request);
+            $this->addActualResponse($this->doRequest($request), $request);
             $this->dispatcher->dispatch(AfterEach::NAME, new AfterEach($request));
-            // todo if hooks marked request as failed, the validator needs to pick that up as well
-            $this->validator->validate($request, $response);
-            $this->printErrorResponse($response);
+            $this->validator->validate($request);
+            $this->printErrorResponse($request);
             $this->printValidatorReport();
             $this->validator->reset();
         } catch (\Exception $exception) {
@@ -263,18 +261,18 @@ class RequestProcessor
     /**
      * If the validator found issues, this helper prints what the server has to say
      *
-     * @param Response $response
+     * @param ParsedRequest $request
      */
-    private function printErrorResponse(Response $response)
+    private function printErrorResponse(ParsedRequest $request)
     {
         if ($this->validator->isValid()) {
             return;
         }
 
-        $contentType = $response->getHeader('content-type');
-        $contentType = array_pop($contentType);
+        $response    = $request->getActualResponse();
+        $contentType = $response->getHeaders()->get('content-type');
 
-        $body = $response->getBody()->getContents();
+        $body = $response->getBody();
         $formatter = $this->formatterService->getFormatterByContentType($contentType);
 
         $this

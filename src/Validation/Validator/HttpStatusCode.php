@@ -30,9 +30,10 @@ class HttpStatusCode implements Validator
         $this->logger = $logger;
     }
 
-    public function validate(ParsedRequest $request, ResponseInterface $response)
+    public function validate(ParsedRequest $request)
     {
         $expected = $request->getExpectedResponse()->getStatusCode();
+        $response = $request->getActualResponse();
         $actual   = $response->getStatusCode();
 
         $this->expectedVsActual($expected, $actual);
