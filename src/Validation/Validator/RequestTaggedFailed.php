@@ -47,7 +47,7 @@ class RequestTaggedFailed implements Validator
 
     public function getName() : string
     {
-        return $this->requestName;
+        return 'Request';
     }
 
     public function getErrors() : array
