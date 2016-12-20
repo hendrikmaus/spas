@@ -3,7 +3,6 @@
 namespace Hmaus\Spas\Tests\Formatter;
 
 use Hmaus\Spas\Formatter\XmlFormatter;
-use Prophecy\Exception\Exception;
 
 class XmlFormatterTest extends \PHPUnit_Framework_TestCase
 {
