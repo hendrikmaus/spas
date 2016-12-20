@@ -2,7 +2,6 @@
 
 namespace Hmaus\Spas\Tests\Validation\Validator;
 
-use GuzzleHttp\Psr7\Response;
 use Hmaus\Spas\Parser\ParsedRequest;
 use Hmaus\Spas\Parser\ParsedResponse;
 use Hmaus\Spas\Validation\ValidationError;
@@ -28,9 +27,9 @@ class HeaderTest extends \PHPUnit_Framework_TestCase
     private $parsedRequest;
 
     /**
-     * @var Response|ObjectProphecy
+     * @var ParsedResponse|ObjectProphecy
      */
-    private $response;
+    private $actualResponse;
 
     /**
      * @var HeaderBag
@@ -44,13 +43,18 @@ class HeaderTest extends \PHPUnit_Framework_TestCase
         $this->headerBag = new HeaderBag();
 
         $this->parsedResponse = $this->prophesize(ParsedResponse::class);
-
         $this
             ->parsedResponse
             ->getHeaders()
             ->willReturn(
                 $this->headerBag
             );
+
+        $this->actualResponse =$this->prophesize(ParsedResponse::class);
+        $this
+            ->actualResponse
+            ->getStatusCode()
+            ->willReturn(200);
 
         $this->parsedRequest = $this->prophesize(ParsedRequest::class);
         $this
@@ -59,19 +63,20 @@ class HeaderTest extends \PHPUnit_Framework_TestCase
             ->willReturn(
                 $this->parsedResponse->reveal()
             );
-
-        $this->response = $this->prophesize(Response::class);
         $this
-            ->response
-            ->getStatusCode()
-            ->willReturn(200);
+            ->parsedRequest
+            ->getActualResponse()
+            ->willReturn(
+                $this->actualResponse->reveal()
+            );
+
+
     }
 
-    private function runValidatior()
+    private function runValidator()
     {
         $this->validator->validate(
-            $this->parsedRequest->reveal(),
-            $this->response->reveal()
+            $this->parsedRequest->reveal()
         );
     }
 
@@ -89,15 +94,15 @@ class HeaderTest extends \PHPUnit_Framework_TestCase
          * and the count of it you expect for a value
          */
         return [
-            [ [], [], [], true ],
+            [ [], new HeaderBag([]), [], true ],
             [
                 [
                     'User-Agent' => 'mozilla',
                     'X-Vnd-Test' => '4711'
                 ],
-                [
+                new HeaderBag([
                     'User-Agent' => 'mozilla'
-                ],
+                ]),
                 [
                     'Header Missing' => 1
                 ],
@@ -108,10 +113,10 @@ class HeaderTest extends \PHPUnit_Framework_TestCase
                     'User-Agent' => 'mozilla',
                     'X-Vnd-Test' => '4711'
                 ],
-                [
+                new HeaderBag([
                     'User-Agent' => 'mozilla',
                     'ETag' => '253f8o7'
-                ],
+                ]),
                 [
                     'Header Missing' => 1
                 ],
@@ -122,12 +127,12 @@ class HeaderTest extends \PHPUnit_Framework_TestCase
                     'User-Agent' => 'mozilla',
                     'X-Vnd-Test' => '4711'
                 ],
-                [
+                new HeaderBag([
                     'User-Agent' => '42',
                     'X-Vnd-Test' => '42',
                     'ETag' => '253f8o7',
                     'Cache-Control' => 'maxage 3600'
-                ],
+                ]),
                 [
                     'Header Missing' => 1
                 ],
@@ -139,12 +144,12 @@ class HeaderTest extends \PHPUnit_Framework_TestCase
                     'X-Vnd-Test' => '4711',
                     'Retry-After' => 1 // important to test an edge case
                 ],
-                [
+                new HeaderBag([
                     'User-Agent' => '42',
                     'X-Vnd-Test' => '42',
                     'ETag' => '253f8o7',
                     'Cache-Control' => 'maxage 3600',
-                ],
+                ]),
                 [
                     'Header Missing' => 1
                 ],
@@ -156,22 +161,22 @@ class HeaderTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider headerTestDataProvider
      * @param array $expected
-     * @param array $actual
+     * @param HeaderBag $actual
      * @param array $errors
      * @param bool $result
      */
-    public function testHeaderScenarios(array $expected, array $actual, array $errors, bool $result)
+    public function testHeaderScenarios(array $expected, HeaderBag $actual, array $errors, bool $result)
     {
         $this
             ->headerBag
             ->add($expected);
 
         $this
-            ->response
+            ->actualResponse
             ->getHeaders()
             ->willReturn($actual);
 
-        $this->runValidatior();
+        $this->runValidator();
         $this->assertSame($result, $this->validator->isValid());
 
         if ($this->validator->isValid() === false) {

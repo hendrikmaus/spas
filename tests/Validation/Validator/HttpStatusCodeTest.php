@@ -28,31 +28,37 @@ class HttpStatusCodeTest extends \PHPUnit_Framework_TestCase
     private $parsedRequest;
 
     /**
-     * @var Response|ObjectProphecy
+     * @var ParsedResponse|ObjectProphecy
      */
-    private $response;
+    private $actualResponse;
 
     protected function setUp()
     {
         $logger = $this->prophesize(LoggerInterface::class);
         $this->validator = new HttpStatusCode($logger->reveal());
 
+        $this->actualResponse = $this->prophesize(ParsedResponse::class);
         $this->parsedResponse = $this->prophesize(ParsedResponse::class);
-        $this->parsedRequest = $this->prophesize(ParsedRequest::class);
+        $this->parsedRequest  = $this->prophesize(ParsedRequest::class);
         $this
             ->parsedRequest
             ->getExpectedResponse()
             ->willReturn(
                 $this->parsedResponse->reveal()
             );
+        $this
+            ->parsedRequest
+            ->getActualResponse()
+            ->willReturn(
+                $this->actualResponse->reveal()
+            );
 
-        $this->response = $this->prophesize(Response::class);
     }
 
     public function testValidatesFalseIfStatusCodesDoNotMatch()
     {
         $this
-            ->response
+            ->actualResponse
             ->getStatusCode()
             ->willReturn(200);
 
@@ -61,7 +67,7 @@ class HttpStatusCodeTest extends \PHPUnit_Framework_TestCase
             ->getStatusCode()
             ->willReturn(201);
 
-        $this->validator->validate($this->parsedRequest->reveal(), $this->response->reveal());
+        $this->validator->validate($this->parsedRequest->reveal());
         $this->assertFalse($this->validator->isValid());
 
         $this->assertNotEmpty($this->validator->getErrors());
@@ -76,7 +82,7 @@ class HttpStatusCodeTest extends \PHPUnit_Framework_TestCase
     public function testValidatesTrueIfStatusCodesDoMatch()
     {
         $this
-            ->response
+            ->actualResponse
             ->getStatusCode()
             ->willReturn(200);
 
@@ -85,7 +91,7 @@ class HttpStatusCodeTest extends \PHPUnit_Framework_TestCase
             ->getStatusCode()
             ->willReturn(200);
 
-        $this->validator->validate($this->parsedRequest->reveal(), $this->response->reveal());
+        $this->validator->validate($this->parsedRequest->reveal());
         $this->assertTrue($this->validator->isValid());
         $this->assertEmpty($this->validator->getErrors());
     }
@@ -93,7 +99,7 @@ class HttpStatusCodeTest extends \PHPUnit_Framework_TestCase
     public function testValidatesTrueIfStatusCode202Returns200()
     {
         $this
-            ->response
+            ->actualResponse
             ->getStatusCode()
             ->willReturn(200);
 
@@ -102,7 +108,7 @@ class HttpStatusCodeTest extends \PHPUnit_Framework_TestCase
             ->getStatusCode()
             ->willReturn(202);
 
-        $this->validator->validate($this->parsedRequest->reveal(), $this->response->reveal());
+        $this->validator->validate($this->parsedRequest->reveal());
         $this->assertTrue($this->validator->isValid());
         $this->assertEmpty($this->validator->getErrors());
     }

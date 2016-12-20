@@ -5,7 +5,6 @@ namespace Hmaus\Spas\Validation\Validator;
 use Hmaus\Spas\Validation\ValidationError;
 use Hmaus\Spas\Validation\Validator;
 use Hmaus\Spas\Parser\ParsedRequest;
-use Psr\Http\Message\ResponseInterface;
 
 class NoContent implements Validator
 {
@@ -23,7 +22,7 @@ class NoContent implements Validator
         }
 
         $this->valid = (
-            !$request->getExpectedResponse()->getBody() && !$response->getBody()->getContents()
+            !$request->getExpectedResponse()->getBody() && !$response->getBody()
         );
     }
 

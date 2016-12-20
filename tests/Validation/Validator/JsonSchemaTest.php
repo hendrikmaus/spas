@@ -2,14 +2,12 @@
 
 namespace Hmaus\Spas\Tests\Validation\Validator;
 
-use GuzzleHttp\Psr7\Response;
 use Hmaus\Spas\Validation\Validator;
 use Hmaus\Spas\Validation\Validator\JsonSchema;
 use Hmaus\Spas\Parser\ParsedRequest;
 use Hmaus\Spas\Parser\ParsedResponse;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
-use Psr\Http\Message\StreamInterface;
 
 class JsonSchemaTest extends \PHPUnit_Framework_TestCase
 {
@@ -24,19 +22,14 @@ class JsonSchemaTest extends \PHPUnit_Framework_TestCase
     private $parsedRequest;
 
     /**
-     * @var Response|ObjectProphecy
+     * @var ParsedResponse|ObjectProphecy
      */
-    private $response;
+    private $actualResponse;
 
     /**
      * @var ParsedResponse|ObjectProphecy
      */
     private $parsedResponse;
-
-    /**
-     * @var StreamInterface|ObjectProphecy
-     */
-    private $responseBody;
 
     /**
      * @var \JsonSchema\Validator|ObjectProphecy
@@ -60,14 +53,13 @@ class JsonSchemaTest extends \PHPUnit_Framework_TestCase
                 $this->parsedResponse->reveal()
             );
 
-        $this->responseBody = $this->prophesize(StreamInterface::class);
+        $this->actualResponse = $this->prophesize(ParsedResponse::class);
 
-        $this->response = $this->prophesize(Response::class);
         $this
-            ->response
-            ->getBody()
+            ->parsedRequest
+            ->getActualResponse()
             ->willReturn(
-                $this->responseBody->reveal()
+                $this->actualResponse->reveal()
             );
     }
 
@@ -82,8 +74,7 @@ class JsonSchemaTest extends \PHPUnit_Framework_TestCase
         $this
             ->validator
             ->validate(
-                $this->parsedRequest->reveal(),
-                $this->response->reveal()
+                $this->parsedRequest->reveal()
             );
 
         $this->assertTrue(
@@ -113,15 +104,14 @@ class JsonSchemaTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalledTimes(1);
 
         $this
-            ->responseBody
-            ->getContents()
+            ->actualResponse
+            ->getBody()
             ->willReturn('{}');
 
         $this
             ->validator
             ->validate(
-                $this->parsedRequest->reveal(),
-                $this->response->reveal()
+                $this->parsedRequest->reveal()
             );
 
 
@@ -141,8 +131,8 @@ class JsonSchemaTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalledTimes(1);
 
         $this
-            ->responseBody
-            ->getContents()
+            ->actualResponse
+            ->getBody()
             ->willReturn('{}');
 
         $this
@@ -168,8 +158,7 @@ class JsonSchemaTest extends \PHPUnit_Framework_TestCase
         $this
             ->validator
             ->validate(
-                $this->parsedRequest->reveal(),
-                $this->response->reveal()
+                $this->parsedRequest->reveal()
             );
 
         $this->assertFalse(
@@ -199,15 +188,14 @@ class JsonSchemaTest extends \PHPUnit_Framework_TestCase
             ->shouldNotBeCalled();
 
         $this
-            ->responseBody
-            ->getContents()
+            ->actualResponse
+            ->getBody()
             ->willReturn(null);
 
         $this
             ->validator
             ->validate(
-                $this->parsedRequest->reveal(),
-                $this->response->reveal()
+                $this->parsedRequest->reveal()
             );
 
         $this->assertFalse(
