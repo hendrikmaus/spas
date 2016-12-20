@@ -350,6 +350,7 @@ class RequestProcessor
         $parsedResponse->setBody($response->getBody()->getContents());
         $parsedResponse->setHeaders(new HeaderBag($response->getHeaders()));
         $parsedResponse->setStatusCode($response->getStatusCode());
+        $parsedResponse->setReasonPhrase($response->getReasonPhrase());
 
         $request->setActualResponse($parsedResponse);
     }
