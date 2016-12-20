@@ -2,14 +2,12 @@
 
 namespace Hmaus\Spas\Tests\Validation\Validator;
 
-use GuzzleHttp\Psr7\Response;
 use Hmaus\Spas\Validation\ValidationError;
 use Hmaus\Spas\Validation\Validator;
 use Hmaus\Spas\Validation\Validator\TextPlain;
 use Hmaus\Spas\Parser\ParsedRequest;
 use Hmaus\Spas\Parser\ParsedResponse;
 use Prophecy\Prophecy\ObjectProphecy;
-use Psr\Http\Message\StreamInterface;
 use Symfony\Component\HttpFoundation\HeaderBag;
 
 class TextPlainTest extends \PHPUnit_Framework_TestCase

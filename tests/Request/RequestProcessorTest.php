@@ -23,7 +23,6 @@ use Psr\Http\Message\StreamInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\HttpFoundation\HeaderBag;
 
 class RequestProcessorTest extends \PHPUnit_Framework_TestCase
 {
@@ -197,11 +196,6 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalledTimes(1);
 
         $response = $this->prophesize(Response::class);
-
-//        $response
-//            ->getHeader('content-type')
-//            ->willReturn(['application/json'])
-//            ->shouldBeCalledTimes(1);
 
         $response
             ->getStatusCode()
