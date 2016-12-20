@@ -106,11 +106,6 @@ class ValidatorServiceTest extends \PHPUnit_Framework_TestCase
             ->shouldbeCalledTimes(1);
 
         $this
-            ->responseBody
-            ->rewind()
-            ->shouldBeCalledTimes(1);
-
-        $this
             ->validatorService
             ->addValidator($validator->reveal());
 
@@ -142,11 +137,6 @@ class ValidatorServiceTest extends \PHPUnit_Framework_TestCase
             ->isValid()
             ->willReturn(true)
             ->shouldbeCalledTimes(1);
-
-        $this
-            ->responseBody
-            ->rewind()
-            ->shouldBeCalledTimes(1);
 
         $this
             ->validatorService

@@ -5,7 +5,6 @@ namespace Hmaus\Spas\Validation\Validator;
 use Hmaus\Spas\Validation\ValidationError;
 use Hmaus\Spas\Validation\Validator;
 use Hmaus\Spas\Parser\ParsedRequest;
-use Psr\Http\Message\ResponseInterface;
 use SebastianBergmann\Diff\Differ;
 
 class TextPlain implements Validator
@@ -30,9 +29,10 @@ class TextPlain implements Validator
         $this->differ = new Differ("\n--- Original\n+++ New\n", false);
     }
 
-    public function validate(ParsedRequest $request, ResponseInterface $response)
+    public function validate(ParsedRequest $request)
     {
         $hasContentTypeHeader = $request->getExpectedResponse()->getHeaders()->has('content-type');
+        $response = $request->getActualResponse();
 
         if (!$hasContentTypeHeader) {
             $this->valid = true;
@@ -42,13 +42,13 @@ class TextPlain implements Validator
         $isTextPlain = $request->getExpectedResponse()->getHeaders()->get('content-type') === 'text/plain';
 
         if ($isTextPlain) {
-            $this->valid = $response->getBody()->getContents() === $request->getExpectedResponse()->getBody();
+            $this->valid = $response->getBody() === $request->getExpectedResponse()->getBody();
 
             if (!$this->valid) {
                 $error = new ValidationError();
                 $error->property = 'messageBody';
                 $error->message = $this->differ->diff(
-                    $response->getBody()->getContents(),
+                    $response->getBody(),
                     $request->getExpectedResponse()->getBody()
                 );
                 $this->errors[] = $error;
