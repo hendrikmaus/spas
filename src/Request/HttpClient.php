@@ -3,6 +3,7 @@
 namespace Hmaus\Spas\Request;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\RequestOptions;
 use GuzzleHttp\TransferStats;
 use Hmaus\Spas\Parser\ParsedRequest;
 use Hmaus\Spas\SpasApplication;
@@ -51,7 +52,7 @@ class HttpClient
      *
      * allow_redirects
      *   do not allow to follow redirects as we want to test the actual 3xx codes as well
-     *   todo maybe we need an option to configure this behvaiour from the outside
+     *   todo maybe we need an option to configure this behaviour from the outside
      *
      * connect_timeout
      *   spas should not wait the default (indefinitely) to connect
@@ -84,37 +85,37 @@ class HttpClient
      * @param ParsedRequest $request
      * @return array
      */
-    public function computeGuzzleOptions(ParsedRequest $request) : array
+    public function computeGuzzleOptions(ParsedRequest $request): array
     {
-        $options = [];
-        $options['allow_redirects'] = false;
-        $options['connect_timeout'] = 30;
-        $options['timeout'] = 30;
-        $options['http_errors'] = false;
-        $options['headers'] = [];
-        $options['synchronous'] = true;
-        $options['decode_content'] = true;
-        $options['verify'] = false;
+        $options                                  = [];
+        $options[RequestOptions::ALLOW_REDIRECTS] = false;
+        $options[RequestOptions::CONNECT_TIMEOUT] = 30;
+        $options[RequestOptions::TIMEOUT]         = 30;
+        $options[RequestOptions::HTTP_ERRORS]     = false;
+        $options[RequestOptions::HEADERS]         = [];
+        $options[RequestOptions::SYNCHRONOUS]     = true;
+        $options[RequestOptions::DECODE_CONTENT]  = true;
+        $options[RequestOptions::VERIFY]          = false;
 
         foreach ($request->getHeaders()->all() as $headerName => $headerValue) {
             $options['headers'][$headerName] = $headerValue;
         }
 
-        $options['headers']['User-Agent'] = sprintf(
+        $options[RequestOptions::HEADERS]['User-Agent'] = sprintf(
             '%s/v%s',
             $this->application->getName(),
             $this->application->getVersion()
         );
 
         if ($request->getContent()) {
-            $options['body'] = $request->getContent();
+            $options[RequestOptions::BODY] = $request->getContent();
         }
 
         // todo if we want to log stats, this should be refactored
-        $options['on_stats'] = function (TransferStats $stats) {
+        $options[RequestOptions::ON_STATS] = function (TransferStats $stats) {
             $stats = $stats->getHandlerStats();
-            $size = (int)$stats['size_download'];
-            $time = round($stats['total_time'], 3);
+            $size  = (int)$stats['size_download'];
+            $time  = round($stats['total_time'], 3);
 
             $this->logger->info(
                 sprintf('Received %d bytes in %g seconds', $size, $time)

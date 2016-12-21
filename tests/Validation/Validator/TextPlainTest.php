@@ -25,19 +25,14 @@ class TextPlainTest extends \PHPUnit_Framework_TestCase
     private $parsedRequest;
 
     /**
-     * @var Response|ObjectProphecy
+     * @var ParsedResponse|ObjectProphecy
      */
-    private $response;
+    private $actualResponse;
 
     /**
      * @var ParsedResponse|ObjectProphecy
      */
     private $parsedResponse;
-
-    /**
-     * @var StreamInterface|ObjectProphecy
-     */
-    private $responseBody;
 
     protected function setUp()
     {
@@ -53,15 +48,7 @@ class TextPlainTest extends \PHPUnit_Framework_TestCase
                 $this->parsedResponse->reveal()
             );
 
-        $this->responseBody = $this->prophesize(StreamInterface::class);
-
-        $this->response = $this->prophesize(Response::class);
-        $this
-            ->response
-            ->getBody()
-            ->willReturn(
-                $this->responseBody->reveal()
-            );
+        $this->actualResponse = $this->prophesize(ParsedResponse::class);
     }
 
     public function testValidatesTrueWithoutContentTypeHeader()
@@ -76,7 +63,7 @@ class TextPlainTest extends \PHPUnit_Framework_TestCase
             ->validator
             ->validate(
                 $this->parsedRequest->reveal(),
-                $this->response->reveal()
+                $this->actualResponse->reveal()
             );
 
         $this->assertTrue(
@@ -102,7 +89,7 @@ class TextPlainTest extends \PHPUnit_Framework_TestCase
             ->validator
             ->validate(
                 $this->parsedRequest->reveal(),
-                $this->response->reveal()
+                $this->actualResponse->reveal()
             );
 
         $this->assertTrue(
@@ -131,8 +118,8 @@ class TextPlainTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalledTimes(1);
 
         $this
-            ->responseBody
-            ->getContents()
+            ->actualResponse
+            ->getBody()
             ->willReturn('hello')
             ->shouldBeCalledTimes(1);
 
@@ -140,7 +127,7 @@ class TextPlainTest extends \PHPUnit_Framework_TestCase
             ->validator
             ->validate(
                 $this->parsedRequest->reveal(),
-                $this->response->reveal()
+                $this->actualResponse->reveal()
             );
 
         $this->assertTrue(
@@ -169,8 +156,8 @@ class TextPlainTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalledTimes(2);
 
         $this
-            ->responseBody
-            ->getContents()
+            ->actualResponse
+            ->getBody()
             ->willReturn('hello!')
             ->shouldBeCalledTimes(2);
 
@@ -178,7 +165,7 @@ class TextPlainTest extends \PHPUnit_Framework_TestCase
             ->validator
             ->validate(
                 $this->parsedRequest->reveal(),
-                $this->response->reveal()
+                $this->actualResponse->reveal()
             );
 
         $this->assertFalse(

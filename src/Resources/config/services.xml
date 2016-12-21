@@ -14,7 +14,10 @@
         <service class="Symfony\Component\Console\Style\SymfonyStyle" id="hmaus.spas.io"/>
 
         <!-- HTTP -->
-        <service class="GuzzleHttp\Client" id="hmaus.spas.httpclient"/>
+        <service class="GuzzleHttp\Client" id="hmaus.spas.httpclient">
+            <factory class="Hmaus\Spas\Request\HttpClientFactory" method="create" />
+            <argument type="string">react</argument>
+        </service>
 
         <service class="Hmaus\Spas\Request\HttpClient" id="hmaus.spas.request.httpclient">
             <argument type="service" id="hmaus.spas.httpclient"/>

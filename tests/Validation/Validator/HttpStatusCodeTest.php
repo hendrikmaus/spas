@@ -2,7 +2,6 @@
 
 namespace Hmaus\Spas\Tests\Validation\Validator;
 
-use GuzzleHttp\Psr7\Response;
 use Hmaus\Spas\Parser\ParsedRequest;
 use Hmaus\Spas\Parser\ParsedResponse;
 use Hmaus\Spas\Validation\ValidationError;
@@ -28,9 +27,9 @@ class HttpStatusCodeTest extends \PHPUnit_Framework_TestCase
     private $parsedRequest;
 
     /**
-     * @var Response|ObjectProphecy
+     * @var ParsedResponse|ObjectProphecy
      */
-    private $response;
+    private $actualResponse;
 
     protected function setUp()
     {
@@ -46,13 +45,13 @@ class HttpStatusCodeTest extends \PHPUnit_Framework_TestCase
                 $this->parsedResponse->reveal()
             );
 
-        $this->response = $this->prophesize(Response::class);
+        $this->actualResponse = $this->prophesize(ParsedResponse::class);
     }
 
     public function testValidatesFalseIfStatusCodesDoNotMatch()
     {
         $this
-            ->response
+            ->actualResponse
             ->getStatusCode()
             ->willReturn(200);
 
@@ -61,7 +60,7 @@ class HttpStatusCodeTest extends \PHPUnit_Framework_TestCase
             ->getStatusCode()
             ->willReturn(201);
 
-        $this->validator->validate($this->parsedRequest->reveal(), $this->response->reveal());
+        $this->validator->validate($this->parsedRequest->reveal(), $this->actualResponse->reveal());
         $this->assertFalse($this->validator->isValid());
 
         $this->assertNotEmpty($this->validator->getErrors());
@@ -76,7 +75,7 @@ class HttpStatusCodeTest extends \PHPUnit_Framework_TestCase
     public function testValidatesTrueIfStatusCodesDoMatch()
     {
         $this
-            ->response
+            ->actualResponse
             ->getStatusCode()
             ->willReturn(200);
 
@@ -85,7 +84,7 @@ class HttpStatusCodeTest extends \PHPUnit_Framework_TestCase
             ->getStatusCode()
             ->willReturn(200);
 
-        $this->validator->validate($this->parsedRequest->reveal(), $this->response->reveal());
+        $this->validator->validate($this->parsedRequest->reveal(), $this->actualResponse->reveal());
         $this->assertTrue($this->validator->isValid());
         $this->assertEmpty($this->validator->getErrors());
     }
@@ -93,7 +92,7 @@ class HttpStatusCodeTest extends \PHPUnit_Framework_TestCase
     public function testValidatesTrueIfStatusCode202Returns200()
     {
         $this
-            ->response
+            ->actualResponse
             ->getStatusCode()
             ->willReturn(200);
 
@@ -102,7 +101,7 @@ class HttpStatusCodeTest extends \PHPUnit_Framework_TestCase
             ->getStatusCode()
             ->willReturn(202);
 
-        $this->validator->validate($this->parsedRequest->reveal(), $this->response->reveal());
+        $this->validator->validate($this->parsedRequest->reveal(), $this->actualResponse->reveal());
         $this->assertTrue($this->validator->isValid());
         $this->assertEmpty($this->validator->getErrors());
     }

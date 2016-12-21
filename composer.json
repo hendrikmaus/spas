@@ -23,7 +23,8 @@
     "symfony/dependency-injection": "^3.1",
     "symfony/event-dispatcher": "^3.1",
     "symfony/filesystem": "^3.1",
-    "symfony/http-foundation": "^3.1"
+    "symfony/http-foundation": "^3.1",
+    "wyrihaximus/react-guzzle-psr7": "^1.0"
   },
   "require-dev": {
     "codeclimate/php-test-reporter": "^0.3",

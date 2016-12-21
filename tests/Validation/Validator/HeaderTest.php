@@ -2,7 +2,6 @@
 
 namespace Hmaus\Spas\Tests\Validation\Validator;
 
-use GuzzleHttp\Psr7\Response;
 use Hmaus\Spas\Parser\ParsedRequest;
 use Hmaus\Spas\Parser\ParsedResponse;
 use Hmaus\Spas\Validation\ValidationError;
@@ -28,9 +27,9 @@ class HeaderTest extends \PHPUnit_Framework_TestCase
     private $parsedRequest;
 
     /**
-     * @var Response|ObjectProphecy
+     * @var ParsedResponse|ObjectProphecy
      */
-    private $response;
+    private $actualResponse;
 
     /**
      * @var HeaderBag
@@ -60,18 +59,25 @@ class HeaderTest extends \PHPUnit_Framework_TestCase
                 $this->parsedResponse->reveal()
             );
 
-        $this->response = $this->prophesize(Response::class);
+        $this->actualResponse = $this->prophesize(ParsedResponse::class);
         $this
-            ->response
+            ->actualResponse
             ->getStatusCode()
             ->willReturn(200);
+
+        $this
+            ->parsedRequest
+            ->getActualResponse()
+            ->willReturn(
+                $this->actualResponse->reveal()
+        );
     }
 
     private function runValidatior()
     {
         $this->validator->validate(
             $this->parsedRequest->reveal(),
-            $this->response->reveal()
+            $this->actualResponse->reveal()
         );
     }
 
@@ -167,9 +173,9 @@ class HeaderTest extends \PHPUnit_Framework_TestCase
             ->add($expected);
 
         $this
-            ->response
+            ->actualResponse
             ->getHeaders()
-            ->willReturn($actual);
+            ->willReturn(new HeaderBag($actual));
 
         $this->runValidatior();
         $this->assertSame($result, $this->validator->isValid());

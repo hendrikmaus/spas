@@ -2,14 +2,12 @@
 
 namespace Hmaus\Spas\Tests\Validation\Validator;
 
-use GuzzleHttp\Psr7\Response;
 use Hmaus\Spas\Validation\ValidationError;
 use Hmaus\Spas\Validation\Validator\NoContent;
 use Hmaus\Spas\Validation\Validator;
 use Hmaus\Spas\Parser\ParsedRequest;
 use Hmaus\Spas\Parser\ParsedResponse;
 use Prophecy\Prophecy\ObjectProphecy;
-use Psr\Http\Message\StreamInterface;
 
 class NoContentTest extends \PHPUnit_Framework_TestCase
 {
@@ -24,19 +22,14 @@ class NoContentTest extends \PHPUnit_Framework_TestCase
     private $parsedRequest;
 
     /**
-     * @var Response|ObjectProphecy
+     * @var ParsedResponse|ObjectProphecy
      */
-    private $response;
+    private $actualResponse;
 
     /**
      * @var ParsedResponse|ObjectProphecy
      */
     private $parsedResponse;
-
-    /**
-     * @var StreamInterface|ObjectProphecy
-     */
-    private $responseBody;
 
     protected function setUp()
     {
@@ -52,30 +45,33 @@ class NoContentTest extends \PHPUnit_Framework_TestCase
                 $this->parsedResponse->reveal()
             );
 
-        $this->responseBody = $this->prophesize(StreamInterface::class);
+        $this->actualResponse = $this->prophesize(ParsedResponse::class);
 
-        $this->response = $this->prophesize(Response::class);
         $this
-            ->response
-            ->getBody()
-            ->willReturn(
-                $this->responseBody->reveal()
-            );
+            ->parsedRequest
+            ->getActualResponse()
+            ->willReturn($this->actualResponse->reveal());
     }
 
     public function testNoContentResponsesAreValid()
     {
         $this
-            ->response
+            ->actualResponse
             ->getReasonPhrase()
             ->willReturn('No Content')
+            ->shouldBeCalledTimes(1);
+
+        $this
+            ->actualResponse
+            ->getBody()
+            ->willReturn(null)
             ->shouldBeCalledTimes(1);
 
         $this
             ->validator
             ->validate(
                 $this->parsedRequest->reveal(),
-                $this->response->reveal()
+                $this->actualResponse->reveal()
             );
 
         $this->assertTrue($this->validator->isValid());
@@ -85,7 +81,7 @@ class NoContentTest extends \PHPUnit_Framework_TestCase
     public function testNoNoContentResponsesAreValid()
     {
         $this
-            ->response
+            ->actualResponse
             ->getReasonPhrase()
             ->willReturn('I have content')
             ->shouldBeCalledTimes(1);
@@ -94,7 +90,7 @@ class NoContentTest extends \PHPUnit_Framework_TestCase
             ->validator
             ->validate(
                 $this->parsedRequest->reveal(),
-                $this->response->reveal()
+                $this->actualResponse->reveal()
             );
 
         $this->assertTrue($this->validator->isValid());
@@ -118,7 +114,7 @@ class NoContentTest extends \PHPUnit_Framework_TestCase
     public function testResultScenarios($parsedContent, $actualContent, $result)
     {
         $this
-            ->response
+            ->actualResponse
             ->getReasonPhrase()
             ->willReturn('No Content')
             ->shouldBeCalledTimes(1);
@@ -129,15 +125,15 @@ class NoContentTest extends \PHPUnit_Framework_TestCase
             ->willReturn($parsedContent);
 
         $this
-            ->responseBody
-            ->getContents()
+            ->actualResponse
+            ->getBody()
             ->willReturn($actualContent);
 
         $this
             ->validator
             ->validate(
                 $this->parsedRequest->reveal(),
-                $this->response->reveal()
+                $this->actualResponse->reveal()
             );
 
         $this->assertSame($result, $this->validator->isValid());

@@ -2,13 +2,12 @@
 
 namespace Hmaus\Spas\Tests\Validation;
 
-use GuzzleHttp\Psr7\Response;
+use Hmaus\Spas\Parser\ParsedResponse;
 use Hmaus\Spas\Validation\Validator;
 use Hmaus\Spas\Validation\ValidatorService;
 use Hmaus\Spas\Parser\ParsedRequest;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
-use Psr\Http\Message\StreamInterface;
 use Psr\Log\LoggerInterface;
 
 class ValidatorServiceTest extends \PHPUnit_Framework_TestCase
@@ -29,14 +28,9 @@ class ValidatorServiceTest extends \PHPUnit_Framework_TestCase
     private $parsedRequest;
 
     /**
-     * @var Response|ObjectProphecy
+     * @var ParsedResponse|ObjectProphecy
      */
-    private $response;
-
-    /**
-     * @var StreamInterface|ObjectProphecy
-     */
-    private $responseBody;
+    private $parsedResponse;
 
     protected function setUp()
     {
@@ -45,14 +39,13 @@ class ValidatorServiceTest extends \PHPUnit_Framework_TestCase
             $this->logger->reveal()
         );
 
-        $this->parsedRequest = $this->prophesize(ParsedRequest::class);
-        $this->responseBody = $this->prophesize(StreamInterface::class);
-        $this->response = $this->prophesize(Response::class);
+        $this->parsedResponse = $this->prophesize(ParsedResponse::class);
+        $this->parsedRequest  = $this->prophesize(ParsedRequest::class);
 
         $this
-            ->response
-            ->getBody()
-            ->willReturn($this->responseBody->reveal());
+            ->parsedRequest
+            ->getActualResponse()
+            ->willReturn($this->parsedResponse->reveal());
     }
 
     public function testCanAddValidators()
@@ -106,19 +99,13 @@ class ValidatorServiceTest extends \PHPUnit_Framework_TestCase
             ->shouldbeCalledTimes(1);
 
         $this
-            ->responseBody
-            ->rewind()
-            ->shouldBeCalledTimes(1);
-
-        $this
             ->validatorService
             ->addValidator($validator->reveal());
 
         $this
             ->validatorService
             ->validate(
-                $this->parsedRequest->reveal(),
-                $this->response->reveal()
+                $this->parsedRequest->reveal()
             );
 
         $this->assertFalse(
@@ -144,19 +131,13 @@ class ValidatorServiceTest extends \PHPUnit_Framework_TestCase
             ->shouldbeCalledTimes(1);
 
         $this
-            ->responseBody
-            ->rewind()
-            ->shouldBeCalledTimes(1);
-
-        $this
             ->validatorService
             ->addValidator($validator->reveal());
 
         $this
             ->validatorService
             ->validate(
-                $this->parsedRequest->reveal(),
-                $this->response->reveal()
+                $this->parsedRequest->reveal()
             );
 
         $this->assertTrue(

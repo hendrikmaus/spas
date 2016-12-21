@@ -3,9 +3,9 @@
 namespace Hmaus\Spas\Validation\Validator;
 
 use Hmaus\Spas\Parser\ParsedRequest;
+use Hmaus\Spas\Parser\ParsedResponse;
 use Hmaus\Spas\Validation\ValidationError;
 use Hmaus\Spas\Validation\Validator;
-use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\HttpFoundation\HeaderBag;
 
 class Header implements Validator
@@ -20,10 +20,10 @@ class Header implements Validator
      */
     private $errors = [];
 
-    public function validate(ParsedRequest $request, ResponseInterface $response)
+    public function validate(ParsedRequest $request, ParsedResponse $response)
     {
         $expected = $request->getExpectedResponse()->getHeaders();
-        $actual = new HeaderBag($response->getHeaders());
+        $actual   = $response->getHeaders();
 
         foreach ($expected as $header => $value) {
             if ($actual->has($header)) {

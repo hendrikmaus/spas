@@ -3,7 +3,7 @@
 namespace Hmaus\Spas\Validation;
 
 use Hmaus\Spas\Parser\ParsedRequest;
-use Psr\Http\Message\ResponseInterface;
+use Hmaus\Spas\Parser\ParsedResponse;
 
 interface Validator
 {
@@ -11,10 +11,10 @@ interface Validator
      * Validate given request and response
      *
      * @param ParsedRequest $request
-     * @param ResponseInterface $response
+     * @param ParsedResponse $response
      * @return mixed
      */
-    public function validate(ParsedRequest $request, ResponseInterface $response);
+    public function validate(ParsedRequest $request, ParsedResponse $response);
 
     /**
      * Whether or not the validation result is valid
@@ -31,7 +31,7 @@ interface Validator
     public function getId() : string;
 
     /**
-     * Human readbale validator name, to end on "Validator"
+     * Human readable validator name, to end on "Validator"
      *
      * E.g. `JSON Schema Validator`; is used to build a sentence for console output
      * @return string
@@ -39,7 +39,7 @@ interface Validator
     public function getName() : string;
 
     /**
-     * Rurn an array of errors
+     * Return an array of errors
      *
      * @return ValidationError[]
      */

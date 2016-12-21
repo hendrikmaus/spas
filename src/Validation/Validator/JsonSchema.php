@@ -2,11 +2,11 @@
 
 namespace Hmaus\Spas\Validation\Validator;
 
+use Hmaus\Spas\Parser\ParsedResponse;
 use Hmaus\Spas\Validation\ValidationError;
 use Hmaus\Spas\Validation\Validator;
 use Hmaus\Spas\Parser\ParsedRequest;
 use JsonSchema\Validator as JsonSchemaValidator;
-use Psr\Http\Message\ResponseInterface;
 
 class JsonSchema implements Validator
 {
@@ -30,7 +30,7 @@ class JsonSchema implements Validator
         $this->jsonSchemaValidator = $jsonSchemaValidator;
     }
 
-    public function validate(ParsedRequest $request, ResponseInterface $response)
+    public function validate(ParsedRequest $request, ParsedResponse $response)
     {
         $schema = $request->getExpectedResponse()->getSchema();
 
@@ -39,7 +39,7 @@ class JsonSchema implements Validator
             return;
         }
 
-        $decodedBody = json_decode($response->getBody()->getContents());
+        $decodedBody   = json_decode($response->getBody());
         $decodedSchema = json_decode($schema);
 
         if (null === $decodedBody) {

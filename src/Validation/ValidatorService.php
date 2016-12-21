@@ -3,7 +3,6 @@
 namespace Hmaus\Spas\Validation;
 
 use Hmaus\Spas\Parser\ParsedRequest;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
 class ValidatorService
@@ -32,14 +31,12 @@ class ValidatorService
      * Run the validator chain
      *
      * @param ParsedRequest $request
-     * @param ResponseInterface $response
      * @return $this
      */
-    public function validate(ParsedRequest $request, ResponseInterface $response)
+    public function validate(ParsedRequest $request)
     {
         foreach ($this->validators as $validator) {
-            $validator->validate($request, $response);
-            $response->getBody()->rewind(); // to be able to retrieve the body again and again
+            $validator->validate($request, $request->getActualResponse());
             $this->report[$validator->getId()] = $validator;
         }
 
