@@ -16,7 +16,7 @@
         <!-- HTTP -->
         <service class="GuzzleHttp\Client" id="hmaus.spas.httpclient">
             <factory class="Hmaus\Spas\Request\HttpClientFactory" method="create" />
-            <argument type="string">react</argument>
+            <argument type="string">curl</argument>
         </service>
 
         <service class="Hmaus\Spas\Request\HttpClient" id="hmaus.spas.request.httpclient">
