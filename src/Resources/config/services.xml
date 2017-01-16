@@ -87,6 +87,10 @@
             <tag name="hmaus.spas.tag.formatter"/>
         </service>
 
+        <service class="Hmaus\Spas\Formatter\HtmlFormatter" id="hmaus.spas.formatter.html">
+            <tag name="hmaus.spas.tag.formatter"/>
+        </service>
+
         <service class="Hmaus\Spas\Request\Result\ProcessorReport" id="hmaus.spas.processor_report"/>
     </services>
 </container>
