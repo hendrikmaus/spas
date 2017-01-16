@@ -5,7 +5,7 @@
  * ```bash
  * --hook "\Hmaus\Spas\Hook\EnableDisable" \
  * --hook_data $'{
- *     "EnableDisable": {
+ *     "Hmaus-Spas-Hook-EnableDisable": {
  *         "disable": [
  *             "Part of the resource name",
  *             "you get the names from the log output",

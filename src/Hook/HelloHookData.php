@@ -13,7 +13,7 @@
  * ```bash
  * --hook "\Hmaus\Spas\Hook\HelloHookData" \
  * --hook_data $'{
- *     "HelloHookData": {
+ *     "Hmaus-Spas-Hook-HelloHookData": {
  *         "apikey": "c3...452572"
  *     }
  * }'

@@ -9,7 +9,7 @@
  * ```bash
  * --hook "\Hmaus\Spas\Hook\Repeat" \
  * --hook_data $'{
- *    "Repeat": [
+ *    "Hmaus-Spas-Hook-Repeat": [
  *         {
  *             "name" : "Health",
  *             "times": 1
