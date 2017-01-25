@@ -39,8 +39,6 @@ class FormatterService
             }
         }
 
-        throw new \Exception(
-            sprintf('Content-type "%s" is not supported', $type)
-        );
+        return new GenericFormatter();
     }
 }
