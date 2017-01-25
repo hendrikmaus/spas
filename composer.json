@@ -54,7 +54,7 @@
     "sort-packages": true
   },
   "extra": {
-    "drafter-installer-tag": "v3.2.0"
+    "drafter-installer-tag": "v3.2.3"
   },
   "scripts": {
     "clean": "rm -rf vendor/ composer.lock; exit 0",

@@ -140,10 +140,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
 
         $this
             ->validatorService
-            ->validate(
-                $request,
-                $httpresponse
-            )
+            ->validate($request)
             ->shouldBeCalledTimes(1);
 
         $this
@@ -198,11 +195,6 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
         $response = $this->prophesize(Response::class);
 
         $response
-            ->getHeader('content-type')
-            ->willReturn(['application/json'])
-            ->shouldBeCalledTimes(1);
-
-        $response
             ->getStatusCode()
             ->willReturn(200);
 
@@ -216,7 +208,10 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
 
         $response
             ->getHeaders()
-            ->willReturn(['retry-after' => ['100']]);
+            ->willReturn([
+                'retry-after'  => ['100'],
+                'content-type' => 'application/json'
+            ]);
 
         $body = $this->prophesize(StreamInterface::class);
         $body
@@ -235,10 +230,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
 
         $this
             ->validatorService
-            ->validate(
-                $request,
-                $response->reveal()
-            )
+            ->validate($request)
             ->shouldBeCalledTimes(1);
 
         $this
@@ -441,10 +433,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
 
         $this
             ->validatorService
-            ->validate(
-                $request,
-                $response->reveal()
-            )
+            ->validate($request)
             ->shouldBeCalledTimes(1);
 
         $this
@@ -534,10 +523,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
 
         $this
             ->validatorService
-            ->validate(
-                $request,
-                $response->reveal()
-            )
+            ->validate($request)
             ->shouldBeCalledTimes(1);
 
         $this
@@ -627,10 +613,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
 
         $this
             ->validatorService
-            ->validate(
-                $request,
-                $response->reveal()
-            )
+            ->validate($request)
             ->shouldBeCalledTimes(1);
 
         $this
@@ -699,10 +682,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
 
         $this
             ->validatorService
-            ->validate(
-                $request,
-                $httpresponse
-            )
+            ->validate($request)
             ->shouldBeCalledTimes(2);
 
         $this
@@ -764,10 +744,7 @@ class RequestProcessorTest extends \PHPUnit_Framework_TestCase
 
         $this
             ->validatorService
-            ->validate(
-                $request,
-                $httpresponse
-            )
+            ->validate($request)
             ->shouldBeCalledTimes(1);
 
         $this
